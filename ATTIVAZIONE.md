@@ -77,3 +77,9 @@ Next.js ed eslint-config-next sono aggiornati alla patch 14.2.35, mantenendo Rea
 ### Registro dettagliato
 
 La pagina `/automazione` si aggiorna ogni 5 secondi e mostra fase corrente, contatori parziali e le ultime 2.000 attività di ogni esecuzione: set, carte inserite/collegate, ambiguità, ricerca immagini, risultati e prossimi tentativi. Il worker raggruppa le scritture del log durante le importazioni ogni 2 secondi. Il log completo viene emesso su GitHub Actions.
+
+## Popolamento intensivo e manutenzione
+
+Durante il popolamento, una sessione GitHub lavora fino a 330 minuti (5 ore e mezza), ripetendo cicli di circa 8 minuti con una pausa di 5 secondi. Il job ha timeout di 350 minuti e rimane unico grazie alla concorrenza. La sessione termina prima se non ci sono set o immagini con tentativi già dovuti. Gli errori isolati restano nel registro come risultati parziali senza interrompere i cicli; gli errori fatali arrestano il job. I set interrotti dal budget riprendono nel ciclo successivo. La scoperta degli indici resta giornaliera e i tentativi senza risultato mantengono gli intervalli previsti.
+
+Per un avvio manuale, Actions → Aggiornamento catalogo Pokémon → Run workflow → duration_minutes (8–330). Per la futura manutenzione impostare la repository variable CATALOG_RUN_MINUTES a 8 e ridurre il cron nel workflow (ad esempio ogni sei ore). Il valore manuale ha precedenza sulla variabile. Non è necessario cambiare chiavi. Finché non cambiata, la modalità intensiva resta attiva.

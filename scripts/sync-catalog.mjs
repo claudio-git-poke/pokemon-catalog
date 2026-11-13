@@ -133,9 +133,10 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
         summary.processedSets++
         await log(`Set ${set.set_id}: completato; ${ambiguous} abbinamenti ambigui.`, true)
       } catch (error) {
-        summary.errors++
-        await log(`Errore set ${set.set_id}: ${String(error)}`, true)
-        await check(db.from('catalog_sync_sets').update({ next_sync_at:later(24),last_error:String(error) }).eq('source_uid',set.source_uid))
+        const deferred = /Budget.*(raggiunto|esecuzione)/i.test(String(error))
+        if (!deferred) summary.errors++
+        await log(`${deferred ? 'Pausa' : 'Errore'} set ${set.set_id}: ${String(error)}`, true)
+        await check(db.from('catalog_sync_sets').update({ next_sync_at:deferred ? now() : later(24),last_error:deferred ? null : String(error) }).eq('source_uid',set.source_uid))
       }
     }
     const queue = await check(db.from('cards').select('*').in('image_status',['missing','placeholder']).lte('image_next_attempt_at',now()).order('image_next_attempt_at').order('id').limit(400))
