@@ -13,8 +13,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - name: Verifica configurazione
+        id: config
+        env:
+          CATALOG_URL: ${{ secrets.SUPABASE_URL }}
+          CATALOG_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -n "$CATALOG_URL" ] && [ -n "$CATALOG_KEY" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "### Automazione in attesa delle chiavi" >> "$GITHUB_STEP_SUMMARY"
+            echo "Configurare SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY nei repository secrets. Nessuna modifica al database eseguita." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - if: steps.config.outputs.ready == 'true'
+        uses: actions/checkout@v4
+      - if: steps.config.outputs.ready == 'true'
+        uses: actions/checkout@v4
         continue-on-error: true
         with:
           repository: type-null/PTCG-database
@@ -24,12 +39,15 @@ jobs:
             data_ko
             data_tc
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - if: steps.config.outputs.ready == 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: npm
-      - run: npm ci --ignore-scripts --no-audit --no-fund
-      - run: node --experimental-strip-types scripts/run-catalog-sync.mjs
+      - if: steps.config.outputs.ready == 'true'
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - if: steps.config.outputs.ready == 'true'
+        run: node --experimental-strip-types scripts/run-catalog-sync.mjs
         env:
           ATLAS_DATA_DIR: .catalog-data
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
