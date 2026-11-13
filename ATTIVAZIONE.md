@@ -31,7 +31,7 @@ In GitHub → repository → Settings → Secrets and variables → Actions crea
 
 La chiave segreta compariva nello ZIP originale: revocare quella vecchia e usare quella nuova sia qui sia in Vercel.
 
-GitHub → Actions → Aggiornamento catalogo Pokémon → Run workflow avvia il primo controllo. Dopo questo passaggio gli avvii sono programmati. La configurazione impedisce esecuzioni sovrapposte dello stesso workflow; non avviare contemporaneamente copie del worker da altri sistemi.
+GitHub → Actions → Aggiornamento catalogo Pokémon → Run workflow avvia il primo controllo. Dopo questo passaggio gli avvii sono programmati. Se una delle due chiavi non è ancora configurata, il workflow termina senza avviare il worker né modificare il database e mostra “Automazione in attesa delle chiavi”. Dopo aver salvato entrambe le chiavi, il successivo avvio programmato può procedere normalmente. La configurazione impedisce esecuzioni sovrapposte dello stesso workflow; non avviare contemporaneamente copie del worker da altri sistemi.
 
 Il workflow scarica inoltre, in `.catalog-data/`, i soli JSON delle cartelle data_jp, data_ko e data_tc del repository pubblico type-null/PTCG-database. Non esegue codice di quel repository. ATLAS_DATA_DIR è già impostata nel workflow e non serve su Vercel. Se il download dell'archivio fallisce, il worker segnala il problema e prosegue con TCGdex.
 
