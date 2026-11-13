@@ -33,9 +33,10 @@ export async function atlasCards(root,set) {
 export function externalRecord(card,set) {
  return {source_uid:`atlas:${set.source_language}:${card.id}`,provider:`atlas-official-${set.source_language}`,language:card.localLanguage,set_code:normalizedSet(set.set_id),local_id:normalizedNumber(card.localId),name:card.name,image_url:card.image,page_url:card.sourcePage,updated_at:new Date().toISOString()}
 }
-export async function importAtlasSet({db,set,root,loadCards=atlasCards,newCard,summary,deadline}) {
+export async function importAtlasSet({db,set,root,loadCards=atlasCards,newCard,summary,deadline,log=async()=>{}}) {
  const check=async q=>{const{data,error}=await q;if(error)throw Error(error.message);return data}
  const cards=await loadCards(root,set)
+ await log(`Card Atlas ${set.set_id}: ${cards.length} carte da confrontare.`)
  if(!cards.length)throw Error('Archivio senza carte utilizzabili')
  const records=cards.map(c=>externalRecord(c,set))
  for(let i=0;i<records.length;i+=300)await check(db.from('catalog_external_cards').upsert(records.slice(i,i+300),{onConflict:'source_uid'}))
@@ -51,11 +52,12 @@ export async function importAtlasSet({db,set,root,loadCards=atlasCards,newCard,s
   const number=normalizedNumber(card.localId)
   const matches=existing.filter(c=>normalizedNumber(c.source_local_id || c.numero)===number && ['normale','normal',''].includes(c.variante || ''))
   const repeated=cards.filter(c=>normalizedNumber(c.localId)===number).length>1
-  if(matches.length>1 || matches.length && repeated){ambiguous++;summary.ambiguous++;continue}
+  if(matches.length>1 || matches.length && repeated){ambiguous++;summary.ambiguous++;await log(`Ambigua: ${card.name} · ${card.localId}, lasciata da verificare.`);continue}
   const match=matches[0]
   if(match && !match.source_uid){
    await check(db.from('cards').update({source_uid:uid,source_card_id:card.id,source_language:set.source_language,source_local_id:card.localId}).eq('id',match.id).is('source_uid',null).select('id').single())
    match.source_uid=uid;summary.linked++
+   await log(`Collegata: ${card.name} · ${set.set_id}/${card.localId} · ${language}.`)
   }else if(match && !match.source_uid.startsWith('atlas:')){
    // Exact regional set/number already imported from TCGdex: attach alternative in the index, keep primary identity.
    summary.alternatives=(summary.alternatives || 0)+1
@@ -63,6 +65,7 @@ export async function importAtlasSet({db,set,root,loadCards=atlasCards,newCard,s
    const row={...newCard(card,set.set_id,set.source_language,language),source_uid:uid,file_name:`${set.set_id}_${language}_${card.id.replace(/[^a-z0-9-]/gi,'_')}.jpg`,notes:`Importazione archivio ${set.source_language}. Fonte: ${card.sourcePage || 'Card Atlas'}`}
    await check(db.from('cards').upsert(row,{onConflict:'source_uid',ignoreDuplicates:true}))
    existing.push(row);summary.added++
+   await log(`Inserita: ${card.name} · ${set.set_id}/${card.localId} · ${language}.`)
   }
  }
  await check(db.from('catalog_sync_sets').update({last_sync_at:new Date().toISOString(),next_sync_at:new Date(Date.now()+7*86400000).toISOString(),card_count:cards.length,last_error:ambiguous?`${ambiguous} numeri ripetuti: variante da verificare.`:null}).eq('source_uid',set.source_uid))

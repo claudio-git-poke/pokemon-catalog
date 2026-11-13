@@ -15,7 +15,20 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
     return await response.json()
   }
   const run = await check(db.from('catalog_sync_runs').insert({}).select('id').single())
+  const events = []
+  let lastFlush = 0
+  async function log(message, force = false) {
+    const entry = { at: now(), message }
+    events.push(entry)
+    if (events.length > 2000) events.shift()
+    console.log(`[${entry.at}] ${message}`)
+    if (force || Date.now() - lastFlush >= 2000) {
+      await check(db.from('catalog_sync_runs').update({summary:{...summary,events,current:message,updated_at:entry.at}}).eq('id',run.id))
+      lastFlush = Date.now()
+    }
+  }
   try {
+    await log('Avvio: controllo catalogo e code di lavoro.', true)
     // A found flag with no URL must not keep a card outside the image queue.
     await check(db.from('cards').update({image_status:'missing',image_next_attempt_at:now()}).eq('image_status','found').is('image_url',null))
     await check(db.from('cards').update({image_status:'missing',image_next_attempt_at:now()}).eq('image_status','found').eq('image_url',''))
@@ -24,6 +37,7 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
       const last = await check(db.from('catalog_sync_sets').select('last_sync_at').eq('source_uid', `index:${lang}`).maybeSingle())
       if (last?.last_sync_at && Date.now() - Date.parse(last.last_sync_at) < 86400000) continue
       try {
+        await log(`TCGdex ${lang}: aggiornamento elenco espansioni.`, true)
         const sets = await source(`${lang}/sets`)
         if (!Array.isArray(sets) || !sets.length) throw new Error('Elenco set vuoto o non valido')
         const known = []
@@ -39,10 +53,12 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
           await check(db.from('catalog_sync_sets').update({ reported_count:row.reported_count,next_sync_at:now(),name:row.name }).eq('source_uid',row.source_uid))
         }
       }
+      await log(`TCGdex ${lang}: ${rows.length} set disponibili.`)
       summary.discoveredSets += rows.filter(r => !known.some(s => s.source_uid === r.source_uid)).length
         await check(db.from('catalog_sync_sets').upsert({ source_uid: `index:${lang}`, source_language: lang, set_id: '__index__', name: `Elenco ${lang}`, next_sync_at: later(24), last_sync_at: now(), last_error: null }))
       } catch (error) {
         summary.errors++
+        await log(`Errore elenco ${lang}: ${String(error)}`, true)
         await check(db.from('catalog_sync_sets').upsert({ source_uid: `index:${lang}`, source_language: lang, set_id: '__index__', name: `Elenco ${lang}`, next_sync_at: later(1), last_error: String(error) }))
       }
     }
@@ -50,11 +66,13 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
       const last = await check(db.from('catalog_sync_sets').select('*').eq('source_uid','index:atlas').maybeSingle())
       if (!last?.last_sync_at || Date.now()-Date.parse(last.last_sync_at)>86400000) {
         try {
+          await log('Card Atlas: lettura elenco espansioni JP/KOR/CHN-T.', true)
           const rows=await loadAtlasSets(atlasRoot)
           await check(db.from('catalog_sync_sets').upsert(rows,{onConflict:'source_uid',ignoreDuplicates:true}))
           await check(db.from('catalog_sync_sets').upsert({source_uid:'index:atlas',provider:'atlas',source_language:'multi',set_id:'__index__',name:'Archivio JP/KOR/CHN-T',last_sync_at:now(),next_sync_at:later(24),last_error:null}))
         } catch(error) {
           summary.errors++
+          await log(`Errore indice Card Atlas: ${String(error)}`, true)
           await check(db.from('catalog_sync_sets').upsert({source_uid:'index:atlas',provider:'atlas',source_language:'multi',set_id:'__index__',name:'Archivio JP/KOR/CHN-T',next_sync_at:later(6),last_error:String(error)}))
         }
       }
@@ -66,11 +84,14 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
       const due=await check(db.from('catalog_sync_sets').select('*').eq('provider',provider).neq('set_id','__index__').lte('next_sync_at',now()).order('next_sync_at').limit(provider==='tcgdex' && !atlasRoot ? 30 : 15))
       sets.push(...due)
     }
+    await log(`${sets.length} set selezionati per questa esecuzione.`, true)
     for (const set of sets) {
       if (Date.now() > deadline - 120000) break // reserve time for image queue
       try {
+        await log(`Set ${set.provider} · ${set.source_language} · ${set.set_id}: inizio importazione.`, true)
         if (set.provider==='atlas') {
-          await importAtlas({db,set,root:atlasRoot,newCard,summary,deadline})
+          await importAtlas({db,set,root:atlasRoot,newCard,summary,deadline,log})
+          await log(`Set ${set.set_id}: completato. Totale nuove carte: ${summary.added}.`, true)
           continue
         }
         const data = await source(`${set.source_language}/sets/${encodeURIComponent(set.set_id)}`)
@@ -79,6 +100,7 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
           continue
         }
         if (!Array.isArray(data.cards) || !data.cards.length) throw new Error('Set privo di carte nella fonte: verrà riprovato')
+        await log(`Set ${set.set_id}: ${data.cards.length} carte da confrontare.`)
         const localLanguage = SOURCES.find(([lang]) => lang === set.source_language)[1]
         const variants = [set.set_id, set.set_id.toUpperCase(), `${set.set_id}@${localLanguage}`, `${set.set_id.toUpperCase()}@${localLanguage}`]
         const existing = []
@@ -94,31 +116,38 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
           const linked = await check(db.from('cards').select('id').eq('source_uid',uid).maybeSingle())
           if (linked) continue
           const { match, ambiguous: conflict } = legacyMatch(existing,data.cards,card,set.set_id)
-          if (conflict) { ambiguous++; summary.ambiguous++; continue }
+          if (conflict) { ambiguous++; summary.ambiguous++; await log(`Ambigua: ${card.name} · ${card.localId}, lasciata da verificare.`); continue }
           if (match?.source_uid) {
             summary.alternatives=(summary.alternatives || 0)+1
           } else if (match) {
             await check(db.from('cards').update({ source_uid:uid, source_card_id:card.id, source_language:set.source_language,source_local_id:card.localId }).eq('id',match.id).is('source_uid',null).select('id').single())
             match.source_uid = uid; summary.linked++
+            await log(`Collegata carta esistente: ${card.name} · ${set.set_id}/${card.localId} · ${set.source_language}.`)
           } else {
             await check(db.from('cards').upsert(newCard(card,set.set_id,set.source_language,localLanguage),{ onConflict:'source_uid',ignoreDuplicates:true }))
             summary.added++
+            await log(`Inserita: ${card.name} · ${set.set_id}/${card.localId} · ${set.source_language}.`)
           }
         }
         await check(db.from('catalog_sync_sets').update({ next_sync_at:later(168), last_sync_at:now(), card_count:data.cards.length, last_error:ambiguous ? `${ambiguous} abbinamenti ambigui con il catalogo originale: revisione necessaria.` : null }).eq('source_uid',set.source_uid))
         summary.processedSets++
+        await log(`Set ${set.set_id}: completato; ${ambiguous} abbinamenti ambigui.`, true)
       } catch (error) {
         summary.errors++
+        await log(`Errore set ${set.set_id}: ${String(error)}`, true)
         await check(db.from('catalog_sync_sets').update({ next_sync_at:later(24),last_error:String(error) }).eq('source_uid',set.source_uid))
       }
     }
-    const queue = await check(db.from('cards').select('*').in('image_status',['missing','placeholder']).lte('image_next_attempt_at',now()).order('image_next_attempt_at').order('id').limit(40))
+    const queue = await check(db.from('cards').select('*').in('image_status',['missing','placeholder']).lte('image_next_attempt_at',now()).order('image_next_attempt_at').order('id').limit(400))
+    await log(`Ricerca immagini: ${queue.length} carte selezionate; lavoro fino al limite di tempo.`, true)
     for (const card of queue) {
       if (Date.now() > deadline - 40000) break
+      await log(`Cerco immagine: #${card.id} ${card.nome || card.name || card.file_name} · ${card.sigla}/${card.numero} · ${card.lingua}.`, true)
       const attempts = card.image_attempts + 1
       let patch
       try {
         const candidates = await imageLookup(db,card)
+        await log(`Carta #${card.id}: ${candidates.length} candidati dall’indice esterno.`)
         const result = await search(card,{externalCandidates:candidates})
         patch = { image_attempts:attempts, image_next_attempt_at:retryAt(attempts,false), image_last_error:null }
         if (result.url) {
@@ -134,12 +163,14 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
       const saved = await check(db.from('cards').update(patch).eq('id',card.id).in('image_status',['missing','placeholder']).select('id'))
     if (saved.length && patch.image_status === 'found') summary.found++
     if (saved.length && patch.image_status === 'placeholder') summary.missing++
+      await log(`Carta #${card.id}: ${!saved.length ? 'aggiornamento ignorato: modificata nel frattempo' : patch.image_status === 'found' ? 'immagine trovata · '+patch.image_source : patch.image_last_error ? 'errore · '+patch.image_last_error : 'immagine non trovata'}. Prossimo tentativo: ${patch.image_next_attempt_at}.`, true)
     }
-    await check(db.from('catalog_sync_runs').update({ finished_at:now(),status:summary.errors ? 'partial' : 'success',summary }).eq('id',run.id))
+    await log('Esecuzione conclusa. Il lavoro restante riprenderà al prossimo avvio.', true)
+    await check(db.from('catalog_sync_runs').update({ finished_at:now(),status:summary.errors ? 'partial' : 'success',summary:{...summary,events,current:'Esecuzione conclusa',updated_at:now()} }).eq('id',run.id))
     console.log(JSON.stringify(summary))
     return summary
   } catch (error) {
-    await check(db.from('catalog_sync_runs').update({finished_at:now(),status:'error',summary:{...summary,error:String(error)}}).eq('id',run.id))
+    await check(db.from('catalog_sync_runs').update({finished_at:now(),status:'error',summary:{...summary,events,current:'Esecuzione interrotta',error:String(error),updated_at:now()}}).eq('id',run.id))
     throw error
   }
 

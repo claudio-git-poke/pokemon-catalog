@@ -23,6 +23,11 @@ test('worker imports, reconciles, retries, excludes Pocket and preserves a concu
   const search=async card=>{searches++;return {url:null,message:'Not yet available'}}
   const first=await syncCatalog({db,fetchSource,search})
   assert.equal(first.linked,1);assert.equal(first.added,SOURCES.length-1)
+  const logged=(await pg.query('select summary from catalog_sync_runs order by id desc limit 1')).rows[0].summary
+  assert.ok(logged.events.some(e=>e.message.includes('Collegata carta esistente')))
+  assert.ok(logged.events.some(e=>e.message.includes('Ricerca immagini')))
+  assert.equal(logged.current,'Esecuzione conclusa')
+  assert.equal(logged.added,first.added)
   const legacy=(await pg.query('select * from cards where id=1')).rows[0]
   assert.equal(legacy.file_name,'MFB_001.jpg');assert.equal(legacy.source_card_id,'mfb-14');assert.equal(legacy.image_status,'placeholder')
   assert.equal((await pg.query("select count(*)::int n from cards where nome='Pocket only'")).rows[0].n,0)

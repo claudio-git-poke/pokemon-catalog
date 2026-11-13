@@ -4,7 +4,7 @@ Questa versione aggiunge un processo indipendente dal browser. Non è ancora att
 
 ## Che cosa succede da solo
 
-1. Ogni sei ore GitHub Actions avvia il worker.
+1. Ogni 5 minuti GitHub Actions programma il worker (minimo supportato; possibili ritardi di GitHub). Il blocco di concorrenza impedisce sovrapposizioni e non interrompe il lavoro in corso.
 2. Una volta al giorno aggiorna gli elenchi delle espansioni nelle undici lingue TCGdex configurate. Nuovi set e set il cui conteggio cambia entrano in coda. I set già importati vengono comunque ricontrollati ogni settimana.
 3. Importa le carte assenti senza assegnare immagini di espansioni o lingue diverse. Ogni carta importata riceve un identificativo stabile composto da fonte, lingua e ID della carta.
 4. Cerca le immagini mancanti e riprova in futuro quelle non disponibili. I tentativi sono registrati nel database: chiudere il sito o riavviare il worker non li perde.
@@ -31,7 +31,7 @@ In GitHub → repository → Settings → Secrets and variables → Actions crea
 
 La chiave segreta compariva nello ZIP originale: revocare quella vecchia e usare quella nuova sia qui sia in Vercel.
 
-GitHub → Actions → Aggiornamento catalogo Pokémon → Run workflow avvia il primo controllo. Dopo questo passaggio gli avvii sono programmati. Se una delle due chiavi non è ancora configurata, il workflow termina senza avviare il worker né modificare il database e mostra “Automazione in attesa delle chiavi”. Dopo aver salvato entrambe le chiavi, il successivo avvio programmato può procedere normalmente. La configurazione impedisce esecuzioni sovrapposte dello stesso workflow; non avviare contemporaneamente copie del worker da altri sistemi.
+GitHub → Actions → Aggiornamento catalogo Pokémon → Run workflow avvia il primo controllo. Dopo questo passaggio gli avvii sono programmati. La configurazione impedisce esecuzioni sovrapposte dello stesso workflow; non avviare contemporaneamente copie del worker da altri sistemi.
 
 Il workflow scarica inoltre, in `.catalog-data/`, i soli JSON delle cartelle data_jp, data_ko e data_tc del repository pubblico type-null/PTCG-database. Non esegue codice di quel repository. ATLAS_DATA_DIR è già impostata nel workflow e non serve su Vercel. Se il download dell'archivio fallisce, il worker segnala il problema e prosegue con TCGdex.
 
@@ -43,8 +43,8 @@ Aprire /automazione. Dopo una prima esecuzione devono apparire la data di avvio 
 
 ## Tempi, quantità e risorse
 
-- Ogni esecuzione lavora per circa otto minuti al massimo (più installazione dipendenze), esamina fino a 30 set (normalmente 15 Atlas + 15 TCGdex) e tenta fino a 40 immagini. Il tempo disponibile può ridurre questi numeri. Riprende dal database la volta dopo.
-- Il primo popolamento completo è graduale e può richiedere molte esecuzioni, soprattutto considerando più lingue e fonti. Non viene completato in una sola chiamata. Con il limite di 40 immagini e quattro avvii al giorno, il massimo teorico è 160 tentativi giornalieri, non 160 immagini garantite.
+- Ogni esecuzione lavora per circa otto minuti al massimo (più installazione dipendenze), esamina fino a 30 set (normalmente 15 Atlas + 15 TCGdex) e tenta fino a 400 immagini. Il tempo disponibile può ridurre questi numeri. Riprende dal database la volta dopo.
+- Il primo popolamento completo è graduale e può richiedere molte esecuzioni, soprattutto considerando più lingue e fonti. Non viene completato in una sola chiamata. I tentativi effettivi dipendono dai tempi delle fonti; il limite di tempo prevale sul numero di carte.
 - Le nuove carte appaiono quando le fonti le pubblicano e il worker raggiunge il relativo set: non immediatamente quando Pokémon Company le annuncia. Gli elenchi si aggiornano giornalmente; il carico iniziale può causare ulteriore ritardo.
 - Tentativi senza immagini: dopo 1, 2, 4, 8, 16 e poi ogni 30 giorni. Errori temporanei: intervallo crescente da 1 a 24 ore; l'esecuzione effettiva avviene al primo avvio programmato successivo.
 - GitHub Actions può avviarsi in ritardo. Nei repository pubblici GitHub può disabilitare i workflow programmati dopo 60 giorni senza attività: per un servizio continuativo preferire un repository privato con Actions abilitato e quota adeguata. Verificare i minuti inclusi nel proprio piano e i limiti di spesa; l'esecuzione programmata consuma risorse.
@@ -73,3 +73,7 @@ Test del recupero immagini, identità per lingua, MFB, tentativi distanziati, se
 Build: `npm run build` con le variabili Vercel del proprio progetto.
 
 Next.js ed eslint-config-next sono aggiornati alla patch 14.2.35, mantenendo React 18 e la struttura del progetto.
+
+### Registro dettagliato
+
+La pagina `/automazione` si aggiorna ogni 5 secondi e mostra fase corrente, contatori parziali e le ultime 2.000 attività di ogni esecuzione: set, carte inserite/collegate, ambiguità, ricerca immagini, risultati e prossimi tentativi. Il worker raggruppa le scritture del log durante le importazioni ogni 2 secondi. Il log completo viene emesso su GitHub Actions.
