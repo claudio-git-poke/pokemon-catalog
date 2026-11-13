@@ -1,23 +1,18 @@
-# Bindex Catalogo Foto Pokémon — v7
+# Bindex Catalogo Foto Pokémon — v8
 
-## Fix principale
+## Novità principali
 
-Cambiata la rotta di dettaglio da `/carte/[id]` a **`/carta/[id]`**.
+1. **TCGdex** come fonte primaria di immagini (API pubblica e affidabile)
+2. Selettore lingua in evidenza, **partenza da INT (inglese)**
+3. Tutti i link di dettaglio puntano a `/carta/[id]`
+4. Log verbosi in console
 
-Il 404 era quasi certamente causato da problemi con la cartella `[id]` durante il deploy (comune su Windows / certi upload).
+## Come testare
 
-### Nuove URL
+1. Deploy di v8
+2. Vai su **Senza foto**
+3. Lascia selezionato **INT (EN)**
+4. Clicca **Cerca batch**
+5. Apri F12 e guarda i log: dovresti vedere chiamate a `api.tcgdex.net`
 
-- Lista: `/carte`
-- Dettaglio: `/carta/1`, `/carta/2`, ...
-- Home con ricerca rapida per ID o nome
-
-### Cosa fare
-
-1. Sostituisci TUTTI i file con quelli di questa cartella `v7`
-2. Commit + push
-3. Dopo il deploy prova ad aprire:
-   - https://tuo-sito.vercel.app/carta/1
-   - oppure usa il campo "Vai a ID" in home
-
-Se funziona, i 404 spariscono.
+Le carte MFB (INT) e molte inglesi dovrebbero iniziare a trovare le immagini.

@@ -4,10 +4,18 @@ import { useEffect, useState } from 'react'
 import { supabase, Card } from '@/lib/supabase'
 import Link from 'next/link'
 
+const LANGUAGES = [
+  { code: 'INT', label: 'INT (EN)' },
+  { code: 'JP', label: 'JP' },
+  { code: 'CHN', label: 'CHN' },
+  { code: 'KOR', label: 'KOR' },
+  { code: 'CHN-T', label: 'CHN-T' },
+]
+
 export default function MancantiPage() {
   const [cards, setCards] = useState<Card[]>([])
   const [loading, setLoading] = useState(true)
-  const [lingua, setLingua] = useState('')
+  const [lingua, setLingua] = useState('INT') // partiamo dalle inglesi
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState('')
 
@@ -22,7 +30,7 @@ export default function MancantiPage() {
       .select('*')
       .in('image_status', ['missing', 'placeholder'])
       .order('id')
-      .limit(50)
+      .limit(40)
 
     if (lingua) query = query.eq('lingua', lingua)
 
@@ -36,11 +44,11 @@ export default function MancantiPage() {
     setProcessing(true)
     let found = 0
     let placeholders = 0
+    const max = Math.min(cards.length, 8)
 
-    for (let i = 0; i < Math.min(cards.length, 10); i++) { // max 10 per volta per non saturare
+    for (let i = 0; i < max; i++) {
       const card = cards[i]
-      setProgress(`Elaborazione ${i + 1}/${Math.min(cards.length, 10)}: ${card.nome}...`)
-
+      setProgress(`Elaborazione ${i + 1}/${max}: ${card.nome}...`)
       try {
         const res = await fetch('/api/search-image', {
           method: 'POST',
@@ -50,12 +58,11 @@ export default function MancantiPage() {
         const data = await res.json()
         if (data.found) found++
         else placeholders++
+        console.log(`[batch] ${card.nome}:`, data)
       } catch (e) {
         placeholders++
       }
-
-      // piccola pausa
-      await new Promise(r => setTimeout(r, 800))
+      await new Promise(r => setTimeout(r, 600))
     }
 
     setProgress(`Completato: ${found} trovate, ${placeholders} placeholder`)
@@ -68,14 +75,22 @@ export default function MancantiPage() {
       <div>
         <h1 className="text-3xl font-bold text-red-700">Carte senza foto / Placeholder</h1>
         <p className="text-gray-600">
-          Queste carte hanno bisogno di una foto. Puoi lanciare la ricerca automatica su un batch o gestirle una per una.
+          Partiamo dalle carte <strong>INT (inglesi)</strong> perché sono le più facili da trovare su TCGdex.
         </p>
       </div>
 
       <div className="flex flex-wrap gap-2 items-center">
-        <button onClick={() => setLingua('')} className={`px-3 py-1.5 rounded text-sm ${!lingua ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>Tutte</button>
-        {['JP','CHN','KOR','CHN-T','INT'].map(l => (
-          <button key={l} onClick={() => setLingua(l)} className={`px-3 py-1.5 rounded text-sm ${lingua===l ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>{l}</button>
+        <span className="text-sm font-medium text-gray-600 mr-2">Lingua:</span>
+        {LANGUAGES.map(l => (
+          <button
+            key={l.code}
+            onClick={() => setLingua(l.code)}
+            className={`px-3 py-1.5 rounded text-sm font-medium ${
+              lingua === l.code ? 'bg-red-600 text-white' : 'bg-gray-200 hover:bg-gray-300'
+            }`}
+          >
+            {l.label}
+          </button>
         ))}
 
         <button
@@ -83,7 +98,7 @@ export default function MancantiPage() {
           disabled={processing || cards.length === 0}
           className="ml-auto bg-purple-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-purple-700 disabled:opacity-50"
         >
-          {processing ? 'Elaborazione...' : '🔍 Cerca batch (max 10)'}
+          {processing ? 'Elaborazione...' : '🔍 Cerca batch (max 8)'}
         </button>
       </div>
 
@@ -114,7 +129,7 @@ export default function MancantiPage() {
               </Link>
             </div>
           ))}
-          {cards.length === 0 && <p className="text-gray-500">Nessuna carta mancante con questi filtri 🎉</p>}
+          {cards.length === 0 && <p className="text-gray-500">Nessuna carta mancante per questa lingua 🎉</p>}
         </div>
       )}
     </div>

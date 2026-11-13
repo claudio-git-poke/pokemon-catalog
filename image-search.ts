@@ -1,6 +1,6 @@
 /**
- * Ricerca aggressiva di immagini carte Pokémon
- * Strategia a cascata: più fonti possibili, in ordine di affidabilità.
+ * Ricerca immagini – prioritaria TCGdex (API pubblica)
+ * Documentazione: https://tcgdex.dev
  */
 
 export type SearchResult = {
@@ -8,6 +8,7 @@ export type SearchResult = {
   source: string
   confidence: 'high' | 'medium' | 'low'
   message: string
+  logs?: string[]
 }
 
 type CardInput = {
@@ -21,146 +22,181 @@ type CardInput = {
   link_cardmarket: string | null
 }
 
-/** Pulisce il nome per usarlo in URL/query */
 function cleanName(name: string): string {
   return name
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-zA-Z0-9\s-]/g, '')
     .trim()
-    .replace(/\s+/g, '-')
     .toLowerCase()
 }
 
-/** Costruisce query di ricerca multiple */
-function buildQueries(card: CardInput): string[] {
-  const base = cleanName(card.nome)
-  const queries = [
-    `${card.nome} ${card.sigla} ${card.lingua} pokemon tcg`,
-    `${card.nome} ${card.codice || card.sigla} pokemon card`,
-    `${base} ${card.sigla.replace('@', ' ')} pokemon`,
-    `${card.nome} ${card.lingua === 'JP' ? 'japanese' : card.lingua === 'CHN' ? 'chinese' : card.lingua === 'KOR' ? 'korean' : ''} pokemon card`,
-  ]
-  return Array.from(new Set(queries.filter(Boolean)))
+/** Mappa le nostre lingue → lingue TCGdex */
+function toTcgdexLang(lingua: string): string {
+  const map: Record<string, string> = {
+    INT: 'en',
+    EN: 'en',
+    JP: 'ja',
+    CHN: 'zh-cn',
+    'CHN-T': 'zh-tw',
+    KOR: 'ko',
+    FR: 'fr',
+    DE: 'de',
+    ES: 'es',
+    IT: 'it',
+  }
+  return map[lingua] || 'en'
 }
 
 /**
- * Tenta di ottenere l'immagine Open Graph / Twitter da una pagina
- * (utile per link_cardmarket e altre pagine prodotto)
+ * Cerca su TCGdex
+ * Endpoint: https://api.tcgdex.net/v2/{lang}/cards
+ */
+async function searchTcgdex(card: CardInput): Promise<SearchResult | null> {
+  const logs: string[] = []
+  const lang = toTcgdexLang(card.lingua)
+  const name = cleanName(card.nome)
+
+  logs.push(`TCGdex lang=${lang} name="${name}"`)
+
+  try {
+    // 1. Prova ricerca per nome
+    const url = `https://api.tcgdex.net/v2/${lang}/cards?name=${encodeURIComponent(card.nome)}`
+    logs.push(`Fetch: ${url}`)
+
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'BindexCatalog/1.0' },
+      next: { revalidate: 3600 }
+    })
+
+    if (!res.ok) {
+      logs.push(`TCGdex status ${res.status}`)
+      return null
+    }
+
+    const data = await res.json()
+    logs.push(`Risultati TCGdex: ${Array.isArray(data) ? data.length : 0}`)
+
+    if (!Array.isArray(data) || data.length === 0) {
+      // Fallback: prova solo il nome base senza caratteri speciali
+      const url2 = `https://api.tcgdex.net/v2/${lang}/cards?name=${encodeURIComponent(name)}`
+      const res2 = await fetch(url2)
+      if (res2.ok) {
+        const data2 = await res2.json()
+        if (Array.isArray(data2) && data2.length > 0) {
+          const best = data2[0]
+          if (best.image) {
+            const imageUrl = `${best.image}/high.png`
+            return {
+              url: imageUrl,
+              source: 'tcgdex',
+              confidence: 'medium',
+              message: `Trovata su TCGdex (${lang}): ${best.name}`,
+              logs
+            }
+          }
+        }
+      }
+      return null
+    }
+
+    // Prendi la prima con immagine, preferibilmente matching del numero se possibile
+    let best = data.find((c: any) => c.image) || data[0]
+
+    // Se abbiamo un numero, prova a matchare localId
+    if (card.numero) {
+      const byNumber = data.find((c: any) => 
+        String(c.localId) === String(card.numero) || 
+        String(c.localId).padStart(3, '0') === String(card.numero).padStart(3, '0')
+      )
+      if (byNumber?.image) best = byNumber
+    }
+
+    if (best?.image) {
+      // TCGdex fornisce base URL, aggiungiamo /high.png o /low.png
+      const imageUrl = `${best.image}/high.png`
+      logs.push(`Immagine: ${imageUrl}`)
+      return {
+        url: imageUrl,
+        source: 'tcgdex',
+        confidence: 'high',
+        message: `Trovata su TCGdex (${lang}): ${best.name} (${best.id})`,
+        logs
+      }
+    }
+
+    logs.push('Nessuna immagine nel risultato TCGdex')
+    return null
+  } catch (err: any) {
+    logs.push(`TCGdex error: ${err.message}`)
+    return null
+  }
+}
+
+/**
+ * Estrae og:image da una pagina (fallback)
  */
 async function tryExtractOgImage(pageUrl: string): Promise<string | null> {
   try {
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 6000)
-
+    const timeout = setTimeout(() => controller.abort(), 5000)
     const res = await fetch(pageUrl, {
       signal: controller.signal,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; BindexBot/1.0; +https://bindex.app)',
-        'Accept': 'text/html',
-      },
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BindexBot/1.0)' }
     })
     clearTimeout(timeout)
-
     if (!res.ok) return null
     const html = await res.text()
-
-    // Cerca og:image o twitter:image
-    const ogMatch = html.match(/property=["']og:image["'][^>]*content=["']([^"']+)["']/i)
+    const og = html.match(/property=["']og:image["'][^>]*content=["']([^"']+)["']/i)
       || html.match(/content=["']([^"']+)["'][^>]*property=["']og:image["']/i)
-    if (ogMatch?.[1]) return ogMatch[1]
-
-    const twMatch = html.match(/name=["']twitter:image["'][^>]*content=["']([^"']+)["']/i)
-      || html.match(/content=["']([^"']+)["'][^>]*name=["']twitter:image["']/i)
-    if (twMatch?.[1]) return twMatch[1]
-
-    // Cerca anche immagini grandi tipiche di Cardmarket / TCG
-    const imgMatch = html.match(/https?:\/\/[^"'\s]+\.(?:jpg|jpeg|png|webp)/gi)
-    if (imgMatch) {
-      // Preferisci URL che sembrano di carte
-      const preferred = imgMatch.find(u =>
-        u.includes('card') || u.includes('product') || u.includes('static') || u.includes('cdn')
-      )
-      if (preferred) return preferred
-    }
-
-    return null
+    return og?.[1] || null
   } catch {
     return null
   }
 }
 
 /**
- * Prova alcuni pattern di CDN / database pubblici noti
- * (molti set asiatici non sono coperti, ma per alcuni funziona)
- */
-async function tryKnownPatterns(card: CardInput): Promise<string | null> {
-  const candidates: string[] = []
-
-  // Esempio: alcuni set hanno naming prevedibile su certi mirror
-  // (lasciato estendibile)
-
-  // Prova a vedere se esiste un'immagine su servizi pubblici generici
-  // Nota: questi sono tentativi "best effort"
-
-  for (const url of candidates) {
-    try {
-      const head = await fetch(url, { method: 'HEAD' })
-      if (head.ok && head.headers.get('content-type')?.startsWith('image/')) {
-        return url
-      }
-    } catch { /* continua */ }
-  }
-  return null
-}
-
-/**
- * Ricerca principale aggressiva
+ * Ricerca principale – ordine:
+ * 1. TCGdex (migliore per EN / INT)
+ * 2. og:image da Cardmarket
+ * 3. Fallback placeholder
  */
 export async function aggressiveSearch(card: CardInput): Promise<SearchResult> {
-  const attempts: string[] = []
+  const allLogs: string[] = []
 
-  // 1. Se c'è il link Cardmarket, prova a estrarre l'immagine dalla pagina
+  // 1. TCGdex
+  const tcg = await searchTcgdex(card)
+  if (tcg?.url) {
+    return { ...tcg, logs: [...allLogs, ...(tcg.logs || [])] }
+  }
+  if (tcg?.logs) allLogs.push(...tcg.logs)
+
+  // 2. Cardmarket og:image
   if (card.link_cardmarket) {
-    attempts.push('cardmarket-og')
+    allLogs.push('Provo Cardmarket og:image...')
     const og = await tryExtractOgImage(card.link_cardmarket)
     if (og) {
       return {
         url: og,
         source: 'cardmarket-og',
         confidence: 'medium',
-        message: `Immagine estratta da Cardmarket (og:image) per ${card.nome}`
+        message: `Immagine estratta da Cardmarket`,
+        logs: allLogs
       }
     }
+    allLogs.push('Cardmarket og:image non trovata')
   }
 
-  // 2. Pattern noti / CDN
-  attempts.push('known-patterns')
-  const known = await tryKnownPatterns(card)
-  if (known) {
-    return {
-      url: known,
-      source: 'known-pattern',
-      confidence: 'medium',
-      message: `Trovata tramite pattern noto`
-    }
-  }
-
-  // 3. Costruisci query e (per ora) non abbiamo un motore di ricerca libero affidabile
-  //    senza API key. Lasciamo traccia chiara.
-  const queries = buildQueries(card)
-  attempts.push(...queries.map(q => `query:${q.slice(0, 40)}`))
-
-  // Risultato finale: non trovata → placeholder chiaro
+  // Fallback
   return {
     url: null,
-    source: 'aggressive-fallback',
+    source: 'none',
     confidence: 'low',
-    message: `Ricerca aggressiva fallita per "${card.nome}" (${card.sigla} · ${card.lingua}). Tentativi: ${attempts.join(', ')}. Inserisci URL manualmente o lascia placeholder.`
+    message: `Nessuna immagine trovata per "${card.nome}" (${card.sigla} · ${card.lingua}). Tentativi: TCGdex + Cardmarket.`,
+    logs: allLogs
   }
 }
 
-/** Versione semplice (compatibilità) */
 export async function searchCardImage(card: CardInput): Promise<SearchResult> {
   return aggressiveSearch(card)
 }

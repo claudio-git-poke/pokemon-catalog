@@ -10,19 +10,12 @@ const supabaseAdmin = createClient(
 )
 
 export async function POST(req: NextRequest) {
-  const logs: string[] = []
-  const log = (msg: string) => {
-    console.log('[search-image]', msg)
-    logs.push(msg)
-  }
-
   try {
     const body = await req.json()
     const { cardId } = body
-    log(`Richiesta per cardId=${cardId}`)
 
     if (!cardId) {
-      return NextResponse.json({ error: 'cardId richiesto', logs }, { status: 400 })
+      return NextResponse.json({ error: 'cardId richiesto' }, { status: 400 })
     }
 
     const { data: card, error } = await supabaseAdmin
@@ -32,27 +25,20 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (error || !card) {
-      log(`Carta non trovata: ${error?.message}`)
-      return NextResponse.json({ error: 'Carta non trovata', logs }, { status: 404 })
+      return NextResponse.json({ error: 'Carta non trovata' }, { status: 404 })
     }
 
-    log(`Carta: ${card.nome} (${card.sigla} ${card.lingua})`)
-
     if (card.image_status === 'found' || card.image_status === 'manual') {
-      log('Già ha foto, salto')
       return NextResponse.json({
         success: true,
         found: true,
         skipped: true,
         url: card.image_url,
-        message: 'Carta già ha una foto',
-        logs
+        message: 'Carta già ha una foto'
       })
     }
 
-    log('Avvio aggressiveSearch...')
     const result = await aggressiveSearch(card)
-    log(`Risultato: found=${!!result.url} source=${result.source}`)
 
     if (result.url) {
       await supabaseAdmin
@@ -72,7 +58,7 @@ export async function POST(req: NextRequest) {
         source: result.source,
         confidence: result.confidence,
         message: result.message,
-        logs
+        logs: result.logs
       })
     }
 
@@ -90,16 +76,11 @@ export async function POST(req: NextRequest) {
       found: false,
       url: null,
       source: result.source,
-      confidence: result.confidence,
       message: result.message,
-      logs
+      logs: result.logs
     })
   } catch (err: any) {
-    log(`Exception: ${err.message}`)
     console.error(err)
-    return NextResponse.json(
-      { error: err.message || 'Errore interno', logs },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: err.message || 'Errore interno' }, { status: 500 })
   }
 }
