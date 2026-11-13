@@ -1,3 +1,7 @@
+# Bindex — catalogo automatico
+
+Per attivare importazioni e ricerca immagini periodiche, leggere **ATTIVAZIONE.md**. La copertura delle fonti è descritta in **FONTI.md**.
+
 # Bindex Catalogo Foto Pokémon — v8
 
 ## Novità principali

@@ -69,6 +69,7 @@ export default function CartePage() {
             <option value="KOR">KOR</option>
             <option value="CHN-T">CHN-T</option>
             <option value="INT">INT</option>
+            {['IT','FR','DE','ES','PT','ID','TH'].map(l => <option key={l} value={l}>{l}</option>)}
           </select>
         </div>
         <div>
@@ -128,7 +129,7 @@ export default function CartePage() {
                     <StatusBadge status={card.image_status} />
                   </td>
                   <td className="px-4 py-3">
-                    <Link href={`/carte/${card.id}`} className="text-red-600 hover:underline text-sm">
+                    <Link href={`/carta/${card.id}`} className="text-red-600 hover:underline text-sm">
                       Modifica
                     </Link>
                   </td>
