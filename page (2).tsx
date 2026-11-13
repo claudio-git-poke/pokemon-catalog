@@ -4,183 +4,119 @@ import { useEffect, useState } from 'react'
 import { supabase, Card } from '@/lib/supabase'
 import Link from 'next/link'
 
-const PAGE_SIZE = 50
-
-export default function CartePage() {
+export default function MancantiPage() {
   const [cards, setCards] = useState<Card[]>([])
-  const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState({
-    lingua: '',
-    status: '',
-    search: ''
-  })
+  const [lingua, setLingua] = useState('')
+  const [processing, setProcessing] = useState(false)
+  const [progress, setProgress] = useState('')
 
   useEffect(() => {
-    loadCards()
-  }, [page, filters])
+    load()
+  }, [lingua])
 
-  async function loadCards() {
+  async function load() {
     setLoading(true)
     let query = supabase
       .from('cards')
-      .select('*', { count: 'exact' })
-      .order('id', { ascending: true })
-      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
+      .select('*')
+      .in('image_status', ['missing', 'placeholder'])
+      .order('id')
+      .limit(50)
 
-    if (filters.lingua) query = query.eq('lingua', filters.lingua)
-    if (filters.status) query = query.eq('image_status', filters.status)
-    if (filters.search) {
-      query = query.or(`nome.ilike.%${filters.search}%,file_name.ilike.%${filters.search}%,codice.ilike.%${filters.search}%`)
-    }
+    if (lingua) query = query.eq('lingua', lingua)
 
-    const { data, count, error } = await query
-    if (error) {
-      console.error(error)
-    } else {
-      setCards(data || [])
-      setTotal(count || 0)
-    }
+    const { data } = await query
+    setCards(data || [])
     setLoading(false)
   }
 
-  const totalPages = Math.ceil(total / PAGE_SIZE)
+  async function processBatch() {
+    if (cards.length === 0) return
+    setProcessing(true)
+    let found = 0
+    let placeholders = 0
+
+    for (let i = 0; i < Math.min(cards.length, 10); i++) { // max 10 per volta per non saturare
+      const card = cards[i]
+      setProgress(`Elaborazione ${i + 1}/${Math.min(cards.length, 10)}: ${card.nome}...`)
+
+      try {
+        const res = await fetch('/api/search-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cardId: card.id })
+        })
+        const data = await res.json()
+        if (data.found) found++
+        else placeholders++
+      } catch (e) {
+        placeholders++
+      }
+
+      // piccola pausa
+      await new Promise(r => setTimeout(r, 800))
+    }
+
+    setProgress(`Completato: ${found} trovate, ${placeholders} placeholder`)
+    setProcessing(false)
+    await load()
+  }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Tutte le carte</h1>
-        <p className="text-gray-600">{total.toLocaleString('it-IT')} carte totali</p>
+        <h1 className="text-3xl font-bold text-red-700">Carte senza foto / Placeholder</h1>
+        <p className="text-gray-600">
+          Queste carte hanno bisogno di una foto. Puoi lanciare la ricerca automatica su un batch o gestirle una per una.
+        </p>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-xl shadow p-4 flex flex-wrap gap-3 items-end">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Lingua</label>
-          <select 
-            className="border rounded-lg px-3 py-2"
-            value={filters.lingua}
-            onChange={e => { setFilters(f => ({...f, lingua: e.target.value})); setPage(0) }}
-          >
-            <option value="">Tutte</option>
-            <option value="JP">JP</option>
-            <option value="CHN">CHN</option>
-            <option value="KOR">KOR</option>
-            <option value="CHN-T">CHN-T</option>
-            <option value="INT">INT</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Stato foto</label>
-          <select 
-            className="border rounded-lg px-3 py-2"
-            value={filters.status}
-            onChange={e => { setFilters(f => ({...f, status: e.target.value})); setPage(0) }}
-          >
-            <option value="">Tutti</option>
-            <option value="missing">Senza foto</option>
-            <option value="placeholder">Placeholder</option>
-            <option value="found">Trovata</option>
-            <option value="manual">Manuale</option>
-          </select>
-        </div>
-        <div className="flex-1 min-w-[200px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cerca</label>
-          <input
-            type="text"
-            placeholder="Nome, file o codice..."
-            className="border rounded-lg px-3 py-2 w-full"
-            value={filters.search}
-            onChange={e => { setFilters(f => ({...f, search: e.target.value})); setPage(0) }}
-          />
-        </div>
+      <div className="flex flex-wrap gap-2 items-center">
+        <button onClick={() => setLingua('')} className={`px-3 py-1.5 rounded text-sm ${!lingua ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>Tutte</button>
+        {['JP','CHN','KOR','CHN-T','INT'].map(l => (
+          <button key={l} onClick={() => setLingua(l)} className={`px-3 py-1.5 rounded text-sm ${lingua===l ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>{l}</button>
+        ))}
+
+        <button
+          onClick={processBatch}
+          disabled={processing || cards.length === 0}
+          className="ml-auto bg-purple-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-purple-700 disabled:opacity-50"
+        >
+          {processing ? 'Elaborazione...' : '🔍 Cerca batch (max 10)'}
+        </button>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="text-left px-4 py-3 font-medium">File</th>
-              <th className="text-left px-4 py-3 font-medium">Nome</th>
-              <th className="text-left px-4 py-3 font-medium">Set</th>
-              <th className="text-left px-4 py-3 font-medium">Lingua</th>
-              <th className="text-left px-4 py-3 font-medium">Stato</th>
-              <th className="text-left px-4 py-3 font-medium"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={6} className="text-center py-10 text-gray-500">Caricamento...</td></tr>
-            ) : cards.length === 0 ? (
-              <tr><td colSpan={6} className="text-center py-10 text-gray-500">Nessuna carta trovata</td></tr>
-            ) : (
-              cards.map(card => (
-                <tr key={card.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3 font-mono text-xs">{card.file_name}</td>
-                  <td className="px-4 py-3 font-medium">{card.nome}</td>
-                  <td className="px-4 py-3">{card.sigla}</td>
-                  <td className="px-4 py-3">
-                    <span className="bg-gray-100 px-2 py-0.5 rounded text-xs">{card.lingua}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={card.image_status} />
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link href={`/carte/${card.id}`} className="text-red-600 hover:underline text-sm">
-                      Modifica
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      {progress && (
+        <div className="bg-purple-50 text-purple-800 px-4 py-2 rounded-lg text-sm">
+          {progress}
+        </div>
+      )}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2">
-          <button
-            disabled={page === 0}
-            onClick={() => setPage(p => p - 1)}
-            className="px-4 py-2 border rounded-lg disabled:opacity-40"
-          >
-            ← Precedente
-          </button>
-          <span className="px-4 py-2">
-            Pagina {page + 1} di {totalPages}
-          </span>
-          <button
-            disabled={page >= totalPages - 1}
-            onClick={() => setPage(p => p + 1)}
-            className="px-4 py-2 border rounded-lg disabled:opacity-40"
-          >
-            Successiva →
-          </button>
+      {loading ? (
+        <p>Caricamento...</p>
+      ) : (
+        <div className="grid gap-3">
+          {cards.map(card => (
+            <div key={card.id} className="bg-white rounded-lg shadow p-4 flex justify-between items-center">
+              <div>
+                <div className="font-medium">{card.nome}</div>
+                <div className="text-sm text-gray-500 font-mono">
+                  {card.file_name} · {card.sigla} · {card.lingua}
+                  {card.image_status === 'placeholder' && (
+                    <span className="ml-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded">placeholder</span>
+                  )}
+                </div>
+                {card.notes && <div className="text-xs text-gray-400 mt-1 max-w-lg truncate">{card.notes}</div>}
+              </div>
+              <Link href={`/carte/${card.id}`} className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 whitespace-nowrap">
+                Gestisci
+              </Link>
+            </div>
+          ))}
+          {cards.length === 0 && <p className="text-gray-500">Nessuna carta mancante con questi filtri 🎉</p>}
         </div>
       )}
     </div>
-  )
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    missing: 'bg-red-100 text-red-700',
-    placeholder: 'bg-yellow-100 text-yellow-700',
-    found: 'bg-green-100 text-green-700',
-    manual: 'bg-blue-100 text-blue-700',
-  }
-  const labels: Record<string, string> = {
-    missing: 'Senza foto',
-    placeholder: 'Placeholder',
-    found: 'Trovata',
-    manual: 'Manuale',
-  }
-  return (
-    <span className={`px-2 py-0.5 rounded text-xs font-medium ${styles[status] || 'bg-gray-100'}`}>
-      {labels[status] || status}
-    </span>
   )
 }

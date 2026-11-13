@@ -41,7 +41,7 @@ function buildQueries(card: CardInput): string[] {
     `${base} ${card.sigla.replace('@', ' ')} pokemon`,
     `${card.nome} ${card.lingua === 'JP' ? 'japanese' : card.lingua === 'CHN' ? 'chinese' : card.lingua === 'KOR' ? 'korean' : ''} pokemon card`,
   ]
-  return [...new Set(queries.filter(Boolean))]
+  return Array.from(new Set(queries.filter(Boolean)))
 }
 
 /**
