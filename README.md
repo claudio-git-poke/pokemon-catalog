@@ -1,14 +1,23 @@
-# Bindex Catalogo Foto Pokémon — v6
+# Bindex Catalogo Foto Pokémon — v7
 
-## Novità
+## Fix principale
 
-- **Campo di ricerca in home**: puoi cercare per ID o per nome e aprire direttamente la carta
-- **Log verbosi** sia in console (F12) che nella pagina dettaglio
-- API `/api/search-image` ora restituisce anche i log dei tentativi
-- Miglior gestione degli errori 404 sulle pagine `/carte/[id]`
+Cambiata la rotta di dettaglio da `/carte/[id]` a **`/carta/[id]`**.
 
-## Come usare
+Il 404 era quasi certamente causato da problemi con la cartella `[id]` durante il deploy (comune su Windows / certi upload).
 
-1. Dalla home usa il campo "Vai a ID" o cerca per nome
-2. Apri una carta e clicca "Cerca automaticamente"
-3. Apri F12 → Console per vedere tutti i log dettagliati
+### Nuove URL
+
+- Lista: `/carte`
+- Dettaglio: `/carta/1`, `/carta/2`, ...
+- Home con ricerca rapida per ID o nome
+
+### Cosa fare
+
+1. Sostituisci TUTTI i file con quelli di questa cartella `v7`
+2. Commit + push
+3. Dopo il deploy prova ad aprire:
+   - https://tuo-sito.vercel.app/carta/1
+   - oppure usa il campo "Vai a ID" in home
+
+Se funziona, i 404 spariscono.

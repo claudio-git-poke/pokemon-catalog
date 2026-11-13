@@ -52,7 +52,7 @@ export default function Dashboard() {
     const id = Number(searchId)
     if (id > 0) {
       console.log('[Home] Navigating to /carte/' + id)
-      router.push(`/carte/${id}`)
+      router.push(`/carta/${id}`)
     }
   }
 
@@ -136,7 +136,7 @@ export default function Dashboard() {
             {searchResults.map(r => (
               <button
                 key={r.id}
-                onClick={() => router.push(`/carte/${r.id}`)}
+                onClick={() => router.push(`/carta/${r.id}`)}
                 className="w-full text-left px-4 py-2 hover:bg-gray-50 flex justify-between items-center text-sm"
               >
                 <span>
