@@ -1,35 +1,39 @@
-# Bindex Catalogo Foto Pokémon
+# Bindex Catalogo Foto Pokémon — v2
 
-Applicazione per gestire le foto mancanti delle carte Pokémon (set asiatici + MFB).
+## Novità in v2
 
-## Setup
+- Pulsante **“Cerca automaticamente”** nella pagina dettaglio di ogni carta
+- **Batch search** sulla pagina “Senza foto” (processa fino a 10 carte alla volta)
+- Quando la ricerca non trova nulla → la carta viene segnata come **placeholder** con nota chiara
+- API route `/api/search-image`
 
-1. Copia `.env.example` in `.env.local` e verifica le chiavi.
-2. `npm install`
-3. `npm run dev`
+## Importante per il deploy
 
-## Deploy su Vercel
+Nella dashboard di Vercel aggiungi anche questa variabile d’ambiente (opzionale ma consigliata per le operazioni di scrittura dal server):
 
-1. Crea un repo GitHub e pusha questo codice.
-2. Su Vercel importa il repo.
-3. Aggiungi le Environment Variables:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (la publishable key)
-4. Deploy.
+```
+SUPABASE_SERVICE_ROLE_KEY = sb_secret_8mdJzKncG5ztGHLy3i_riw_yYRLEPBO
+```
 
-## Funzionalità attuali
+(Se non la metti, usa comunque la publishable key, ma alcune operazioni potrebbero essere limitate dalle RLS).
 
-- Dashboard con statistiche
-- Elenco filtrabile di tutte le 7210 carte
-- Pagina "Senza foto"
-- Dettaglio carta con possibilità di:
-  - Inserire URL foto
-  - Segnare come placeholder
-  - Aggiungere note
-  - Cambiare stato
+## Come aggiornare
 
-## Prossimi passi (da implementare)
+1. Sostituisci i file del progetto con quelli di questa cartella `v2`
+2. Fai commit + push su GitHub
+3. Vercel farà il redeploy automatico
 
-- Ricerca automatica aggressiva delle immagini
-- Upload diretto su Supabase Storage
-- Job batch per processare le mancanti
+## Limitazioni attuali della ricerca automatica
+
+Al momento la ricerca è un **framework** pronto.
+Le fonti reali di immagini per set JP / CHN / KOR sono limitate e spesso protette.
+
+Quando vuoi possiamo aggiungere:
+- Google Custom Search / Bing Image Search (serve API key)
+- Fonti specifiche giapponesi/coreane
+- Pattern di URL noti per certi set
+
+Per ora il sistema:
+1. Prova a cercare
+2. Se non trova → mette **placeholder** + messaggio chiaro
+3. Tu puoi intervenire manualmente inserendo l’URL
