@@ -20,9 +20,10 @@ export default function RootLayout({
               <span className="text-2xl font-bold">🎴 Bindex</span>
               <span className="text-red-100 text-sm">Catalogo Foto Pokémon</span>
             </div>
-            <nav className="flex gap-4 text-sm">
+            <nav className="flex flex-wrap gap-3 text-sm">
               <a href="/" className="hover:underline">Dashboard</a>
               <a href="/carte" className="hover:underline">Tutte le carte</a>
+              <a href="/automazione" className="hover:underline">Automazione</a>
               <a href="/mancanti" className="hover:underline">Senza foto</a>
             </nav>
           </div>
