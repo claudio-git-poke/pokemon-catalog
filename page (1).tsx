@@ -1,186 +1,210 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { supabase, Card } from '@/lib/supabase'
-import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 
-const PAGE_SIZE = 50
-
-export default function CartePage() {
-  const [cards, setCards] = useState<Card[]>([])
-  const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState({
-    lingua: '',
-    status: '',
-    search: ''
+export default function Dashboard() {
+  const router = useRouter()
+  const [stats, setStats] = useState({
+    total: 0,
+    missing: 0,
+    found: 0,
+    placeholder: 0,
+    manual: 0,
+    byLingua: {} as Record<string, number>
   })
+  const [loading, setLoading] = useState(true)
+  const [searchId, setSearchId] = useState('')
+  const [searchName, setSearchName] = useState('')
+  const [searchResults, setSearchResults] = useState<any[]>([])
+  const [searching, setSearching] = useState(false)
 
   useEffect(() => {
-    loadCards()
-  }, [page, filters])
+    loadStats()
+  }, [])
 
-  async function loadCards() {
-    setLoading(true)
-    let query = supabase
-      .from('cards')
-      .select('*', { count: 'exact' })
-      .order('id', { ascending: true })
-      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
+  async function loadStats() {
+    const { count: total } = await supabase.from('cards').select('*', { count: 'exact', head: true })
+    const { count: missing } = await supabase.from('cards').select('*', { count: 'exact', head: true }).eq('image_status', 'missing')
+    const { count: found } = await supabase.from('cards').select('*', { count: 'exact', head: true }).eq('image_status', 'found')
+    const { count: placeholder } = await supabase.from('cards').select('*', { count: 'exact', head: true }).eq('image_status', 'placeholder')
+    const { count: manual } = await supabase.from('cards').select('*', { count: 'exact', head: true }).eq('image_status', 'manual')
 
-    if (filters.lingua) query = query.eq('lingua', filters.lingua)
-    if (filters.status) query = query.eq('image_status', filters.status)
-    if (filters.search) {
-      query = query.or(`nome.ilike.%${filters.search}%,file_name.ilike.%${filters.search}%,codice.ilike.%${filters.search}%`)
-    }
+    const { data: linguaData } = await supabase.from('cards').select('lingua')
+    const byLingua: Record<string, number> = {}
+    linguaData?.forEach((row: { lingua: string }) => {
+      byLingua[row.lingua] = (byLingua[row.lingua] || 0) + 1
+    })
 
-    const { data, count, error } = await query
-    if (error) {
-      console.error(error)
-    } else {
-      setCards(data || [])
-      setTotal(count || 0)
-    }
+    setStats({
+      total: total || 0,
+      missing: missing || 0,
+      found: found || 0,
+      placeholder: placeholder || 0,
+      manual: manual || 0,
+      byLingua
+    })
     setLoading(false)
   }
 
-  const totalPages = Math.ceil(total / PAGE_SIZE)
+  function goToId() {
+    const id = Number(searchId)
+    if (id > 0) {
+      console.log('[Home] Navigating to /carte/' + id)
+      router.push(`/carte/${id}`)
+    }
+  }
+
+  async function searchByName() {
+    if (!searchName.trim()) return
+    setSearching(true)
+    console.log('[Home] Searching name:', searchName)
+    const { data, error } = await supabase
+      .from('cards')
+      .select('id, nome, file_name, sigla, lingua, image_status')
+      .or(`nome.ilike.%${searchName}%,file_name.ilike.%${searchName}%`)
+      .limit(15)
+
+    if (error) {
+      console.error('[Home] Search error:', error)
+    } else {
+      console.log('[Home] Results:', data?.length)
+      setSearchResults(data || [])
+    }
+    setSearching(false)
+  }
+
+  if (loading) {
+    return <div className="text-center py-20 text-gray-500">Caricamento statistiche...</div>
+  }
+
+  const percentFound = stats.total > 0
+    ? Math.round(((stats.found + stats.manual) / stats.total) * 100)
+    : 0
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Tutte le carte</h1>
-        <p className="text-gray-600">{total.toLocaleString('it-IT')} carte totali</p>
+        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-600 mt-1">Panoramica del catalogo foto carte Pokémon</p>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-xl shadow p-4 flex flex-wrap gap-3 items-end">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Lingua</label>
-          <select 
-            className="border rounded-lg px-3 py-2"
-            value={filters.lingua}
-            onChange={e => { setFilters(f => ({...f, lingua: e.target.value})); setPage(0) }}
-          >
-            <option value="">Tutte</option>
-            <option value="JP">JP</option>
-            <option value="CHN">CHN</option>
-            <option value="KOR">KOR</option>
-            <option value="CHN-T">CHN-T</option>
-            <option value="INT">INT</option>
-          </select>
+      {/* RICERCA RAPIDA */}
+      <div className="bg-white rounded-xl shadow p-6 space-y-4">
+        <h2 className="text-lg font-semibold">Ricerca rapida carta</h2>
+        
+        <div className="flex flex-wrap gap-3 items-end">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Vai a ID</label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                placeholder="es. 1"
+                className="border rounded-lg px-3 py-2 w-28"
+                value={searchId}
+                onChange={e => setSearchId(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && goToId()}
+              />
+              <button onClick={goToId} className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                Apri
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 min-w-[220px]">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Cerca per nome / file</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="es. Arcanine, MFB_001..."
+                className="border rounded-lg px-3 py-2 flex-1"
+                value={searchName}
+                onChange={e => setSearchName(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && searchByName()}
+              />
+              <button onClick={searchByName} disabled={searching}
+                className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 disabled:opacity-50">
+                {searching ? '...' : 'Cerca'}
+              </button>
+            </div>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Stato foto</label>
-          <select 
-            className="border rounded-lg px-3 py-2"
-            value={filters.status}
-            onChange={e => { setFilters(f => ({...f, status: e.target.value})); setPage(0) }}
-          >
-            <option value="">Tutti</option>
-            <option value="missing">Senza foto</option>
-            <option value="placeholder">Placeholder</option>
-            <option value="found">Trovata</option>
-            <option value="manual">Manuale</option>
-          </select>
+
+        {searchResults.length > 0 && (
+          <div className="border rounded-lg divide-y max-h-64 overflow-y-auto">
+            {searchResults.map(r => (
+              <button
+                key={r.id}
+                onClick={() => router.push(`/carte/${r.id}`)}
+                className="w-full text-left px-4 py-2 hover:bg-gray-50 flex justify-between items-center text-sm"
+              >
+                <span>
+                  <span className="font-medium">{r.nome}</span>
+                  <span className="text-gray-500 ml-2 font-mono text-xs">{r.file_name}</span>
+                </span>
+                <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{r.lingua} · {r.image_status}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Progress */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <div className="flex justify-between items-end mb-2">
+          <span className="text-sm font-medium text-gray-700">Completamento foto</span>
+          <span className="text-2xl font-bold text-red-600">{percentFound}%</span>
         </div>
-        <div className="flex-1 min-w-[200px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cerca</label>
-          <input
-            type="text"
-            placeholder="Nome, file o codice..."
-            className="border rounded-lg px-3 py-2 w-full"
-            value={filters.search}
-            onChange={e => { setFilters(f => ({...f, search: e.target.value})); setPage(0) }}
-          />
+        <div className="w-full bg-gray-200 rounded-full h-4">
+          <div className="bg-red-600 h-4 rounded-full transition-all duration-500" style={{ width: `${percentFound}%` }} />
+        </div>
+        <p className="text-sm text-gray-500 mt-2">
+          {stats.found + stats.manual} foto trovate su {stats.total} carte
+        </p>
+      </div>
+
+      {/* Stats cards */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <StatCard title="Totale carte" value={stats.total} color="bg-gray-100" />
+        <StatCard title="Senza foto" value={stats.missing} color="bg-red-50 text-red-700" />
+        <StatCard title="Placeholder" value={stats.placeholder} color="bg-yellow-50 text-yellow-700" />
+        <StatCard title="Trovate auto" value={stats.found} color="bg-green-50 text-green-700" />
+        <StatCard title="Inserite a mano" value={stats.manual} color="bg-blue-50 text-blue-700" />
+      </div>
+
+      {/* By language */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <h2 className="text-lg font-semibold mb-4">Carte per lingua</h2>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          {Object.entries(stats.byLingua)
+            .sort((a, b) => b[1] - a[1])
+            .map(([lingua, count]) => (
+              <div key={lingua} className="border rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold">{count}</div>
+                <div className="text-sm text-gray-500">{lingua}</div>
+              </div>
+            ))}
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="text-left px-4 py-3 font-medium">File</th>
-              <th className="text-left px-4 py-3 font-medium">Nome</th>
-              <th className="text-left px-4 py-3 font-medium">Set</th>
-              <th className="text-left px-4 py-3 font-medium">Lingua</th>
-              <th className="text-left px-4 py-3 font-medium">Stato</th>
-              <th className="text-left px-4 py-3 font-medium"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={6} className="text-center py-10 text-gray-500">Caricamento...</td></tr>
-            ) : cards.length === 0 ? (
-              <tr><td colSpan={6} className="text-center py-10 text-gray-500">Nessuna carta trovata</td></tr>
-            ) : (
-              cards.map(card => (
-                <tr key={card.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3 font-mono text-xs">{card.file_name}</td>
-                  <td className="px-4 py-3 font-medium">{card.nome}</td>
-                  <td className="px-4 py-3">{card.sigla}</td>
-                  <td className="px-4 py-3">
-                    <span className="bg-gray-100 px-2 py-0.5 rounded text-xs">{card.lingua}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={card.image_status} />
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link href={`/carte/${card.id}`} className="text-red-600 hover:underline text-sm">
-                      Modifica
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div className="flex flex-wrap gap-3">
+        <a href="/mancanti" className="bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 transition">
+          Vedi carte senza foto →
+        </a>
+        <a href="/carte" className="bg-gray-800 text-white px-5 py-2.5 rounded-lg hover:bg-gray-900 transition">
+          Tutte le carte
+        </a>
       </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2">
-          <button
-            disabled={page === 0}
-            onClick={() => setPage(p => p - 1)}
-            className="px-4 py-2 border rounded-lg disabled:opacity-40"
-          >
-            ← Precedente
-          </button>
-          <span className="px-4 py-2">
-            Pagina {page + 1} di {totalPages}
-          </span>
-          <button
-            disabled={page >= totalPages - 1}
-            onClick={() => setPage(p => p + 1)}
-            className="px-4 py-2 border rounded-lg disabled:opacity-40"
-          >
-            Successiva →
-          </button>
-        </div>
-      )}
     </div>
   )
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    missing: 'bg-red-100 text-red-700',
-    placeholder: 'bg-yellow-100 text-yellow-700',
-    found: 'bg-green-100 text-green-700',
-    manual: 'bg-blue-100 text-blue-700',
-  }
-  const labels: Record<string, string> = {
-    missing: 'Senza foto',
-    placeholder: 'Placeholder',
-    found: 'Trovata',
-    manual: 'Manuale',
-  }
+function StatCard({ title, value, color }: { title: string; value: number; color: string }) {
   return (
-    <span className={`px-2 py-0.5 rounded text-xs font-medium ${styles[status] || 'bg-gray-100'}`}>
-      {labels[status] || status}
-    </span>
+    <div className={`rounded-xl p-4 ${color}`}>
+      <div className="text-2xl font-bold">{value.toLocaleString('it-IT')}</div>
+      <div className="text-sm opacity-80">{title}</div>
+    </div>
   )
 }

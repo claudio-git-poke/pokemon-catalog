@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { aggressiveSearch } from '@/lib/image-search'
 
-export const maxDuration = 30 // secondi (Vercel)
+export const maxDuration = 30
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -10,15 +10,21 @@ const supabaseAdmin = createClient(
 )
 
 export async function POST(req: NextRequest) {
+  const logs: string[] = []
+  const log = (msg: string) => {
+    console.log('[search-image]', msg)
+    logs.push(msg)
+  }
+
   try {
     const body = await req.json()
     const { cardId } = body
+    log(`Richiesta per cardId=${cardId}`)
 
     if (!cardId) {
-      return NextResponse.json({ error: 'cardId richiesto' }, { status: 400 })
+      return NextResponse.json({ error: 'cardId richiesto', logs }, { status: 400 })
     }
 
-    // Carica carta
     const { data: card, error } = await supabaseAdmin
       .from('cards')
       .select('*')
@@ -26,25 +32,30 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (error || !card) {
-      return NextResponse.json({ error: 'Carta non trovata' }, { status: 404 })
+      log(`Carta non trovata: ${error?.message}`)
+      return NextResponse.json({ error: 'Carta non trovata', logs }, { status: 404 })
     }
 
-    // Non riscrivere se già ha una foto "found" o "manual"
+    log(`Carta: ${card.nome} (${card.sigla} ${card.lingua})`)
+
     if (card.image_status === 'found' || card.image_status === 'manual') {
+      log('Già ha foto, salto')
       return NextResponse.json({
         success: true,
         found: true,
         skipped: true,
         url: card.image_url,
-        message: 'Carta già ha una foto, salto.'
+        message: 'Carta già ha una foto',
+        logs
       })
     }
 
-    // Esegui ricerca aggressiva
+    log('Avvio aggressiveSearch...')
     const result = await aggressiveSearch(card)
+    log(`Risultato: found=${!!result.url} source=${result.source}`)
 
     if (result.url) {
-      const { error: updateError } = await supabaseAdmin
+      await supabaseAdmin
         .from('cards')
         .update({
           image_url: result.url,
@@ -54,21 +65,17 @@ export async function POST(req: NextRequest) {
         })
         .eq('id', cardId)
 
-      if (updateError) {
-        return NextResponse.json({ error: updateError.message }, { status: 500 })
-      }
-
       return NextResponse.json({
         success: true,
         found: true,
         url: result.url,
         source: result.source,
         confidence: result.confidence,
-        message: result.message
+        message: result.message,
+        logs
       })
     }
 
-    // Non trovata → placeholder
     await supabaseAdmin
       .from('cards')
       .update({
@@ -84,12 +91,14 @@ export async function POST(req: NextRequest) {
       url: null,
       source: result.source,
       confidence: result.confidence,
-      message: result.message
+      message: result.message,
+      logs
     })
   } catch (err: any) {
-    console.error('[search-image]', err)
+    log(`Exception: ${err.message}`)
+    console.error(err)
     return NextResponse.json(
-      { error: err.message || 'Errore interno durante la ricerca' },
+      { error: err.message || 'Errore interno', logs },
       { status: 500 }
     )
   }

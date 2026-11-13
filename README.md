@@ -1,9 +1,14 @@
-# Bindex Catalogo Foto Pokémon — v5
+# Bindex Catalogo Foto Pokémon — v6
 
-## Fix
+## Novità
 
-- Risolto errore TypeScript: `Type 'Set<string>' can only be iterated through when using the '--downlevelIteration' flag`
-- Cambiato `[...new Set(...)]` → `Array.from(new Set(...))`
-- Aggiornato `tsconfig.json` con `target: ES2017` e `downlevelIteration: true`
+- **Campo di ricerca in home**: puoi cercare per ID o per nome e aprire direttamente la carta
+- **Log verbosi** sia in console (F12) che nella pagina dettaglio
+- API `/api/search-image` ora restituisce anche i log dei tentativi
+- Miglior gestione degli errori 404 sulle pagine `/carte/[id]`
 
-Tutto il resto rimane uguale a v4 (Next.js 14.2.18 + ricerca aggressiva).
+## Come usare
+
+1. Dalla home usa il campo "Vai a ID" o cerca per nome
+2. Apri una carta e clicca "Cerca automaticamente"
+3. Apri F12 → Console per vedere tutti i log dettagliati
