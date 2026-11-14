@@ -8,6 +8,6 @@ Gli eventi arrivati entro circa 1,5 secondi sono raggruppati. Una richiesta non 
 
 Copertura rilegge il report completo mantenendo filtri e pagina. Catalogo aggiorna solo contatori, percentuale e totale dei risultati: elenco, ordinamento, posizione di scorrimento e testo in corso di scrittura restano invariati. Gli aggiornamenti di sfondo non mostrano scheletri di caricamento.
 
-Quando la pagina è nascosta non avvia ricalcoli. Al ritorno o alla riconnessione rilegge i contatori. Se il WebSocket non è collegato, l'interfaccia lo indica e usa un aggiornamento di riserva ogni 30 secondi. Una connessione normale usa gli eventi e non questo intervallo fisso.
+Quando la pagina è nascosta non avvia ricalcoli. Al ritorno o alla riconnessione rilegge i contatori. Se il WebSocket non è collegato, l'interfaccia lo indica e usa un aggiornamento di riserva ogni 30 secondi. Una connessione normale aggiorna i contatori su evento. Ogni 10 secondi controlla soltanto la piccola riga di revisione, per recuperare notifiche perse da browser sospesi: senza una nuova revisione non ricalcola i contatori.
 
 Migrazione: `db/catalog-live.sql`. Test: `tests/catalog-live.test.mjs` (eventi ravvicinati, modifiche durante una richiesta, schede nascoste, pulizia, trigger per istruzione e permessi di sola lettura). Anche la ricezione di un segnale reale è stata verificata con un client anonimo.

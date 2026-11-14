@@ -12,16 +12,22 @@ export function useLiveCatalog(load:(signal:AbortSignal)=>Promise<void>,enabled=
   const controller=new AbortController()
   const visible=()=>document.visibilityState!=='hidden'
   const invalidator=createLiveInvalidator({refresh:async()=>{try{await latest.current(controller.signal)}catch(error){if(!controller.signal.aborted)console.error('Aggiornamento dashboard:',error)}},visible})
+  let revision='',checking=false
+  const signal=(value:unknown)=>{if(value===undefined||value===null)return;const next=String(value);if(next!==revision){revision=next;invalidator.invalidate()}}
+  // Mobile browsers can keep a stale websocket marked SUBSCRIBED after sleep.
+  // Check only the tiny revision row, not the expensive aggregate counters.
+  const checkSignal=async()=>{if(checking||!visible()||controller.signal.aborted)return;checking=true;try{const {data,error}=await supabase.from('catalog_live_updates').select('revision').eq('scope','catalog').abortSignal(controller.signal).single();if(!error&&!controller.signal.aborted)signal(data?.revision)}catch{/* Reconnection and the next heartbeat retry transient transport failures. */}finally{checking=false}}
   refreshRef.current=()=>invalidator.refresh()
   void invalidator.refresh()
-  const channel=supabase.channel(`catalog-counters-${crypto.randomUUID()}`).on('postgres_changes',{event:'UPDATE',schema:'public',table:'catalog_live_updates'},()=>invalidator.invalidate()).subscribe(state=>{
-   if(!active)return;connected=state==='SUBSCRIBED';setStatus(connected?'live':'reconnecting');if(connected)invalidator.invalidate()
+  const channel=supabase.channel(`catalog-counters-${crypto.randomUUID()}`).on('postgres_changes',{event:'UPDATE',schema:'public',table:'catalog_live_updates'},payload=>signal(payload.new.revision)).subscribe(state=>{
+   if(!active)return;connected=state==='SUBSCRIBED';setStatus(connected?'live':'reconnecting');if(connected){invalidator.invalidate();void checkSignal()}
   })
   const wake=()=>{if(visible())void invalidator.refresh()}
   document.addEventListener('visibilitychange',wake);window.addEventListener('focus',wake)
   // Degraded mode only: keep useful data while the websocket reconnects.
   const fallback=setInterval(()=>{if(!connected&&visible())invalidator.invalidate()},30000)
-  return()=>{active=false;controller.abort();invalidator.stop();refreshRef.current=async()=>{};clearInterval(fallback);document.removeEventListener('visibilitychange',wake);window.removeEventListener('focus',wake);void supabase.removeChannel(channel)}
+  const heartbeat=setInterval(()=>{void checkSignal()},10000)
+  return()=>{active=false;controller.abort();invalidator.stop();refreshRef.current=async()=>{};clearInterval(fallback);clearInterval(heartbeat);document.removeEventListener('visibilitychange',wake);window.removeEventListener('focus',wake);void supabase.removeChannel(channel)}
  },[enabled,scope])
  return {status,refresh:()=>refreshRef.current()}
 }
