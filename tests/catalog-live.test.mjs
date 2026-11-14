@@ -31,3 +31,14 @@ test('catalog changes emit only a small readable signal; public clients cannot f
   assert.equal(Number((await pg.query('select revision from catalog_live_updates')).rows[0].revision),4)
  }finally{await pg.close()}
 })
+
+test('expensive reports respect a minimum automatic interval and keep a manual refresh available',async()=>{
+ let time=0,calls=0,scheduled=null,delay
+ const live=createLiveInvalidator({visible:()=>true,minInterval:15000,clock:()=>time,refresh:async()=>{calls++},schedule:(fn,ms)=>{scheduled=fn;delay=ms;return fn},cancel:()=>{scheduled=null}})
+ await live.refresh();assert.equal(calls,1)
+ time=1000;live.invalidate();assert.equal(delay,14000)
+ time=2000;live.invalidate();assert.equal(delay,14000,'new events do not postpone an already scheduled refresh')
+ time=15000;const run=scheduled;scheduled=null;run();await Promise.resolve();assert.equal(calls,2)
+ time=16000;await live.refresh();assert.equal(calls,3,'explicit manual refresh can bypass the automatic throttle')
+ live.stop()
+})

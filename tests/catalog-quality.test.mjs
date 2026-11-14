@@ -32,9 +32,12 @@ test('coverage separates unknown sources, pending, retry and insufficient data; 
  const r=await report()
  assert.equal(r.totals.total,6);assert.equal(r.totals.pending,2);assert.equal(r.totals.retry,1)
  assert.equal(r.totals.unsupported,1);assert.equal(r.totals.insufficient,1);assert.equal(r.totals.tagged,1)
+ for(const key of Object.keys(r.totals))assert.equal(r.totals[key],r.groups.reduce((n,g)=>n+Number(g[key]),0),key)
  assert.equal(r.warnings.total,0,'separate normal and holo printings are valid')
  assert.ok(!r.groups.some(g=>g.sigla==='SECRET'))
  await pg.exec(`reset role;update catalog_search_entries set tags=array['finish:normal','visual:shiny'] where entry_key='tcgdex:a';set role anon;`)
  assert.equal((await report()).warnings.by_reason.finish_conflict,1)
+ await pg.exec('reset role;delete from catalog_search_entries;delete from cards;set role anon')
+ assert.ok(Object.values((await report()).totals).every(n=>n===0))
  }finally{await pg.close()}
 })

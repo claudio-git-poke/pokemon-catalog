@@ -13,14 +13,14 @@ const reasons:Record<string,string>={finish_conflict:'Finiture incompatibili nel
 export default function CoveragePage(){
  const [report,setReport]=useState<Report|null>(null),[error,setError]=useState(''),[loading,setLoading]=useState(true)
  const [provider,setProvider]=useState(''),[query,setQuery]=useState(''),[language,setLanguage]=useState(''),[page,setPage]=useState(0)
- const live=useLiveCatalog(async signal=>{setLoading(true);try{const {data,error}=await supabase.rpc('catalog_quality_report').abortSignal(signal);if(signal.aborted)return;if(error)throw error;setReport(data);setError('')}catch(e){if(!signal.aborted)setError(e instanceof Error?e.message:String((e as {message?:string}).message||e))}finally{if(!signal.aborted)setLoading(false)}})
+ const live=useLiveCatalog(async signal=>{setLoading(true);try{const {data,error}=await supabase.rpc('catalog_quality_report').abortSignal(signal);if(signal.aborted)return;if(error)throw error;setReport(data);setError('')}catch(e){if(!signal.aborted)setError(e instanceof Error?e.message:String((e as {message?:string}).message||e))}finally{if(!signal.aborted)setLoading(false)}},true,'coverage',15000)
  const groups=(report?.groups||[]).filter(g=>(!provider||g.provider===provider)&&(!language||g.lingua===language)&&g.sigla?.toLowerCase().includes(query.trim().toLowerCase()))
  const totals=groups.reduce((a,g)=>{for(const k of Object.keys(a) as (keyof Counts)[])a[k]+=Number(g[k])||0;return a},{total:0,tagged:0,missing_image:0,placeholder:0,pending:0,retry:0,insufficient:0,unsupported:0,printings:0})
  const filters=(fn:()=>void)=>{fn();setPage(0)}
  return <div className="space-y-6">
   <div className="flex flex-wrap justify-between gap-3"><div><h1 className="text-3xl font-bold">Copertura e qualità</h1><p className="text-gray-600 mt-2">Quanto conosciamo delle carte importate e quali dati richiedono un controllo.</p></div><button className="border rounded-lg px-4 py-2" onClick={()=>void live.refresh()} disabled={loading}>{loading?'Aggiornamento…':'Aggiorna dati'}</button></div>
   {error&&<p role="alert" className="p-4 bg-red-50 text-red-800 rounded">Impossibile leggere la copertura: {error}. I dati precedenti, se presenti, restano visibili.</p>}
-  <p className="text-sm text-gray-600" role="status">{live.status==='live'?'● Tempo reale collegato · aggiornamento su modifica dei dati':'Riconnessione in corso · aggiornamento periodico di riserva attivo'}</p>
+  <p className="text-sm text-gray-600" role="status">{live.status==='live'?'● Tempo reale collegato · riepilogo automatico con intervallo minimo di 15 secondi':'Riconnessione in corso · aggiornamento periodico di riserva attivo'}</p>
   {report&&<>
    <p className="text-sm text-gray-600">Rilevazione: {new Date(report.generated_at).toLocaleString('it-IT')} · <Link className="underline" href="/automazione">Segui il lavoro automatico</Link></p>
    <section className="bg-white rounded-xl p-4 shadow space-y-3"><h2 className="font-bold text-lg">Esplora per fonte ed espansione</h2><div className="flex flex-wrap gap-3">
