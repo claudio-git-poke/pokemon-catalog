@@ -22,6 +22,7 @@ try{
   for(const key of ['attempted','checked','indexed','errors'])summary[key]+=stats[key]
   summary.remaining=await count()
   await log(`Recupero tag: ${summary.checked} carte controllate, ${summary.indexed} stampe indicizzate, ${summary.remaining} carte ancora da controllare; ${summary.errors} errori rinviati.`,true)
+  if(stats.sourceUnavailable){await log('Fonte temporaneamente indisponibile o limite richieste raggiunto: sospendo il recupero fino al prossimo avvio.',true);break}
   if(!stats.attempted)break
  }
  await log(`Recupero tag concluso per questa sessione. Restanti: ${summary.remaining}. Ripresa automatica dal prossimo lotto.`,true)

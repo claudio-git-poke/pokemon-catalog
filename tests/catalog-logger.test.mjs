@@ -4,6 +4,16 @@ import {PGlite} from '@electric-sql/pglite'
 import {readFile} from 'node:fs/promises'
 import {postgresClient} from './helpers/postgres-client.mjs'
 import {createCatalogLogger} from '../scripts/catalog-logger.mjs'
+test('concurrent writers detach batches and persist every event exactly once',async()=>{
+ const seen=new Set(),current=[]
+ const db={from(table){return {
+  async insert(rows){await new Promise(r=>setTimeout(r,5));for(const row of rows){assert.ok(!seen.has(row.event_key));seen.add(row.event_key)}return {error:null}},
+  update(row){return {async eq(){current.push(row.summary.current);return {error:null}}}}
+ }}}
+ const log=createCatalogLogger({db,runId:1,summary:{},output:()=>{}})
+ await Promise.all(Array.from({length:90},(_,i)=>log(`Carta ${i}`,true)))
+ assert.equal(seen.size,90);assert.equal(current.at(-1),'Carta 89')
+})
 test('incremental log retains every event beyond 2000 and legacy updates do not duplicate events',async()=>{
  const pg=new PGlite()
  try{

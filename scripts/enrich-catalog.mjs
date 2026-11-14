@@ -39,9 +39,9 @@ export async function enrichCatalog({db,log=console.log,budgetMs=60000,limit=100
  const stats={attempted:0,checked:0,indexed:0,errors:0}
  if(!cards.length)return stats
  await log(`Identificazione: arricchimento di massimo ${cards.length} carte; stampini e finiture solo da metadati espliciti.`,true)
- let cursor=0
+ let cursor=0,sourceUnavailable=false
  async function consume(){while(cursor<cards.length){
-  if(clock()>deadline-8000)break
+  if(clock()>deadline-8000||sourceUnavailable)break
   const card=cards[cursor++]
   stats.attempted++
   if(card.source_uid&&!card.source_uid.startsWith('tcgdex:')){await check(db.from('cards').update({traits_next_attempt_at:new Date(Date.now()+30*86400000).toISOString(),traits_last_error:'Metadati dettagliati non disponibili per questa fonte.'}).eq('id',card.id));continue}
@@ -55,11 +55,11 @@ export async function enrichCatalog({db,log=console.log,budgetMs=60000,limit=100
    await check(db.from('cards').update({traits_checked_at:now(),traits_next_attempt_at:new Date(Date.now()+14*86400000).toISOString(),traits_last_error:null}).eq('id',card.id))
    stats.checked++;stats.indexed+=entries.length
    await log(`Identificazione #${card.id} ${card.nome}: ${entries.length} stampe indicizzate, fonte ${detail.id}.`)
-  }catch(error){stats.errors++;await check(db.from('cards').update({traits_next_attempt_at:new Date(Date.now()+6*3600000).toISOString(),traits_last_error:String(error)}).eq('id',card.id));await log(`Identificazione #${card.id}: ${String(error)}; riprovo più tardi.`)}
+  }catch(error){stats.errors++;if(/HTTP (429|503)\b/.test(String(error)))sourceUnavailable=true;await check(db.from('cards').update({traits_next_attempt_at:new Date(Date.now()+6*3600000).toISOString(),traits_last_error:String(error)}).eq('id',card.id));await log(`Identificazione #${card.id}: ${String(error)}; riprovo più tardi.`)}
  }}
  await Promise.all(Array.from({length:3},()=>consume()))
  await log('Arricchimento tag concluso; continuo importazioni e immagini.',true)
- return stats
+ return sourceUnavailable?{...stats,sourceUnavailable:true}:stats
 }
 export async function syncCuratedReleases({db,log=console.log}){
  const rows=JSON.parse(await readFile(new URL('../data/catalog-releases.json',import.meta.url),'utf8'))

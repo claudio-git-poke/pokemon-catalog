@@ -10,6 +10,12 @@ function database(pages){
   queries.push(q);return q
  }}
 }
+test('source outage stops the batch rather than retrying every remaining card',async()=>{
+ const cards=Array.from({length:20},(_,i)=>({id:i+1,source_uid:`tcgdex:en:${i}`,source_card_id:String(i),source_language:'en'}))
+ const db=database([cards])
+ const stats=await enrichCatalog({db,onlyUnchecked:true,log:async()=>{},fetchDetail:async()=>{throw Error('TCGdex metadati HTTP 503')}})
+ assert.equal(stats.sourceUnavailable,true);assert.ok(stats.attempted<=3);assert.equal(stats.checked,0)
+})
 test('backfill selects supported sources and unchecked historical cards first',async()=>{
  const db=database([[]]);const stats=await enrichCatalog({db,onlyUnchecked:true,log:async()=>{}})
  assert.equal(db.queries.length,1)
