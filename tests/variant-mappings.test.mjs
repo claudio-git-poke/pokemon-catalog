@@ -35,3 +35,10 @@ test('legacy variant flags preserve availability without inventing finish combin
  const first=rows.find(r=>r.tags.includes('stamp:1st-edition'));assert.equal(first.facts.shiny,undefined);assert.ok(!first.tags.includes('finish:holo'))
  assert.equal(rows.find(r=>r.tags.includes('size:jumbo')).facts.oversized,true)
 })
+test('WCD manifests distinguish all 80 published decks and preserve unknown foil',async()=>{
+ const rows=JSON.parse(await readFile(new URL('../data/catalog-world-decks.json',import.meta.url),'utf8'))
+ const decks=new Set(rows.map(r=>r.release_code+':'+r.deck));assert.equal(decks.size,80)
+ for(const r of rows){assert.ok(r.player);assert.equal(r.deck_number,null);assert.ok(r.set_id&&r.local_id)}
+ const row=rows.find(r=>r.player==='Jason Martinez'&&r.name==='Gengar'),e=deckEntry({id:1,nome:'Gengar',sigla:'DP7@INT',lingua:'INT'},row)
+ assert.equal(e.release_year,2009);assert.ok(e.tags.includes('family:world-championships'));assert.equal(e.facts.printed_signature_visible,true);assert.equal(e.facts.shiny,undefined);assert.equal(e.facts.mark_bottom_right,undefined)
+})

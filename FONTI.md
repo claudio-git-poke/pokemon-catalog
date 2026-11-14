@@ -78,3 +78,16 @@ registro e diventano ricercabili senza modificare il parser del sito.
 
 Installazione additiva dopo l'indice iniziale: `db/catalog-taxonomy-expanded.sql`,
 `db/catalog-deck-mappings.sql`, `db/catalog-variant-coverage.sql`.
+
+### World Championships Decks
+
+`data/catalog-world-decks.json` conserva 1.944 collegamenti a carte numerate nelle
+liste degli 80 mazzi pubblicati per le edizioni 2004–2019 e 2022–2025. La fonte di
+ciascuna lista è riportata nel record; non vengono inventate edizioni per il 2020
+e 2021. Le Energie senza un'identità originale precisa non sono incluse nei
+collegamenti. Il denominatore delle espansioni ordinarie deriva dal conteggio
+ufficiale dichiarato dall'indice TCGdex; le carte promo restano senza denominatore.
+L'anno è quello dell'edizione dei campionati, non necessariamente l'anno di messa
+in vendita del prodotto. Foto, texture e finitura non sono dedotte dalla lista.
+Installazione iniziale: `db/catalog-world-decks.sql`; collegamento incrementale
+nelle sessioni del worker tramite `syncDeckMappings`.

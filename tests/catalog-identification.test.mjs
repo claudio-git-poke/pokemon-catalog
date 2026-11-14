@@ -37,6 +37,8 @@ test('database search matches BOO across years, broad holo, unknowns, and one co
   await pg.exec(await readFile(new URL('../db/catalog-releases-seed.sql',import.meta.url),'utf8'))
   await pg.exec("insert into cards(id,nome,sigla,lingua,numero,codice,source_local_id) values(3,'Mareep','SVP@INT','INT',107,'svp107','107')")
   await pg.exec(await readFile(new URL('../db/catalog-deck-mappings.sql',import.meta.url),'utf8'))
+  await pg.exec(await readFile(new URL('../db/catalog-printing-guards.sql',import.meta.url),'utf8'))
+  await pg.exec(await readFile(new URL('../db/catalog-world-decks.sql',import.meta.url),'utf8'))
   const insert=`insert into catalog_search_entries(entry_key,card_id,release_code,release_year,collector_number,name,set_code,language,tags,facts,verification,label,search_text) values
   ('boo22',2,'trick-or-trade-2022',2022,'52','Gengar','SWSH11','INT',array['family:trick-or-trade','visual:shiny','pattern:cosmos'],'{"shiny":true,"extra_mark":true}','source','BOO22','gengar swsh11'),
   ('boo23',2,'trick-or-trade-2023',2023,'52','Gengar','SWSH11','INT',array['family:trick-or-trade','visual:shiny'],'{"shiny":true,"extra_mark":true}','source','BOO23','gengar swsh11'),
