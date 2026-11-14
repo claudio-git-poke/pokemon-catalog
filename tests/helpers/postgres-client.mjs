@@ -20,7 +20,7 @@ export function postgresClient(pg) {
       sql=keys.length?`insert into ${ident(table)} (${keys.map(ident).join(',')}) values ${rows.map(r=>'('+keys.map(k=>value(r[k])).join(',')+')').join(',')}`:`insert into ${ident(table)} default values`
       if(mode==='upsert') {
        const key=options.onConflict || (table==='catalog_sync_sets'?'source_uid':'id')
-       sql+=` on conflict (${ident(key)}) do `+(options.ignoreDuplicates?'nothing':`update set ${keys.map(k=>`${ident(k)}=excluded.${ident(k)}`).join(',')}`)
+       sql+=` on conflict (${key.split(',').map(ident).join(',')}) do `+(options.ignoreDuplicates?'nothing':`update set ${keys.map(k=>`${ident(k)}=excluded.${ident(k)}`).join(',')}`)
       }
       sql+=' returning *'
      }
