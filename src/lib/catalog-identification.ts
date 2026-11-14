@@ -9,10 +9,10 @@ export const OBSERVATIONS = [
 ] as const
 export type ObservationKey=typeof OBSERVATIONS[number][0]
 export type Observations=Partial<Record<ObservationKey,boolean|null>>
-export function parseIdentificationQuery(input:string){
+export function parseIdentificationQuery(input:string,terms:ReadonlyArray<{code:string;label:string;aliases:readonly string[]}>=TAXONOMY){
  let text=' '+normalizeSearch(input.slice(0,180))+' '
  const tags:string[]=[],recognized:string[]=[]
- const aliases=TAXONOMY.flatMap(t=>t.aliases.map(alias=>({alias:normalizeSearch(alias),code:t.code,label:t.label}))).sort((a,b)=>b.alias.length-a.alias.length)
+ const aliases=terms.flatMap(t=>t.aliases.map(alias=>({alias:normalizeSearch(alias),code:t.code,label:t.label}))).sort((a,b)=>b.alias.length-a.alias.length)
  for(const item of aliases){const phrase=' '+item.alias+' ';if(item.alias&&text.includes(phrase)){text=text.split(phrase).join(' ');if(!tags.includes(item.code)){tags.push(item.code);recognized.push(item.label)}}}
  const rawTokens=text.trim().split(/\s+/).filter(Boolean)
  const yearToken=rawTokens.find(t=>/^(19|20)\d{2}$/.test(t))

@@ -45,3 +45,36 @@ Non si usano i risultati di Google/Bing o immagini commerciali generiche come pr
 - https://pokemontcgapi.com/docs
 
 I servizi opzionali sono elencati per pianificare la copertura, senza promesse di completezza o di costi nulli. Nessuna chiave è inclusa nel pacchetto.
+
+## Identificazione delle stampe — 14 novembre 2026
+
+Il vocabolario `data/catalog-taxonomy.json` comprende tutti i valori di finitura,
+pattern, sottotipo e timbro dell'interfaccia TCGdex verificata alla data indicata.
+Snapshot: `scripts/sources/tcgdex-variant-types.d.ts`; rigenerazione:
+`node scripts/update-variant-taxonomy.mjs`. Non è un elenco esaustivo di tutte le
+stampe Pokémon mai prodotte. I nuovi valori osservati dal worker sono salvati nel
+registro e diventano ricercabili senza modificare il parser del sito.
+
+- Nessun prodotto cartesiano tra finiture, timbri e formati. I vecchi flag booleani
+  documentano disponibilità separate, senza inventare combinazioni.
+- Firme dei giocatori e timbri Worlds sono distinti: la famiglia WCD viene
+  assegnata soltanto quando sono entrambi documentati sulla stessa variante.
+- Le rarità sono metadati separati. Non provano texture, posizione dei simboli o
+  copertura esatta della pellicola olografica.
+- MFB: i 34 ID della fonte identificano carte di base, non numeri stampati.
+  I bordi blu e i timbri di ciascuna variante rimangono separati. Le immagini
+  legacy non vengono automaticamente certificate come immagini della variante.
+- BA internazionale 2020/2022/2024: `data/catalog-decks.json` conserva le 360
+  posizioni dei sei mazzi guidati e 54 righe dei tre mazzi avanzati. Una posizione
+  è una stampa distinta anche quando riporta la stessa carta di un'altra posizione.
+  Le Energie per cui non è identificata la stampa originale sono conservate nel
+  manifest, ma non collegate arbitrariamente a un'Energia di un'altra espansione.
+- Il manifest è verificato rispetto alle liste pubbliche Bulbapedia elencate in
+  ogni record. I testi descrittivi non sono copiati. Le schede mancanti nel
+  catalogo vengono collegate nelle sessioni successive del worker.
+- BA asiatiche, Trainer Kit, PPS successive, WCD e altre distribuzioni non sono
+  dichiarati completi: il worker conserva ciò che la fonte documenta e la pagina
+  `/varianti` espone i conteggi effettivi. Un termine a zero non è una stampa censita.
+
+Installazione additiva dopo l'indice iniziale: `db/catalog-taxonomy-expanded.sql`,
+`db/catalog-deck-mappings.sql`, `db/catalog-variant-coverage.sql`.

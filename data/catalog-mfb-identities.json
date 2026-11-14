@@ -1,0 +1,218 @@
+[
+  {
+    "id": "mfb-1",
+    "name": "Bulbasaur",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-2",
+    "name": "Ivysaur",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-3",
+    "name": "Oddish",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-4",
+    "name": "Gloom",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-5",
+    "name": "Exeggcute",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-6",
+    "name": "Exeggutor",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-7",
+    "name": "Scyther",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-8",
+    "name": "Grass Energy",
+    "aliases": [
+      "Energia base Erba"
+    ],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-9",
+    "name": "Charmander",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-10",
+    "name": "Charmeleon",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-11",
+    "name": "Vulpix",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-12",
+    "name": "Ninetales",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-13",
+    "name": "Growlithe",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-14",
+    "name": "Arcanine",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-15",
+    "name": "Magmar",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-16",
+    "name": "Fire Energy",
+    "aliases": [
+      "Energia base Fuoco"
+    ],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-17",
+    "name": "Pikachu",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-18",
+    "name": "Raichu",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-19",
+    "name": "Magnemite",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-20",
+    "name": "Magneton",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-21",
+    "name": "Voltorb",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-22",
+    "name": "Electrode",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-23",
+    "name": "Electabuzz",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-24",
+    "name": "Lightning Energy",
+    "aliases": [
+      "Energia base Lampo"
+    ],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-25",
+    "name": "Squirtle",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-26",
+    "name": "Wartortle",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-27",
+    "name": "Poliwag",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-28",
+    "name": "Poliwhirl",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-29",
+    "name": "Magikarp",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-30",
+    "name": "Gyarados",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-31",
+    "name": "Lapras",
+    "aliases": [],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-32",
+    "name": "Water Energy",
+    "aliases": [
+      "Energia base Acqua"
+    ],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-33",
+    "name": "Potion",
+    "aliases": [
+      "Pozione"
+    ],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  },
+  {
+    "id": "mfb-34",
+    "name": "Switch",
+    "aliases": [
+      "Scambio"
+    ],
+    "source": "https://api.tcgdex.net/v2/en/sets/mfb"
+  }
+]

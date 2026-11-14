@@ -1,3 +1,4 @@
+import {mapVariant,termsForEntries} from './variant-mappings.mjs'
 import {createHash} from 'node:crypto'
 import {readFile} from 'node:fs/promises'
 import {sourcePrinting,expandTags,printingFacts,normalizeSearch} from '../src/lib/catalog-identification.ts'
@@ -12,15 +13,16 @@ export function baseFacts(card){
 }
 export function detailEntries(card,detail){
  const lang=card.source_language
- const raw=Array.isArray(detail.variants_detailed)?detail.variants_detailed:Object.entries(detail.variants||{}).filter(([key,value])=>value===true&&['normal','holo','reverse'].includes(key)).map(([type])=>({type}))
+ const raw=Array.isArray(detail.variants_detailed)&&detail.variants_detailed.length?detail.variants_detailed:Array.isArray(detail.variants)?detail.variants:[...Object.entries(detail.variants||{}).filter(([key,value])=>value===true&&['normal','holo','reverse'].includes(key)).map(([type])=>({type})),...Object.entries(detail.variants||{}).filter(([key,value])=>value===true&&['firstEdition','wPromo','preRelease','jumbo'].includes(key)).map(([key])=>key==='jumbo'?{size:'jumbo'}:{stamp:[{firstEdition:'1st-edition',wPromo:'w-promo',preRelease:'pre-release'}[key]]})]
  return raw.filter(v=>!v.languages||v.languages.includes(lang)).map(v=>{
-  const clean={type:v.type,foil:v.foil,subtype:v.subtype,stamp:v.stamp,size:v.size,variantId:v.variantId,thirdParty:v.thirdParty,languages:v.languages}
-  const {tags,facts}=sourcePrinting(clean)
+  const {pricing,...clean}=v
+  if(!clean.stamp&&Array.isArray(clean.stamps))clean.stamp=clean.stamps
+  const {tags,facts,attributes}=mapVariant(card,detail,clean)
   if((card.sigla||'').split('@')[0].toLowerCase()==='mfb')tags.push('family:my-first-battle')
   const key=v.variantId || createHash('sha256').update(JSON.stringify({...clean,thirdParty:undefined})).digest('hex').slice(0,24)
-  return {entry_key:`tcgdex:${card.id}:${key}`,card_id:card.id,collector_number:normNumber(detail.localId),denominator:detail.set?.cardCount?.official?String(detail.set.cardCount.official):null,
+  return {entry_key:`tcgdex:${card.id}:${key}`,card_id:card.id,collector_number:tags.includes('family:my-first-battle')?null:normNumber(detail.localId),denominator:tags.includes('family:my-first-battle')?null:detail.set?.cardCount?.official?String(detail.set.cardCount.official):null,release_year:attributes.release_year||null,deck_code:attributes.deck||null,deck_number:null,
    name:card.nome,set_code:card.sigla,language:card.lingua,tags:expandTags(tags),facts:{...baseFacts(card),...facts},
-   source_url:`https://api.tcgdex.net/v2/${lang}/cards/${encodeURIComponent(detail.id)}`,source_payload:{id:detail.id,localId:detail.localId,set:detail.set,variant:clean},verification:'source',
+   source_url:`https://api.tcgdex.net/v2/${lang}/cards/${encodeURIComponent(detail.id)}`,source_payload:{id:detail.id,localId:detail.localId,set:detail.set,variant:clean,attributes},verification:'source',
    label:[v.type,v.foil,v.subtype,...(v.stamp||[])].filter(Boolean).join(' · ')||'Stampa dichiarata dalla fonte',updated_at:now(),search_text:normalizeSearch(`${card.nome} ${card.sigla} ${detail.set?.name||''} ${card.codice||''}`)}
  })
 }
@@ -29,13 +31,15 @@ export function curatedEntry(card,row){
  const tags=expandTags(['family:'+family,'stamp:'+stamp,row.holo?'finish:holo':'finish:normal'])
  return {entry_key:`${row.release_code||'trick-or-trade-'+row.year}:${card.id}:${row.holo?'holo':'normal'}`,card_id:card.id,release_code:row.release_code||`trick-or-trade-${row.year}`,release_year:row.year,collector_number:normNumber(row.local_id.replace(/^[A-Za-z]+/,'')),denominator:row.printed_number.split('/')[1]||null,name:card.nome,set_code:card.sigla,language:card.lingua,tags,facts:{...baseFacts(card),...printingFacts(tags,{stamp:[stamp]})},source_url:row.source,source_payload:{...row,reference_image_only:true},verification:'source',label:`${row.release_name||'Trick or Trade '+row.year} · ${row.holo?'Holo':'Non-Holo'} · ${stamp==='trick-or-trade'?'Timbro zucca Pikachu':'Logo Play! Pokémon'}`,search_text:normalizeSearch(`${card.nome} ${card.sigla} ${row.release_name||'Trick or Trade'} ${row.year}`),updated_at:now()}
 }
-export async function enrichCatalog({db,log=console.log,budgetMs=45000,limit=20,fetchDetail,clock=Date.now}){
+export async function enrichCatalog({db,log=console.log,budgetMs=60000,limit=100,fetchDetail,clock=Date.now}){
  const deadline=clock()+budgetMs
  const cards=await check(db.from('cards').select('*').not('source_card_id','is',null).lte('traits_next_attempt_at',now()).order('traits_next_attempt_at').order('id').limit(limit))
  if(!cards.length)return
  await log(`Identificazione: arricchimento di massimo ${cards.length} carte; stampini e finiture solo da metadati espliciti.`,true)
- for(const card of cards){
+ let cursor=0
+ async function consume(){while(cursor<cards.length){
   if(clock()>deadline-8000)break
+  const card=cards[cursor++]
   if(card.source_uid&&!card.source_uid.startsWith('tcgdex:')){await check(db.from('cards').update({traits_next_attempt_at:new Date(Date.now()+30*86400000).toISOString(),traits_last_error:'Metadati dettagliati non disponibili per questa fonte.'}).eq('id',card.id));continue}
   try{
    const url=`https://api.tcgdex.net/v2/${card.source_language}/cards/${encodeURIComponent(card.source_card_id)}`
@@ -43,11 +47,12 @@ export async function enrichCatalog({db,log=console.log,budgetMs=45000,limit=20,
    const detail=fetchDetail?response:await (async()=>{if(!response.ok)throw Error(`TCGdex metadati HTTP ${response.status}`);return response.json()})()
    if(detail.id!==card.source_card_id)throw Error('Identità della fonte non corrispondente: nessun tag assegnato.')
    const entries=detailEntries(card,detail)
-   if(entries.length)await check(db.from('catalog_search_entries').upsert(entries,{onConflict:'entry_key'}))
+   if(entries.length){const terms=termsForEntries(entries);if(terms.length)await check(db.from('catalog_terms').upsert(terms,{onConflict:'code',ignoreDuplicates:true}));await check(db.from('catalog_search_entries').upsert(entries,{onConflict:'entry_key'}))}
    await check(db.from('cards').update({traits_checked_at:now(),traits_next_attempt_at:new Date(Date.now()+14*86400000).toISOString(),traits_last_error:null}).eq('id',card.id))
    await log(`Identificazione #${card.id} ${card.nome}: ${entries.length} stampe indicizzate, fonte ${detail.id}.`)
   }catch(error){await check(db.from('cards').update({traits_next_attempt_at:new Date(Date.now()+6*3600000).toISOString(),traits_last_error:String(error)}).eq('id',card.id));await log(`Identificazione #${card.id}: ${String(error)}; riprovo più tardi.`)}
- }
+ }}
+ await Promise.all(Array.from({length:3},()=>consume()))
  await log('Arricchimento tag concluso; continuo importazioni e immagini.',true)
 }
 export async function syncCuratedReleases({db,log=console.log}){

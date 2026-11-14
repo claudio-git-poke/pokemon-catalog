@@ -18,9 +18,9 @@ test('aliases resolve families and patterns without requiring year or vendor tit
 test('source variants remain distinct and unreported observations stay unknown',()=>{
  const rows=detailEntries({id:1,nome:'Bulbasaur',sigla:'MFB',lingua:'INT',source_language:'en'},{id:'mfb-1',localId:'1',variants_detailed:[{type:'normal',variantId:'a',stamp:['bulbasaur']},{type:'normal',variantId:'b',subtype:'blue-border',stamp:['bulbasaur','pokeball']}]})
  assert.notEqual(rows[0].entry_key,rows[1].entry_key)
- assert.equal(rows[0].facts.blue_border_visible,undefined)
+ assert.equal(rows[0].facts.blue_border_visible,false)
  assert.equal(rows[1].facts.blue_border_visible,true)
- assert.equal(rows[1].facts.mark_bottom_right,undefined)
+ assert.equal(rows[1].facts.mark_top_right,undefined)
  assert.ok(sourcePrinting({type:'reverse',foil:'cosmos'}).tags.includes('visual:shiny'))
  assert.ok(!sourcePrinting({type:'holo',stamp:['worlds-2024']}).tags.includes('family:world-championships'))
 })
@@ -35,6 +35,8 @@ test('database search matches BOO across years, broad holo, unknowns, and one co
   await pg.exec(await readFile(new URL('../db/catalog-taxonomy-seed.sql',import.meta.url),'utf8'))
   await pg.exec('alter table cards add column source_uid text')
   await pg.exec(await readFile(new URL('../db/catalog-releases-seed.sql',import.meta.url),'utf8'))
+  await pg.exec("insert into cards(id,nome,sigla,lingua,numero,codice,source_local_id) values(3,'Mareep','SVP@INT','INT',107,'svp107','107')")
+  await pg.exec(await readFile(new URL('../db/catalog-deck-mappings.sql',import.meta.url),'utf8'))
   const insert=`insert into catalog_search_entries(entry_key,card_id,release_code,release_year,collector_number,name,set_code,language,tags,facts,verification,label,search_text) values
   ('boo22',2,'trick-or-trade-2022',2022,'52','Gengar','SWSH11','INT',array['family:trick-or-trade','visual:shiny','pattern:cosmos'],'{"shiny":true,"extra_mark":true}','source','BOO22','gengar swsh11'),
   ('boo23',2,'trick-or-trade-2023',2023,'52','Gengar','SWSH11','INT',array['family:trick-or-trade','visual:shiny'],'{"shiny":true,"extra_mark":true}','source','BOO23','gengar swsh11'),
@@ -48,6 +50,9 @@ test('database search matches BOO across years, broad holo, unknowns, and one co
   const no=await call([[],[],null,null,null,null,{mark_top_left:true},0,24]);assert.ok(no.total>=3);assert.equal(no.results[0].unknown,1)
   assert.equal((await call([[],['pattern:cosmos','stamp:staff'],null,null,null,null,{},0,24])).total,0)
   assert.equal((await call([[],[], '29',null,null,null,{},0,24])).total,0) // Legacy MFB catalogue position is not a printed number.
+  assert.ok((await call([[],['family:battle-academy'],'2',null,2024,null,{},0,24])).results.some(r=>r.collector_number==='107'&&r.deck_number===2))
+  await pg.exec("update cards set source_local_id='29' where id=1")
+  assert.equal((await call([[],['family:my-first-battle'],'29',null,null,null,{},0,24])).total,0)
   await pg.exec("set role anon")
   assert.equal((await call(defaults)).total,2)
   await assert.rejects(pg.exec("insert into catalog_terms(code,label,kind) values('evil','evil','stamp')"),/permission denied/)

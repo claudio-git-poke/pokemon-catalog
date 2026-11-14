@@ -1,3 +1,4 @@
+import {syncDeckMappings,linkMfbIdentities} from './deck-mappings.mjs'
 import { createClient } from '@supabase/supabase-js'
 import { syncCuratedReleases } from './enrich-catalog.mjs'
 import { syncCatalog } from './sync-catalog.mjs'
@@ -20,6 +21,8 @@ async function hasWork() {
   return results.some(result => result.data.length > 0)
 }
 await syncCuratedReleases({db})
+await syncDeckMappings({db})
+await linkMfbIdentities({db})
 await runSession({ minutes, runCycle: async () => {
   return syncCatalog({db,enrich:true})
 }, hasWork })

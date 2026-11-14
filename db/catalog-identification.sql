@@ -43,7 +43,7 @@ $$;
 create or replace function public.catalog_index_card() returns trigger language plpgsql set search_path='' as $$
 declare n text; base_tags text[]='{}';
 begin
- n:=case when nullif(new.source_local_id,'') is not null then public.catalog_number(new.source_local_id)
+ n:=case when lower(split_part(new.sigla,'@',1))='mfb' then null when nullif(new.source_local_id,'') is not null then public.catalog_number(new.source_local_id)
    when lower(split_part(new.sigla,'@',1))<>'mfb' and new.numero>0 then new.numero::text else null end;
  if lower(split_part(new.sigla,'@',1))='mfb' then base_tags:=array['family:my-first-battle'];end if;
  insert into public.catalog_search_entries(entry_key,card_id,collector_number,name,set_code,language,tags,facts,search_text)
@@ -54,7 +54,7 @@ end $$;
 drop trigger if exists catalog_index_card on public.cards;
 create trigger catalog_index_card after insert or update of nome,sigla,lingua,numero,source_local_id,codice on public.cards for each row execute function public.catalog_index_card();
 insert into public.catalog_search_entries(entry_key,card_id,collector_number,name,set_code,language,tags,facts,search_text)
-select 'card:'||c.id,c.id,case when nullif(c.source_local_id,'') is not null then public.catalog_number(c.source_local_id) when lower(split_part(c.sigla,'@',1))<>'mfb' and c.numero>0 then c.numero::text else null end,
+select 'card:'||c.id,c.id,case when lower(split_part(c.sigla,'@',1))='mfb' then null when nullif(c.source_local_id,'') is not null then public.catalog_number(c.source_local_id) when lower(split_part(c.sigla,'@',1))<>'mfb' and c.numero>0 then c.numero::text else null end,
  coalesce(c.nome,''),coalesce(c.sigla,''),coalesce(c.lingua,''),case when lower(split_part(c.sigla,'@',1))='mfb' then array['family:my-first-battle'] else '{}'::text[] end,
  public.catalog_base_facts(c),public.catalog_normalize(concat_ws(' ',c.nome,c.sigla,c.codice)) from public.cards c
 on conflict(entry_key) do nothing;
