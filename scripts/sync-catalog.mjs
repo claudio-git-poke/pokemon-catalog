@@ -1,3 +1,4 @@
+import { createCatalogLogger } from './catalog-logger.mjs'
 import { externalImages } from '../src/lib/external-cards.ts'
 import { atlasSets,importAtlasSet } from './atlas-source.mjs'
 import { aggressiveSearch } from '../src/lib/image-search.ts'
@@ -15,18 +16,7 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
     return await response.json()
   }
   const run = await check(db.from('catalog_sync_runs').insert({}).select('id').single())
-  const events = []
-  let lastFlush = 0
-  async function log(message, force = false) {
-    const entry = { at: now(), message }
-    events.push(entry)
-    if (events.length > 2000) events.shift()
-    console.log(`[${entry.at}] ${message}`)
-    if (force || Date.now() - lastFlush >= 2000) {
-      await check(db.from('catalog_sync_runs').update({summary:{...summary,events,current:message,updated_at:entry.at}}).eq('id',run.id))
-      lastFlush = Date.now()
-    }
-  }
+  const log = createCatalogLogger({db,runId:run.id,summary})
   try {
     await log('Avvio: controllo catalogo e code di lavoro.', true)
     // A found flag with no URL must not keep a card outside the image queue.
@@ -96,6 +86,7 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
         }
         const data = await source(`${set.source_language}/sets/${encodeURIComponent(set.set_id)}`)
         if (data.serie?.id === 'tcgp') {
+          await log(`Set ${set.set_id}: escluso perché Pokémon TCG Pocket.`, true)
           await check(db.from('catalog_sync_sets').update({ next_sync_at:later(720),last_sync_at:now(),last_error:null }).eq('source_uid',set.source_uid))
           continue
         }
@@ -112,13 +103,14 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
         for (const card of data.cards) {
           if (Date.now() > deadline - 120000) throw new Error('Budget esecuzione raggiunto: ripresa automatica prossima esecuzione')
           const uid = sourceUid(set.source_language,card.id)
-          if (existing.some(c => c.source_uid === uid)) continue
+          if (existing.some(c => c.source_uid === uid)) { await log(`Già presente: ${card.name} · ${set.set_id}/${card.localId} · ${set.source_language}.`); continue }
           const linked = await check(db.from('cards').select('id').eq('source_uid',uid).maybeSingle())
-          if (linked) continue
+          if (linked) { await log(`Già collegata: ${card.name} · ${set.set_id}/${card.localId}.`); continue }
           const { match, ambiguous: conflict } = legacyMatch(existing,data.cards,card,set.set_id)
           if (conflict) { ambiguous++; summary.ambiguous++; await log(`Ambigua: ${card.name} · ${card.localId}, lasciata da verificare.`); continue }
           if (match?.source_uid) {
             summary.alternatives=(summary.alternatives || 0)+1
+            await log(`Fonte alternativa: ${card.name} · ${set.set_id}/${card.localId}.`)
           } else if (match) {
             await check(db.from('cards').update({ source_uid:uid, source_card_id:card.id, source_language:set.source_language,source_local_id:card.localId }).eq('id',match.id).is('source_uid',null).select('id').single())
             match.source_uid = uid; summary.linked++
@@ -150,6 +142,8 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
         const candidates = await imageLookup(db,card)
         await log(`Carta #${card.id}: ${candidates.length} candidati dall’indice esterno.`)
         const result = await search(card,{externalCandidates:candidates})
+        for (const line of result.logs || []) await log(`Carta #${card.id} · ${line}`)
+        await log(`Carta #${card.id}: ${result.message}`)
         patch = { image_attempts:attempts, image_next_attempt_at:retryAt(attempts,false), image_last_error:null }
         if (result.url) {
           Object.assign(patch,{ image_url:result.url,image_status:'found',image_source:result.source,notes:result.message })
@@ -167,11 +161,12 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
       await log(`Carta #${card.id}: ${!saved.length ? 'aggiornamento ignorato: modificata nel frattempo' : patch.image_status === 'found' ? 'immagine trovata · '+patch.image_source : patch.image_last_error ? 'errore · '+patch.image_last_error : 'immagine non trovata'}. Prossimo tentativo: ${patch.image_next_attempt_at}.`, true)
     }
     await log('Esecuzione conclusa. Il lavoro restante riprenderà al prossimo avvio.', true)
-    await check(db.from('catalog_sync_runs').update({ finished_at:now(),status:summary.errors ? 'partial' : 'success',summary:{...summary,events,current:'Esecuzione conclusa',updated_at:now()} }).eq('id',run.id))
+    await check(db.from('catalog_sync_runs').update({ finished_at:now(),status:summary.errors ? 'partial' : 'success',summary:{...summary,log_version:2,current:'Esecuzione conclusa',updated_at:now()} }).eq('id',run.id))
     console.log(JSON.stringify(summary))
     return summary
   } catch (error) {
-    await check(db.from('catalog_sync_runs').update({finished_at:now(),status:'error',summary:{...summary,events,current:'Esecuzione interrotta',error:String(error),updated_at:now()}}).eq('id',run.id))
+    await log(`Esecuzione interrotta: ${String(error)}`, true)
+    await check(db.from('catalog_sync_runs').update({finished_at:now(),status:'error',summary:{...summary,log_version:2,current:'Esecuzione interrotta',error:String(error),updated_at:now()}}).eq('id',run.id))
     throw error
   }
 

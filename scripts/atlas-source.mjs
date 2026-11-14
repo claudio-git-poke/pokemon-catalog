@@ -48,7 +48,7 @@ export async function importAtlasSet({db,set,root,loadCards=atlasCards,newCard,s
  for(const card of cards){
   if(Date.now()>deadline-120000)throw Error('Budget archivio raggiunto; ripresa alla prossima esecuzione')
   const uid=`atlas:${set.source_language}:${card.id}`
-  if(existing.some(c=>c.source_uid===uid))continue
+  if(existing.some(c=>c.source_uid===uid)){await log(`Già presente: ${card.name} · ${set.set_id}/${card.localId} · ${language}.`);continue}
   const number=normalizedNumber(card.localId)
   const matches=existing.filter(c=>normalizedNumber(c.source_local_id || c.numero)===number && ['normale','normal',''].includes(c.variante || ''))
   const repeated=cards.filter(c=>normalizedNumber(c.localId)===number).length>1
@@ -61,6 +61,7 @@ export async function importAtlasSet({db,set,root,loadCards=atlasCards,newCard,s
   }else if(match && !match.source_uid.startsWith('atlas:')){
    // Exact regional set/number already imported from TCGdex: attach alternative in the index, keep primary identity.
    summary.alternatives=(summary.alternatives || 0)+1
+   await log(`Fonte alternativa: ${card.name} · ${set.set_id}/${card.localId} · ${language}.`)
   }else{
    const row={...newCard(card,set.set_id,set.source_language,language),source_uid:uid,file_name:`${set.set_id}_${language}_${card.id.replace(/[^a-z0-9-]/gi,'_')}.jpg`,notes:`Importazione archivio ${set.source_language}. Fonte: ${card.sourcePage || 'Card Atlas'}`}
    await check(db.from('cards').upsert(row,{onConflict:'source_uid',ignoreDuplicates:true}))
