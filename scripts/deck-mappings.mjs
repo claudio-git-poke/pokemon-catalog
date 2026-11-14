@@ -1,8 +1,14 @@
 import {readFile} from 'node:fs/promises'
+import {isDeepStrictEqual} from 'node:util'
 import {normalizeSearch} from '../src/lib/catalog-identification.ts'
 import {baseFacts} from './enrich-catalog.mjs'
 import {termsForEntries} from './variant-mappings.mjs'
 const number=x=>String(x||'').replace(/^0+(?=\d)/,'').toLowerCase()
+export function uniqueDeckEntries(entries){
+ const unique=new Map(),conflicts=new Set();let duplicates=0
+ for(const entry of entries){const old=unique.get(entry.entry_key);if(!old)unique.set(entry.entry_key,entry);else if(isDeepStrictEqual(old,entry))duplicates++;else conflicts.add(entry.entry_key)}
+ return {entries:[...unique.values()].filter(e=>!conflicts.has(e.entry_key)),duplicates,conflicts:[...conflicts]}
+}
 export function deckEntry(card,row){
  const numbered=row.deck_number!==null
  const family=row.family||'battle-academy',wcd=family==='world-championships'
@@ -19,10 +25,11 @@ export async function syncDeckMappings({db,log=console.log}){
   const candidates=cache.get(row.set_id).filter(c=>number(c.source_local_id||c.numero)===number(row.local_id)&&normalizeSearch(c.nome)===normalizeSearch(row.name)).sort((a,b)=>Number(!!b.source_uid)-Number(!!a.source_uid)||a.id-b.id)
   if(candidates.length)entries.push(deckEntry(candidates[0],row))
  }
- if(entries.length){const terms=termsForEntries(entries);await check(db.from('catalog_terms').upsert(terms,{onConflict:'code',ignoreDuplicates:true}));const releases=[...new Map(rows.map(r=>[r.release_code,{code:r.release_code,family_code:'family:'+r.family,name:r.release_name,release_year:r.year,source_url:r.source}])).values()];await check(db.from('catalog_releases').upsert(releases,{onConflict:'code',ignoreDuplicates:true}))}
- for(let i=0;i<entries.length;i+=100)await check(db.from('catalog_search_entries').upsert(entries.slice(i,i+100),{onConflict:'entry_key'}))
- await log(`Mazzi BA e WCD: ${entries.length}/${rows.length} mappature collegate; numeri del mazzo separati dai numeri collezione.`)
- return {indexed:entries.length,documented:rows.length}
+ const consolidated=uniqueDeckEntries(entries),unique=consolidated.entries
+ if(unique.length){const terms=termsForEntries(unique);await check(db.from('catalog_terms').upsert(terms,{onConflict:'code',ignoreDuplicates:true}));const releases=[...new Map(rows.map(r=>[r.release_code,{code:r.release_code,family_code:'family:'+r.family,name:r.release_name,release_year:r.year,source_url:r.source}])).values()];await check(db.from('catalog_releases').upsert(releases,{onConflict:'code',ignoreDuplicates:true}))}
+ for(let i=0;i<unique.length;i+=100)await check(db.from('catalog_search_entries').upsert(unique.slice(i,i+100),{onConflict:'entry_key'}))
+ await log(`Mazzi BA e WCD: ${unique.length}/${rows.length} mappature collegate; ${consolidated.duplicates} ripetizioni identiche consolidate; ${consolidated.conflicts.length} identità con dati discordanti sospese. Numeri del mazzo separati dai numeri collezione.`)
+ return {indexed:unique.length,documented:rows.length,duplicates:consolidated.duplicates,conflicts:consolidated.conflicts.length}
 }
 
 export async function linkMfbIdentities({db,log=console.log}){
