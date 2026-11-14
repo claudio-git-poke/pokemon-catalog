@@ -1,3 +1,4 @@
+import {dueSetBatch} from './catalog-set-queue.mjs'
 import { enrichCatalog } from './enrich-catalog.mjs'
 import { createCatalogLogger } from './catalog-logger.mjs'
 import { externalImages } from '../src/lib/external-cards.ts'
@@ -26,7 +27,8 @@ export async function syncCatalog({ db, enrich = false, search = aggressiveSearc
     await check(db.from('cards').update({image_status:'missing',image_next_attempt_at:now()}).eq('image_status','found').eq('image_url',''))
     // Refresh set lists every day. Incomplete/empty language feeds remain visible as errors.
     for (const [lang] of SOURCES) {
-      const last = await check(db.from('catalog_sync_sets').select('last_sync_at').eq('source_uid', `index:${lang}`).maybeSingle())
+      const last = await check(db.from('catalog_sync_sets').select('last_sync_at,next_sync_at').eq('source_uid', `index:${lang}`).maybeSingle())
+      if(last?.next_sync_at&&Date.parse(last.next_sync_at)>Date.now())continue
       if (last?.last_sync_at && Date.now() - Date.parse(last.last_sync_at) < 86400000) continue
       try {
         await log(`TCGdex ${lang}: aggiornamento elenco espansioni.`, true)
@@ -73,7 +75,7 @@ export async function syncCatalog({ db, enrich = false, search = aggressiveSearc
     const sets = []
     for (const provider of ['atlas','tcgdex']) {
       if (provider==='atlas' && !atlasRoot) continue
-      const due=await check(db.from('catalog_sync_sets').select('*').eq('provider',provider).neq('set_id','__index__').lte('next_sync_at',now()).order('next_sync_at').limit(provider==='tcgdex' && !atlasRoot ? 30 : 15))
+      const due=await dueSetBatch({db,provider,at:now(),limit:provider==='tcgdex'&&!atlasRoot?30:15})
       sets.push(...due)
     }
     await log(`${sets.length} set selezionati per questa esecuzione.`, true)
@@ -130,7 +132,8 @@ export async function syncCatalog({ db, enrich = false, search = aggressiveSearc
         const deferred = /Budget.*(raggiunto|esecuzione)/i.test(String(error))
         if (!deferred) summary.errors++
         await log(`${deferred ? 'Pausa' : 'Errore'} set ${set.set_id}: ${String(error)}`, true)
-        await check(db.from('catalog_sync_sets').update({ next_sync_at:deferred ? now() : later(24),last_error:deferred ? null : String(error) }).eq('source_uid',set.source_uid))
+        const retry=await check(db.from('catalog_sync_sets').update({ next_sync_at:deferred ? now() : later(24),last_error:deferred ? null : String(error) }).eq('source_uid',set.source_uid).select('next_sync_at,sync_failures'))
+        if(!deferred&&retry?.[0])await log(`Set ${set.set_id}: prossimo tentativo ${retry[0].next_sync_at}; errori temporanei consecutivi ${retry[0].sync_failures||0}.`,true)
       }
     }
     const queue = await check(db.from('cards').select('*').in('image_status',['missing','placeholder']).lte('image_next_attempt_at',now()).order('image_next_attempt_at').order('id').limit(400))

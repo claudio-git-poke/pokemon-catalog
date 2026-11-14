@@ -45,3 +45,9 @@ Implementazione prevista, coerente con il file originale:
 7. Pianificare una volta al giorno con pg_cron + pg_net nel progetto Bindex e rendere visibili ultimo successo ed eventuale errore.
 
 Prove automatiche della sorgente: chiavi immutabili, URL compatibili, protezione foto italiane/verificate, timestamp uguali con microsecondi, tombstone e accesso anonimo in sola lettura. L'intero ciclo nel database destinatario va ancora provato quando il suo progetto sarà accessibile.
+
+## Recupero delle fonti e popolamento iniziale
+
+`db/catalog-sync-recovery.sql` distingue indisponibilità temporanee da dati assenti. HTTP 500/502/503/504 ed errori di rete ripartono dopo circa 15 minuti; HTTP 429 dopo almeno un'ora. I fallimenti consecutivi aumentano progressivamente la pausa fino a sei ore, con un piccolo scaglionamento. Un successo azzera il contatore. La regola opera nel database anche per i worker già in esecuzione. Le fonti con dati vuoti mantengono il rinvio normale: non sono considerate importate con successo.
+
+Il worker rispetta anche la pausa dell'indice delle espansioni. `catalog-set-queue.mjs` riserva l'80% del lotto alle prime importazioni e conserva una quota per i set già importati; eventuali posti liberi vengono riutilizzati. Il log dei nuovi worker mostra l'orario effettivo del prossimo tentativo e i fallimenti temporanei consecutivi. La nuova selezione entra in uso quando parte una sessione con il codice aggiornato; una sessione GitHub già in corso continua con il proprio checkout.

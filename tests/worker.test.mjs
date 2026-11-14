@@ -54,7 +54,7 @@ test('worker imports, reconciles, retries, excludes Pocket and preserves a concu
   assert.equal(manual.image_status,'manual');assert.equal(manual.image_url,'https://example.com/manual.jpg')
   // A later daily discovery sees a changed count and imports a new card from an existing set.
   extended=true
-  await pg.exec("update catalog_sync_sets set last_sync_at='2020-01-01' where set_id='__index__'")
+  await pg.exec("update catalog_sync_sets set last_sync_at='2020-01-01'  ,next_sync_at=now() where set_id='__index__'")
   const updated=await syncCatalog({db,fetchSource,search})
   assert.equal(updated.added,1)
   assert.equal((await pg.query("select count(*)::int n from cards where source_uid='tcgdex:en:mfb-10'")).rows[0].n,1)
