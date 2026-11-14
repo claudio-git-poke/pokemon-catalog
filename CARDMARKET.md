@@ -1,6 +1,6 @@
 # Collegamenti Cardmarket
 
-Il campo `set_carte.cardmarket_url` contiene la pagina esistente, oppure il redirect ufficiale `https://www.cardmarket.com/it/Pokemon/Products?idProduct=<ID>`. Non è una ricerca per nome. Gli URL esistenti vengono conservati, anche quando un worker ha una copia precedente del catalogo.
+Il campo `set_carte.cardmarket_url` contiene soltanto una pagina canonica senza parametri, come richiesto da Chiave_Bindex_2026-11-14.txt. I redirect ufficiali `https://www.cardmarket.com/it/Pokemon/Products?idProduct=<ID>` rimangono sulle voci interne in `catalog_search_entries` e sulle schede generali; gli ID certi vengono conservati anche quando la pagina canonica non è nota.
 
 Le singole voci in `catalog_search_entries` espongono `cardmarket_id`, `cardmarket_url`, `cardmarket_method` e `cardmarket_status` (`linked`, `pending`, `conflict`). Gli ID provengono dai metadati espliciti della variante oppure da `catalog_export_links`, che contiene le identità pubblicate già risolte. Due ID discordanti sospendono il collegamento. Un prodotto Cardmarket può raggruppare più finiture: un link non certifica che tutte le caratteristiche fisiche siano distinte sul marketplace.
 
@@ -10,6 +10,6 @@ La scheda generale `cards.link_cardmarket` viene completata soltanto quando tutt
 
 Le voci senza ID o associazione documentata rimangono in attesa. Le normali sincronizzazioni dei metadati possono completarle quando le fonti aggiungono queste informazioni. Non vengono inventati slug dal nome della carta e non è garantito che ogni variante abbia un prodotto Cardmarket dedicato.
 
-Schema: `db/catalog-cardmarket.sql` (applicato dopo `db/bindex-export.sql`). Nessuna nuova chiave richiesta.
+Schema: `db/catalog-cardmarket.sql`, poi `db/bindex-contract.sql` (dopo `db/bindex-export.sql`). Vedi anche `BINDEX_INTEGRAZIONE.md`. Nessuna nuova chiave richiesta.
 
 Riferimento ufficiale: https://insight.cardmarket.com/en/Articles/scryfall-x-cardmarket

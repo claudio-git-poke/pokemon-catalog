@@ -1,3 +1,4 @@
+import {validatePublication,canonicalMarketPage,publicationPhoto} from './bindex-contract.mjs'
 import {referenceTags,resolvePublication,stableKey} from './bindex-identity.mjs'
 import {expandTags} from '../src/lib/catalog-identification.ts'
 export const timestampMicros=value=>{const digits=(value.match(/\.(\d+)/)?.[1]||'').padEnd(6,'0');return BigInt(Date.parse(value))*1000n+BigInt(digits.slice(3,6))}
@@ -28,12 +29,16 @@ export async function publishBindex({db,log=console.log,limit=200}){
    if(!update.rarita&&entry.source_payload?.rarity&&entry.source_payload.rarity!=='None')update.rarita=entry.source_payload.rarity
    if(!update.nome||entry.source_payload?.source_language==='it')update.nome=entry.source_payload?.source_name||update.nome||card?.nome
    if(!update.cardmarket_id&&result.cm)update.cardmarket_id=result.cm
-   if(entry.image_url){update.immagine=entry.image_url;update.immagine_verificata=true}
+   update.cardmarket_url=canonicalMarketPage(update.cardmarket_url)
+   const invalid=validatePublication(update)
+   if(invalid){await check(db.from('catalog_export_pending').upsert({entry_key:entry.entry_key,reason:invalid,detail:{source:entry.source_url},next_attempt_at:new Date(Date.now()+86400000).toISOString(),updated_at:new Date().toISOString()},{onConflict:'entry_key'}));pending++;const t=timestampMicros(entry.updated_at),previous=timestampMicros(cursor[0]);if(t>previous||t===previous&&entry.entry_key>cursor[1])cursor=[entry.updated_at,entry.entry_key];continue}
+   const photo=publicationPhoto(entry,card)
+   delete update.immagine;delete update.immagine_hd;delete update.immagine_verificata
    delete update.aggiornato_il
    await check(db.from('set_carte').upsert(update,{onConflict:'sigla,numero,variante'}))
    const evidence={source:entry.source_url,source_card:entry.source_payload?.id||null}
    await check(db.from('catalog_export_links').upsert({entry_key:entry.entry_key,sigla:update.sigla,numero:update.numero,variante:update.variante,method:result.method,evidence},{onConflict:'entry_key'}))
-   if(entry.image_url)await check(db.from('set_carte_immagini').upsert({sigla:update.sigla,numero:update.numero,variante:update.variante,lingua:entry.language,immagine:entry.image_url,fonte:entry.source_url||'catalogo',verificata:true},{onConflict:'sigla,numero,variante,lingua'}))
+   if(photo)await check(db.rpc('bindex_publish_photo',{set_code:update.sigla,card_number:update.numero,printing:update.variante,...photo}))
    await check(db.from('catalog_export_pending').delete().eq('entry_key',entry.entry_key))
    const index=rows.findIndex(r=>stableKey(r)===stableKey(update));if(index>=0)rows[index]=update;else rows.push(update)
    published++

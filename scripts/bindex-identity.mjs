@@ -54,6 +54,7 @@ export function resolvePublication(entry,card,sets,reference){
  if(existing){if(cm&&existing.cardmarket_id&&cm!==existing.cardmarket_id)return {reason:'product_identity_conflict'};return {row:existing,method:'set+printed_number+variant',cm}}
  // No globally reused product ID may create a different printing by accident.
  if(cm&&reference.some(r=>r.cardmarket_id===cm&&r.sigla===canonical.sigla))return {reason:'reused_product_id'}
+ if(payload.source_language&&!['it','en'].includes(payload.source_language))return {reason:'name_language_unconfirmed'}
  return {row:{sigla:canonical.sigla,numero:Number(printed),variante:proposed,nome:payload.source_name||card.nome,rarita:payload.rarity||null,codice:`${canonical.sigla} ${String(Number(printed)).padStart(3,'0')}`,cardmarket_id:cm||null,cardmarket_url:null,immagine:null,immagine_hd:null,tag:[],eliminata:false},method:'new_explicit_source_variant',created:true,cm}
 }
 
