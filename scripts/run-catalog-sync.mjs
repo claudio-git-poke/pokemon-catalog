@@ -1,3 +1,4 @@
+import {publishBindex} from './publish-bindex.mjs'
 import {syncDeckMappings,linkMfbIdentities} from './deck-mappings.mjs'
 import { createClient } from '@supabase/supabase-js'
 import { syncCuratedReleases } from './enrich-catalog.mjs'
@@ -24,5 +25,7 @@ await syncCuratedReleases({db})
 await syncDeckMappings({db})
 await linkMfbIdentities({db})
 await runSession({ minutes, runCycle: async () => {
-  return syncCatalog({db,enrich:true})
+  const result=await syncCatalog({db,enrich:true})
+  await publishBindex({db})
+  return result
 }, hasWork })

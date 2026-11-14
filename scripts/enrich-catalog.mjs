@@ -22,7 +22,7 @@ export function detailEntries(card,detail){
   const key=v.variantId || createHash('sha256').update(JSON.stringify({...clean,thirdParty:undefined})).digest('hex').slice(0,24)
   return {entry_key:`tcgdex:${card.id}:${key}`,card_id:card.id,collector_number:tags.includes('family:my-first-battle')?null:normNumber(detail.localId),denominator:tags.includes('family:my-first-battle')?null:detail.set?.cardCount?.official?String(detail.set.cardCount.official):null,release_year:attributes.release_year||null,deck_code:attributes.deck||null,deck_number:null,
    name:card.nome,set_code:card.sigla,language:card.lingua,tags:expandTags(tags),facts:{...baseFacts(card),...facts},
-   source_url:`https://api.tcgdex.net/v2/${lang}/cards/${encodeURIComponent(detail.id)}`,source_payload:{id:detail.id,localId:detail.localId,set:detail.set,variant:clean,attributes},verification:'source',
+   source_url:`https://api.tcgdex.net/v2/${lang}/cards/${encodeURIComponent(detail.id)}`,source_payload:{id:detail.id,localId:detail.localId,set:detail.set,rarity:detail.rarity,source_name:detail.name,source_language:lang,product_variant_count:clean.thirdParty?.cardmarket?raw.filter(x=>x.thirdParty?.cardmarket===clean.thirdParty.cardmarket).length:0,has_normal_variant:raw.some(x=>x.type==='normal'),variant:clean,attributes},verification:'source',
    label:[v.type,v.foil,v.subtype,...(v.stamp||[])].filter(Boolean).join(' · ')||'Stampa dichiarata dalla fonte',updated_at:now(),search_text:normalizeSearch(`${card.nome} ${card.sigla} ${detail.set?.name||''} ${card.codice||''}`)}
  })
 }
