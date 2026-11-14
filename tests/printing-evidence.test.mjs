@@ -19,3 +19,9 @@ test('sharing a selected printing preserves the card URL and escapes the exact e
  assert.equal(u.pathname,'/carta/42');assert.equal(u.searchParams.get('other'),'keep')
  assert.equal(u.searchParams.get('stampa'),'atlas-metadata:42 / example');assert.equal(u.hash,'#stampe')
 })
+test('MFB blue border is compared only when explicitly documented',()=>{
+ const rows=comparePrintings({tags:[],facts:{blue_border_visible:false}},{tags:[],facts:{blue_border_visible:true}})
+ assert.equal(rows.find(r=>r.prefix==='subtype:').status,'different')
+ assert.deepEqual(printingFieldValues({tags:[],facts:{}},'subtype:'),[])
+ assert.deepEqual(printingFieldValues({tags:['rarity:none']},'rarity:'),['Nessuna rarità indicata dalla fonte'])
+})
