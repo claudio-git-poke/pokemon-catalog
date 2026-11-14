@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 type Event={id:number;at:string;message:string}
 const format=(at:string)=>new Date(at).toLocaleTimeString('it-IT',{timeZone:'Europe/Rome',hour12:false})
-export default function AutomationLog({runId}:{runId:number}){
+export default function AutomationLog({runId,onPause}:{runId:number;onPause?:()=>void}){
  const [events,setEvents]=useState<Event[]>([]),[error,setError]=useState(''),[live,setLive]=useState(true),[search,setSearch]=useState(''),[loading,setLoading]=useState(true),[older,setOlder]=useState(true),[reset,setReset]=useState(0)
  const cursor=useRef(0),oldest=useRef(0)
  useEffect(()=>{let active=true,timer:ReturnType<typeof setTimeout>;cursor.current=0;oldest.current=0;setEvents([]);setLoading(true);setOlder(true)
@@ -35,7 +35,7 @@ export default function AutomationLog({runId}:{runId:number}){
   setLoading(false)
  }
  // History uses its own component instance so turning off live polling never resets the page being read.
- return <div className="space-y-3"><div className="flex flex-wrap gap-3 items-center"><span className="text-sm">{live?'● In diretta · nuove righe ogni secondo':'Lettura in pausa'}</span><button className="border rounded-lg px-3 py-2 text-sm" onClick={()=>setLive(v=>!v)}>{live?'Pausa lettura':'Riprendi diretta'}</button><input aria-label="Filtra il registro" className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-0" placeholder="Cerca carta, #ID, set o errore…" value={search} onChange={e=>setSearch(e.target.value)}/></div>
+ return <div className="space-y-3"><div className="flex flex-wrap gap-3 items-center"><span className="text-sm">{live?'● In diretta · nuove righe ogni secondo':'Lettura in pausa'}</span><button className="border rounded-lg px-3 py-2 text-sm" onClick={()=>{if(live)onPause?.();setLive(v=>!v)}}>{live?'Pausa lettura':'Riprendi diretta'}</button><input aria-label="Filtra il registro" className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-0" placeholder="Cerca carta, #ID, set o errore…" value={search} onChange={e=>setSearch(e.target.value)}/></div>
  {error&&<p role="alert" className="text-sm text-red-600">{error}</p>}
  <div className="h-96 overflow-auto font-mono text-xs bg-gray-950 text-gray-100 rounded p-3" aria-label="Registro attività">{events.map(event=><div key={event.id} className="py-1 border-b border-gray-800 break-words"><time className="text-gray-400">{format(event.at)}</time> · {event.message}</div>)}{!events.length&&<p>{loading?'Caricamento eventi…':search?'Nessuna attività corrispondente.':'Nessun evento per questa esecuzione.'}</p>}</div>
  <p className="text-xs text-gray-500">{events.length} righe visualizzate, dalle più recenti. Tutti gli eventi registrati sono consultabili a pagine; il processo continua anche mentre leggi lo storico.</p>
