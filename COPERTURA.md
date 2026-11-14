@@ -1,6 +1,6 @@
 # Copertura e controlli di coerenza
 
-La pagina `/copertura`, nel menu principale, usa `catalog_quality_report()` in sola lettura e con i permessi del chiamante. La migrazione è in `db/catalog-quality.sql`. L'aggiornamento è manuale per non rieseguire continuamente l'aggregazione durante il recupero dei tag.
+La pagina `/copertura`, nel menu principale, usa `catalog_quality_report()` in sola lettura e con i permessi del chiamante. La migrazione è in `db/catalog-quality.sql`. L’aggiornamento è in tempo reale: le modifiche inviano un segnale leggero alla dashboard, che raggruppa gli eventi ravvicinati per circa 1,5 secondi prima di rileggere i contatori. Il pulsante manuale resta disponibile.
 
 Le statistiche delle importazioni si possono filtrare per fonte, lingua ed espansione. Una riga importata non equivale a una carta unica nel mondo: fonti e lingue diverse possono rappresentare la stessa carta.
 
