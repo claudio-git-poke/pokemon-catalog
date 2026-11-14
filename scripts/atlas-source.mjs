@@ -26,7 +26,7 @@ export async function atlasCards(root,set) {
   const image=data.img || data.image || null
   const allowed={jp:'www.pokemon-card.com',ko:'cards.image.pokemonkorea.co.kr',tc:'asia.pokemon-card.com'}
   if(image){try{const url=new URL(image);if(url.protocol!=='https:' || url.hostname!==allowed[entry[0]])continue}catch{continue}}
-  cards.push({id:`${set.set_id}-${filename.slice(0,-5)}`,localId:data.number ? String(data.number) : `UNNUMBERED:${filename.slice(0,-5)}`,name:data.name,image,sourcePage:data.url || null,localLanguage:entry[2]})
+  cards.push({id:`${set.set_id}-${filename.slice(0,-5)}`,localId:data.number ? String(data.number) : `UNNUMBERED:${filename.slice(0,-5)}`,name:data.name,image,sourcePage:data.url || null,localLanguage:entry[2],metadata:{rarity:data.rarity||null,card_type:data.card_type||null,types:data.types_en||data.types||[],regulation:data.regulation||null,set_total:data.set_total||null}})
  }
  return cards
 }

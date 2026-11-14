@@ -14,7 +14,7 @@ with entries as materialized (
   nullif(trim(c.image_url),'') is null missing_image,
   case when e.tagged then 'indexed'
    when c.traits_checked_at is not null then 'insufficient'
-   when c.source_uid is null or c.source_uid not like 'tcgdex:%' then 'unsupported'
+   when c.source_uid is null or c.source_card_id is null or (c.source_uid not like 'tcgdex:%' and c.source_uid not like 'atlas:%') then 'unsupported'
    when c.traits_last_error is not null then 'retry'
    else 'pending' end metadata_state
  from public.cards c left join entries e on e.card_id=c.id

@@ -1,0 +1,43 @@
+name: Metadati carte asiatiche
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/atlas-metadata.mjs'
+      - 'scripts/backfill-atlas-tags.mjs'
+      - '.github/workflows/atlas-tags.yml'
+  schedule:
+    - cron: '43 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: atlas-tags-backfill
+  cancel-in-progress: false
+jobs:
+  tags:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: type-null/PTCG-database
+          path: .catalog-data
+          sparse-checkout: |
+            data_jp
+            data_ko
+            data_tc
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node --experimental-strip-types scripts/backfill-atlas-tags.mjs
+        env:
+          ATLAS_DATA_DIR: .catalog-data
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

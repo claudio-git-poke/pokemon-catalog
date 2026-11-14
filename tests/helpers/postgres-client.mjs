@@ -6,10 +6,11 @@ export function postgresClient(pg) {
   const q={
    select(){return q},insert(p){mode='insert';payload=p;return q},upsert(p,o={}){mode='upsert';payload=p;options=o;return q},update(p){mode='update';payload=p;return q},
    eq(k,v){conditions.push([k,'=',v]);return q},neq(k,v){conditions.push([k,'<>',v]);return q},lte(k,v){conditions.push([k,'<=',v]);return q},is(k,v){conditions.push([k,'is',v]);return q},in(k,v){conditions.push([k,'in',v]);return q},
+   like(k,v){conditions.push([k,'like',v]);return q},
    order(k){orders.push(k);return q},limit(n){limit=n;return q},range(a,b){offset=a;limit=b-a+1;return q},single(){single=true;return q},maybeSingle(){single=true;optional=true;return q},
    async then(resolve,reject){
     try {
-     const params=[]; const value=v=>{params.push(typeof v==='object' && v!==null ? JSON.stringify(v):v);return `$${params.length}`}
+     const params=[]; const value=v=>{if(Array.isArray(v))return 'array['+v.map(value).join(',')+']::text[]';params.push(typeof v==='object' && v!==null ? JSON.stringify(v):v);return `$${params.length}`}
      const where=()=>conditions.length ? ' where '+conditions.map(([k,op,v])=>op==='is'?`${ident(k)} is null`:op==='in'?`${ident(k)} in (${v.map(value).join(',')})`:`${ident(k)} ${op} ${value(v)}`).join(' and '):''
      let sql
      if(mode==='select')sql=`select * from ${ident(table)}${where()}${orders.length?' order by '+orders.map(ident).join(','):''}${limit!==undefined?' limit '+limit:''} offset ${offset}`
