@@ -27,7 +27,8 @@
       ]
     },
     "target": "ES2017",
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "allowImportingTsExtensions": true
   },
   "include": [
     "next-env.d.ts",

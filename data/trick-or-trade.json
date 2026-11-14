@@ -1,0 +1,812 @@
+[
+  {
+    "year": 2022,
+    "set_id": "swsh2",
+    "local_id": "015",
+    "printed_number": "015/192",
+    "name": "Trevenant",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh2",
+    "local_id": "031",
+    "printed_number": "031/192",
+    "name": "Litwick",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh2",
+    "local_id": "032",
+    "printed_number": "032/192",
+    "name": "Lampent",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh2",
+    "local_id": "033",
+    "printed_number": "033/192",
+    "name": "Chandelure",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh3",
+    "local_id": "081",
+    "printed_number": "081/189",
+    "name": "Mimikyu",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh3",
+    "local_id": "082",
+    "printed_number": "082/189",
+    "name": "Sinistea",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh3",
+    "local_id": "083",
+    "printed_number": "083/189",
+    "name": "Polteageist",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh3",
+    "local_id": "102",
+    "printed_number": "102/189",
+    "name": "Spinarak",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh3",
+    "local_id": "103",
+    "printed_number": "103/189",
+    "name": "Ariados",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh3",
+    "local_id": "105",
+    "printed_number": "105/189",
+    "name": "Darkrai",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh3.5",
+    "local_id": "018",
+    "printed_number": "018/073",
+    "name": "Hatenna",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh5",
+    "local_id": "069",
+    "printed_number": "069/163",
+    "name": "Cubone",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh5",
+    "local_id": "089",
+    "printed_number": "089/163",
+    "name": "Zubat",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh5",
+    "local_id": "093",
+    "printed_number": "093/163",
+    "name": "Murkrow",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh6",
+    "local_id": "055",
+    "printed_number": "055/198",
+    "name": "Gastly",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh6",
+    "local_id": "056",
+    "printed_number": "056/198",
+    "name": "Haunter",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh6",
+    "local_id": "057",
+    "printed_number": "057/198",
+    "name": "Gengar",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh6",
+    "local_id": "072",
+    "printed_number": "072/198",
+    "name": "Hattrem",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh6",
+    "local_id": "073",
+    "printed_number": "073/198",
+    "name": "Hatterene",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh7",
+    "local_id": "049",
+    "printed_number": "049/203",
+    "name": "Pikachu",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh7",
+    "local_id": "076",
+    "printed_number": "076/203",
+    "name": "Pumpkaboo",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh7",
+    "local_id": "077",
+    "printed_number": "077/203",
+    "name": "Gourgeist",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh8",
+    "local_id": "016",
+    "printed_number": "016/264",
+    "name": "Phantump",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh9",
+    "local_id": "056",
+    "printed_number": "056/172",
+    "name": "Mewtwo",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh9",
+    "local_id": "060",
+    "printed_number": "060/172",
+    "name": "Duskull",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh9",
+    "local_id": "061",
+    "printed_number": "061/172",
+    "name": "Dusclops",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh9",
+    "local_id": "062",
+    "printed_number": "062/172",
+    "name": "Dusknoir",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh10",
+    "local_id": "058",
+    "printed_number": "058/189",
+    "name": "Misdreavus",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh10",
+    "local_id": "059",
+    "printed_number": "059/189",
+    "name": "Mismagius",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2022,
+    "set_id": "swsh10",
+    "local_id": "103",
+    "printed_number": "103/189",
+    "name": "Nickit",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2022_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh1",
+    "local_id": "089",
+    "printed_number": "089/202",
+    "name": "Sinistea",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh1",
+    "local_id": "090",
+    "printed_number": "090/202",
+    "name": "Polteageist",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh2",
+    "local_id": "102",
+    "printed_number": "102/192",
+    "name": "Galarian Runerigus",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh4",
+    "local_id": "019",
+    "printed_number": "019/185",
+    "name": "Dhelmise",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh4",
+    "local_id": "069",
+    "printed_number": "069/185",
+    "name": "Duskull",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh4",
+    "local_id": "070",
+    "printed_number": "070/185",
+    "name": "Dusclops",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh4",
+    "local_id": "071",
+    "printed_number": "071/185",
+    "name": "Dusknoir",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh4",
+    "local_id": "095",
+    "printed_number": "095/185",
+    "name": "Lycanroc",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh7",
+    "local_id": "080",
+    "printed_number": "080/203",
+    "name": "Marshadow",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh11",
+    "local_id": "016",
+    "printed_number": "016/196",
+    "name": "Phantump",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh11",
+    "local_id": "017",
+    "printed_number": "017/196",
+    "name": "Trevenant",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh11",
+    "local_id": "024",
+    "printed_number": "024/196",
+    "name": "Litwick",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh11",
+    "local_id": "025",
+    "printed_number": "025/196",
+    "name": "Lampent",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh11",
+    "local_id": "026",
+    "printed_number": "026/196",
+    "name": "Chandelure",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh11",
+    "local_id": "064",
+    "printed_number": "064/196",
+    "name": "Gastly",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh11",
+    "local_id": "065",
+    "printed_number": "065/196",
+    "name": "Haunter",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh11",
+    "local_id": "066",
+    "printed_number": "066/196",
+    "name": "Gengar",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh11",
+    "local_id": "073",
+    "printed_number": "073/196",
+    "name": "Banette",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh11",
+    "local_id": "081",
+    "printed_number": "081/196",
+    "name": "Spectrier",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "swsh12",
+    "local_id": "103",
+    "printed_number": "103/195",
+    "name": "Zubat",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "sv01",
+    "local_id": "034",
+    "printed_number": "034/198",
+    "name": "Houndoom",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "sv01",
+    "local_id": "087",
+    "printed_number": "087/198",
+    "name": "Shuppet",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "sv01",
+    "local_id": "089",
+    "printed_number": "089/198",
+    "name": "Drifloon",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "sv01",
+    "local_id": "090",
+    "printed_number": "090/198",
+    "name": "Drifblim",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "sv01",
+    "local_id": "104",
+    "printed_number": "104/198",
+    "name": "Greavard",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "sv01",
+    "local_id": "106",
+    "printed_number": "106/198",
+    "name": "Houndstone",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "sv02",
+    "local_id": "062",
+    "printed_number": "062/193",
+    "name": "Pikachu",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "sv02",
+    "local_id": "088",
+    "printed_number": "088/193",
+    "name": "Mismagius",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "sv02",
+    "local_id": "097",
+    "printed_number": "097/193",
+    "name": "Mimikyu",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2023,
+    "set_id": "sv02",
+    "local_id": "131",
+    "printed_number": "131/193",
+    "name": "Murkrow",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2023_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv02",
+    "local_id": "012",
+    "printed_number": "012/193",
+    "name": "Sprigatito",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv02",
+    "local_id": "050",
+    "printed_number": "050/193",
+    "name": "Quaxly",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv03",
+    "local_id": "130",
+    "printed_number": "130/197",
+    "name": "Umbreon",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv03",
+    "local_id": "131",
+    "printed_number": "131/197",
+    "name": "Houndour",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv03",
+    "local_id": "133",
+    "printed_number": "133/197",
+    "name": "Houndoom",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv03",
+    "local_id": "136",
+    "printed_number": "136/197",
+    "name": "Darkrai",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv04",
+    "local_id": "023",
+    "printed_number": "023/182",
+    "name": "Fuecoco",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv04",
+    "local_id": "077",
+    "printed_number": "077/182",
+    "name": "Pumpkaboo",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv04",
+    "local_id": "078",
+    "printed_number": "078/182",
+    "name": "Gourgeist",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv04.5",
+    "local_id": "018",
+    "printed_number": "018/091",
+    "name": "Pikachu",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv04.5",
+    "local_id": "037",
+    "printed_number": "037/091",
+    "name": "Mimikyu",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv04.5",
+    "local_id": "042",
+    "printed_number": "042/091",
+    "name": "Greavard",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv04.5",
+    "local_id": "043",
+    "printed_number": "043/091",
+    "name": "Houndstone",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv04.5",
+    "local_id": "057",
+    "printed_number": "057/091",
+    "name": "Gengar",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv05",
+    "local_id": "077",
+    "printed_number": "077/162",
+    "name": "Scream Tail",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv05",
+    "local_id": "078",
+    "printed_number": "078/162",
+    "name": "Flutter Mane",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv05",
+    "local_id": "102",
+    "printed_number": "102/162",
+    "name": "Gastly",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv05",
+    "local_id": "103",
+    "printed_number": "103/162",
+    "name": "Haunter",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv05",
+    "local_id": "139",
+    "printed_number": "139/162",
+    "name": "Iron Jugulis",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "012",
+    "printed_number": "012/167",
+    "name": "Phantump",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "013",
+    "printed_number": "013/167",
+    "name": "Trevenant",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "021",
+    "printed_number": "021/167",
+    "name": "Poltchageist",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "022",
+    "printed_number": "022/167",
+    "name": "Sinistcha",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "024",
+    "printed_number": "024/167",
+    "name": "Teal Mask Ogerpon",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "036",
+    "printed_number": "036/167",
+    "name": "Litwick",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "037",
+    "printed_number": "037/167",
+    "name": "Lampent",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "038",
+    "printed_number": "038/167",
+    "name": "Chandelure",
+    "holo": false,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "095",
+    "printed_number": "095/167",
+    "name": "Munkidori",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "096",
+    "printed_number": "096/167",
+    "name": "Fezandipiti",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  },
+  {
+    "year": 2024,
+    "set_id": "sv06",
+    "local_id": "111",
+    "printed_number": "111/167",
+    "name": "Okidogi",
+    "holo": true,
+    "source": "https://bulbapedia.bulbagarden.net/wiki/Trick_or_Trade_2024_(TCG)"
+  }
+]

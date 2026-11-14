@@ -1,9 +1,10 @@
+import { enrichCatalog } from './enrich-catalog.mjs'
 import { createCatalogLogger } from './catalog-logger.mjs'
 import { externalImages } from '../src/lib/external-cards.ts'
 import { atlasSets,importAtlasSet } from './atlas-source.mjs'
 import { aggressiveSearch } from '../src/lib/image-search.ts'
 import { SOURCES, sourceUid, legacyMatch, newCard, retryAt } from './catalog-core.mjs'
-export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, budgetMs = 8 * 60 * 1000, atlasRoot = process.env.ATLAS_DATA_DIR, loadAtlasSets = atlasSets, importAtlas = importAtlasSet, imageLookup = externalImages }) {
+export async function syncCatalog({ db, enrich = false, search = aggressiveSearch, fetchSource, budgetMs = 8 * 60 * 1000, atlasRoot = process.env.ATLAS_DATA_DIR, loadAtlasSets = atlasSets, importAtlas = importAtlasSet, imageLookup = externalImages }) {
   const deadline = Date.now() + budgetMs
   const now = () => new Date().toISOString()
   const later = hours => new Date(Date.now() + hours * 3600000).toISOString()
@@ -19,6 +20,7 @@ export async function syncCatalog({ db, search = aggressiveSearch, fetchSource, 
   const log = createCatalogLogger({db,runId:run.id,summary})
   try {
     await log('Avvio: controllo catalogo e code di lavoro.', true)
+    if(enrich)await enrichCatalog({db,log})
     // A found flag with no URL must not keep a card outside the image queue.
     await check(db.from('cards').update({image_status:'missing',image_next_attempt_at:now()}).eq('image_status','found').is('image_url',null))
     await check(db.from('cards').update({image_status:'missing',image_next_attempt_at:now()}).eq('image_status','found').eq('image_url',''))

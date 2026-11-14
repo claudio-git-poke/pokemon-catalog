@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { supabase, Card } from '@/lib/supabase'
 import Link from 'next/link'
+import PrintingTraits from '@/components/printing-traits'
 
 export default function CardDetailPage() {
   const params = useParams()
@@ -182,6 +183,7 @@ export default function CardDetailPage() {
         )}
       </div>
 
+      <PrintingTraits cardId={card.id}/>
       <div className="bg-white rounded-xl shadow p-6">
         <h2 className="font-semibold mb-3">Anteprima foto</h2>
         {imageUrl ? (
