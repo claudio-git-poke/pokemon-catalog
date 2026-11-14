@@ -69,7 +69,7 @@ export default function AutomationPage() {
       <label className="block text-sm">Esecuzione da seguire <select className="border rounded-lg px-3 py-2 ml-2" value={selectedRun} onChange={e=>setSelectedRun(Number(e.target.value))}><option value={0}>Segui sempre l’ultima</option>{runs.map(run=><option key={run.id} value={run.id}>#{run.id} · {date(run.started_at)} · {run.status}</option>)}</select></label>
       <p>{selected?.summary.current || 'In attesa di attività.'}</p>
       {selected?.summary.updated_at && <p className="text-sm text-gray-600">Ultimo aggiornamento: {date(selected.summary.updated_at)}</p>}
-      {selected && <AutomationLog key={selected.id} runId={selected.id}/>}
+      {selected && <AutomationLog key={selected.id} runId={selected.id} onPause={()=>setSelectedRun(selected.id)}/>}
     </section>
     <h2 className="font-bold text-xl">Ultime esecuzioni</h2>
     <div className="overflow-x-auto bg-white rounded shadow"><table className="w-full text-sm"><thead><tr><th className="p-3 text-left">Avvio</th><th className="p-3 text-left">Stato</th><th className="p-3 text-left">Risultati</th></tr></thead><tbody>{runs.map(run=><tr key={run.id} className="border-t"><td className="p-3">{date(run.started_at)}</td><td className="p-3">{run.status}</td><td className="p-3">{run.summary.added || 0} inserite · {run.summary.linked || 0} collegate · {run.summary.alternatives || 0} fonti alternative · {run.summary.found || 0} immagini trovate · {run.summary.errors || 0} errori</td></tr>)}</tbody></table></div>
