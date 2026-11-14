@@ -1,3 +1,4 @@
+import {linkCardmarket} from './link-cardmarket.mjs'
 import {publishBindexSafely} from './publish-bindex-safely.mjs'
 import {syncDeckMappings,linkMfbIdentities} from './deck-mappings.mjs'
 import { createClient } from '@supabase/supabase-js'
@@ -27,6 +28,7 @@ await linkMfbIdentities({db})
 await runSession({ minutes, runCycle: async () => {
   const result=await syncCatalog({db,enrich:true})
   const publication=await publishBindexSafely({db})
-  result.errors+=publication.errors
+  const marketplace=await linkCardmarket({db})
+  result.errors+=publication.errors+marketplace.errors
   return result
 }, hasWork })
