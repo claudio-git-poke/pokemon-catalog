@@ -40,7 +40,7 @@ export async function publishBindex({db,log=console.log,limit=200}){
   }
   const t=timestampMicros(entry.updated_at),previous=timestampMicros(cursor[0]);if(t>previous||t===previous&&entry.entry_key>cursor[1])cursor=[entry.updated_at,entry.entry_key]
  }
- await check(db.from('catalog_export_state').update({cursor_time:cursor[0],cursor_key:cursor[1],refreshed_at:new Date().toISOString(),statistics:{published,pending,examined:queue.length}}).eq('id','bindex'))
+ await check(db.rpc('catalog_export_progress',{cursor_time_new:cursor[0],cursor_key_new:cursor[1],counts:{published,pending,examined:queue.length}}))
  await log(`Allineamento Bindex: ${published} stampe collegate/pubblicate, ${pending} sospese per identità non certa.`)
  return {published,pending}
 }

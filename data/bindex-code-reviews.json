@@ -1,0 +1,2309 @@
+[
+  {
+    "sigla": "BA20",
+    "numero": 6,
+    "variante": "normale",
+    "nome": "Acchiappa-Pokémon",
+    "cardmarket_id": 550156,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Pokemon-Catcher-V1-SUM126",
+    "status": "verified",
+    "proposed_code": "SUM 126",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Pokemon-Catcher-V1-SUM126"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 7,
+    "variante": "normale",
+    "nome": "Acchiappa-Pokémon",
+    "cardmarket_id": 550321,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Pokemon-Catcher-V2-SUM126",
+    "status": "verified",
+    "proposed_code": "SUM 126",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Pokemon-Catcher-V2-SUM126"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 8,
+    "variante": "normale",
+    "nome": "Alolan Raichu",
+    "cardmarket_id": 550216,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Alolan-Raichu-V1-SM65",
+    "status": "verified",
+    "proposed_code": "SM 065",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Alolan-Raichu-V1-SM65"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 9,
+    "variante": "normale",
+    "nome": "Blitzle",
+    "cardmarket_id": 550166,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Blitzle-V1-LOT81",
+    "status": "verified",
+    "proposed_code": "LOT 081",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Blitzle-V1-LOT81"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 10,
+    "variante": "normale",
+    "nome": "Camilla",
+    "cardmarket_id": 550101,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Cynthia-V1-UPR119",
+    "status": "verified",
+    "proposed_code": "UPR 119",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Cynthia-V1-UPR119"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 11,
+    "variante": "normale",
+    "nome": "Chansey",
+    "cardmarket_id": 550341,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Chansey-V1-HIF46",
+    "status": "verified",
+    "proposed_code": "HIF 046",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Chansey-V1-HIF46"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 12,
+    "variante": "normale",
+    "nome": "Charizard",
+    "cardmarket_id": 550136,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Charizard-DRM3",
+    "status": "verified",
+    "proposed_code": "DRM 003",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Charizard-DRM3"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 13,
+    "variante": "normale",
+    "nome": "Charizard GX",
+    "cardmarket_id": 550161,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Charizard-GX-HIF9",
+    "status": "verified",
+    "proposed_code": "HIF 009",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Charizard-GX-HIF9"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 14,
+    "variante": "normale",
+    "nome": "Charmeleon",
+    "cardmarket_id": 550096,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Charmeleon-V1-HIF8",
+    "status": "verified",
+    "proposed_code": "HIF 008",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Charmeleon-V1-HIF8"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 15,
+    "variante": "normale",
+    "nome": "Cresselia",
+    "cardmarket_id": 550291,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Cresselia-UNM87",
+    "status": "verified",
+    "proposed_code": "UNM 087",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Cresselia-UNM87"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 16,
+    "variante": "normale",
+    "nome": "Eevee",
+    "cardmarket_id": 550111,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Eevee-V1-HIF49",
+    "status": "verified",
+    "proposed_code": "HIF 049",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Eevee-V1-HIF49"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 17,
+    "variante": "normale",
+    "nome": "Electabuzz",
+    "cardmarket_id": 550186,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Electabuzz-V1-UPR43",
+    "status": "verified",
+    "proposed_code": "UPR 043",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Electabuzz-V1-UPR43"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 18,
+    "variante": "normale",
+    "nome": "Electivire",
+    "cardmarket_id": 550236,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Electivire-V1-BUS43",
+    "status": "verified",
+    "proposed_code": "BUS 043",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Electivire-V1-BUS43"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 19,
+    "variante": "normale",
+    "nome": "Energia Fuoco",
+    "cardmarket_id": 550016,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Fire-Energy-V1-SUM",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Fire-Energy-V1-SUM",
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)"
+    ],
+    "method": "deck_list_has_no_energy_code",
+    "note": "Energia base senza identificativo originale nella lista del mazzo; codice lasciato vuoto.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 20,
+    "variante": "normale",
+    "nome": "Energia Lampo",
+    "cardmarket_id": 550176,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Lightning-Energy-V1-SUM",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Lightning-Energy-V1-SUM",
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)"
+    ],
+    "method": "deck_list_has_no_energy_code",
+    "note": "Energia base senza identificativo originale nella lista del mazzo; codice lasciato vuoto.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 21,
+    "variante": "normale",
+    "nome": "Energia Psiche",
+    "cardmarket_id": 550336,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Psychic-Energy-SUM",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Psychic-Energy-SUM",
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)"
+    ],
+    "method": "deck_list_has_no_energy_code",
+    "note": "Energia base senza identificativo originale nella lista del mazzo; codice lasciato vuoto.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 22,
+    "variante": "normale",
+    "nome": "Espeon",
+    "cardmarket_id": 550261,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Espeon-LOT89",
+    "status": "verified",
+    "proposed_code": "LOT 089",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Espeon-LOT89"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 23,
+    "variante": "normale",
+    "nome": "Flareon",
+    "cardmarket_id": 550116,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Flareon-V1-SM186",
+    "status": "verified",
+    "proposed_code": "SM 186",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Flareon-V1-SM186"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 24,
+    "variante": "normale",
+    "nome": "Hau",
+    "cardmarket_id": 550191,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Hau-V5-SUM120",
+    "status": "verified",
+    "proposed_code": "SUM 120",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Hau-V5-SUM120"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 25,
+    "variante": "normale",
+    "nome": "Hau",
+    "cardmarket_id": 550316,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Hau-V9-SUM120",
+    "status": "verified",
+    "proposed_code": "SUM 120",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Hau-V9-SUM120"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 26,
+    "variante": "normale",
+    "nome": "Kangaskhan",
+    "cardmarket_id": 550031,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Kangaskhan-V1-DRM55",
+    "status": "verified",
+    "proposed_code": "DRM 055",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Kangaskhan-V1-DRM55"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 27,
+    "variante": "normale",
+    "nome": "Mareanie",
+    "cardmarket_id": 550276,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Mareanie-LOT105",
+    "status": "verified",
+    "proposed_code": "LOT 105",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Mareanie-LOT105"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 28,
+    "variante": "normale",
+    "nome": "Mega Ball",
+    "cardmarket_id": 550126,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Great-Ball-V1-SUM119",
+    "status": "verified",
+    "proposed_code": "SUM 119",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Great-Ball-V1-SUM119"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 29,
+    "variante": "normale",
+    "nome": "Mega Ball",
+    "cardmarket_id": 550231,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Great-Ball-V5-SUM119",
+    "status": "verified",
+    "proposed_code": "SUM 119",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Great-Ball-V5-SUM119"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 30,
+    "variante": "normale",
+    "nome": "Mega Ball",
+    "cardmarket_id": 550311,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Great-Ball-V9-SUM119",
+    "status": "verified",
+    "proposed_code": "SUM 119",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Great-Ball-V9-SUM119"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 31,
+    "variante": "normale",
+    "nome": "Mesprit",
+    "cardmarket_id": 550286,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Mesprit-UNM84",
+    "status": "verified",
+    "proposed_code": "UNM 084",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Mesprit-UNM84"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 32,
+    "variante": "normale",
+    "nome": "Mew",
+    "cardmarket_id": 550281,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Mew-HIF32",
+    "status": "verified",
+    "proposed_code": "HIF 032",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Mew-HIF32"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 33,
+    "variante": "normale",
+    "nome": "Mewtwo GX",
+    "cardmarket_id": 550256,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Mewtwo-GX-HIF31",
+    "status": "verified",
+    "proposed_code": "HIF 031",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Mewtwo-GX-HIF31"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 34,
+    "variante": "normale",
+    "nome": "Moltres",
+    "cardmarket_id": 550151,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Moltres-LOT38",
+    "status": "verified",
+    "proposed_code": "LOT 038",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Moltres-LOT38"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 35,
+    "variante": "normale",
+    "nome": "Pigliamosche",
+    "cardmarket_id": 550131,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Bug-Catcher-V1-UNM189",
+    "status": "verified",
+    "proposed_code": "UNM 189",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Bug-Catcher-V1-UNM189"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 36,
+    "variante": "normale",
+    "nome": "Pigliamosche",
+    "cardmarket_id": 550221,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Bug-Catcher-V3",
+    "status": "verified",
+    "proposed_code": "UNM 189",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Bug-Catcher-V3"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 37,
+    "variante": "normale",
+    "nome": "Pigliamosche",
+    "cardmarket_id": 550301,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Bug-Catcher-V7-UNM189",
+    "status": "verified",
+    "proposed_code": "UNM 189",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Bug-Catcher-V7-UNM189"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 38,
+    "variante": "normale",
+    "nome": "Pikachu",
+    "cardmarket_id": 550171,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Pikachu-V1-HIF19",
+    "status": "verified",
+    "proposed_code": "HIF 019",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Pikachu-V1-HIF19"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 39,
+    "variante": "normale",
+    "nome": "Pokémon Fan Club",
+    "cardmarket_id": 550146,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Pokemon-Fan-Club-V1-UPR133",
+    "status": "verified",
+    "proposed_code": "UPR 133",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Pokemon-Fan-Club-V1-UPR133"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 40,
+    "variante": "normale",
+    "nome": "Pokémon Fan Club",
+    "cardmarket_id": 550226,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Pokemon-Fan-Club-V2-UPR133",
+    "status": "verified",
+    "proposed_code": "UPR 133",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Pokemon-Fan-Club-V2-UPR133"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 41,
+    "variante": "normale",
+    "nome": "Potenziatore Elettrico",
+    "cardmarket_id": 550241,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Electropower-LOT172",
+    "status": "verified",
+    "proposed_code": "LOT 172",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Electropower-LOT172"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 42,
+    "variante": "normale",
+    "nome": "Pozione",
+    "cardmarket_id": 550086,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Potion-V1-SUM127",
+    "status": "verified",
+    "proposed_code": "SUM 127",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Potion-V1-SUM127"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 43,
+    "variante": "normale",
+    "nome": "Raichu GX",
+    "cardmarket_id": 550251,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Raichu-GX-HIF20",
+    "status": "verified",
+    "proposed_code": "HIF 020",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Raichu-GX-HIF20"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 44,
+    "variante": "normale",
+    "nome": "Salandit",
+    "cardmarket_id": 550071,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Salandit-V1-UPR25",
+    "status": "verified",
+    "proposed_code": "UPR 025",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Salandit-V1-UPR25"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 45,
+    "variante": "normale",
+    "nome": "Salazzle",
+    "cardmarket_id": 550056,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Salazzle-V1-UNM34",
+    "status": "verified",
+    "proposed_code": "UNM 034",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Salazzle-V1-UNM34"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 46,
+    "variante": "normale",
+    "nome": "Saldatrice",
+    "cardmarket_id": 550106,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Welder-UNB189",
+    "status": "verified",
+    "proposed_code": "UNB 189",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Welder-UNB189"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 47,
+    "variante": "normale",
+    "nome": "Scambio",
+    "cardmarket_id": 550141,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Switch-V1-SUM132",
+    "status": "verified",
+    "proposed_code": "SUM 132",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Switch-V1-SUM132"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 48,
+    "variante": "normale",
+    "nome": "Scambio",
+    "cardmarket_id": 550246,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Switch-V3-SUM132",
+    "status": "verified",
+    "proposed_code": "SUM 132",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Switch-V3-SUM132"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 49,
+    "variante": "normale",
+    "nome": "Scambio",
+    "cardmarket_id": 550331,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Switch-V5",
+    "status": "verified",
+    "proposed_code": "SUM 132",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Switch-V5"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 50,
+    "variante": "normale",
+    "nome": "Snorlax",
+    "cardmarket_id": 550296,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Snorlax-HIF50",
+    "status": "verified",
+    "proposed_code": "HIF 050",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Snorlax-HIF50"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 51,
+    "variante": "normale",
+    "nome": "Tauros",
+    "cardmarket_id": 550196,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Tauros-V1-UNM164",
+    "status": "verified",
+    "proposed_code": "UNM 164",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Tauros-V1-UNM164"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 52,
+    "variante": "normale",
+    "nome": "Toxapex",
+    "cardmarket_id": 550271,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Toxapex-UNM97",
+    "status": "verified",
+    "proposed_code": "UNM 097",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Toxapex-UNM97"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA20",
+    "numero": 53,
+    "variante": "normale",
+    "nome": "Zebstrika",
+    "cardmarket_id": 550201,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Zebstrika-V1-TEU45",
+    "status": "verified",
+    "proposed_code": "TEU 045",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2020_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2020/Zebstrika-V1-TEU45"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 1,
+    "variante": "normale",
+    "nome": "Carvanha",
+    "cardmarket_id": 833816,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Carvanha-BA22",
+    "status": "verified",
+    "proposed_code": "FST 162",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Carvanha-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 2,
+    "variante": "normale",
+    "nome": "Cinderace V",
+    "cardmarket_id": 674247,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Cinderace-V-FST043",
+    "status": "verified",
+    "proposed_code": "FST 043",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Cinderace-V-FST043"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 3,
+    "variante": "normale",
+    "nome": "Cuoco",
+    "cardmarket_id": 833830,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Cook-BA22",
+    "status": "verified",
+    "proposed_code": "FST 228",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Cook-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 4,
+    "variante": "normale",
+    "nome": "Darkrai",
+    "cardmarket_id": 833815,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Darkrai-BA22",
+    "status": "verified",
+    "proposed_code": "FST 167",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Darkrai-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 5,
+    "variante": "normale",
+    "nome": "Eevee V",
+    "cardmarket_id": 674248,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Eevee-V-SWSH065",
+    "status": "verified",
+    "proposed_code": "SWSH 065",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Eevee-V-SWSH065"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 6,
+    "variante": "normale",
+    "nome": "Energia Oscurità",
+    "cardmarket_id": 833831,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Darkness-Energy-BA22",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Darkness-Energy-BA22",
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)"
+    ],
+    "method": "deck_list_has_no_energy_code",
+    "note": "Energia base senza identificativo originale nella lista del mazzo; codice lasciato vuoto.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 7,
+    "variante": "normale",
+    "nome": "Galarian Linoone",
+    "cardmarket_id": 833821,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Galarian-Linoone-BA22",
+    "status": "verified",
+    "proposed_code": "CPA 036",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Galarian-Linoone-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 8,
+    "variante": "normale",
+    "nome": "Galarian Obstagoon",
+    "cardmarket_id": 833822,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Galarian-Obstagoon-BA22",
+    "status": "verified",
+    "proposed_code": "SWSH 193",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Galarian-Obstagoon-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 9,
+    "variante": "normale",
+    "nome": "Galarian Zigzagoon",
+    "cardmarket_id": 833820,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Galarian-Zigzagoon-BA22",
+    "status": "verified",
+    "proposed_code": "CPA 035",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Galarian-Zigzagoon-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 10,
+    "variante": "normale",
+    "nome": "Ginepro",
+    "cardmarket_id": 833829,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Piers-BA22",
+    "status": "verified",
+    "proposed_code": "DAA 165",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Piers-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 11,
+    "variante": "normale",
+    "nome": "Hop",
+    "cardmarket_id": 833825,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Hop-BA22",
+    "status": "verified",
+    "proposed_code": "SSH 165",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Hop-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 12,
+    "variante": "normale",
+    "nome": "Mega Ball",
+    "cardmarket_id": 833824,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Great-Ball-BA22",
+    "status": "verified",
+    "proposed_code": "SSH 164",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Great-Ball-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 13,
+    "variante": "normale",
+    "nome": "Pigliamosche",
+    "cardmarket_id": 833827,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Bug-Catcher-BA22",
+    "status": "verified",
+    "proposed_code": "FST 226",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Bug-Catcher-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 14,
+    "variante": "normale",
+    "nome": "Pikachu V",
+    "cardmarket_id": 674246,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Pikachu-V-VIV43",
+    "status": "verified",
+    "proposed_code": "VIV 043",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Pikachu-V-VIV43"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 15,
+    "variante": "normale",
+    "nome": "Scambio",
+    "cardmarket_id": 833823,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Switch-BA22",
+    "status": "verified",
+    "proposed_code": "SSH 183",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Switch-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 16,
+    "variante": "normale",
+    "nome": "Shana",
+    "cardmarket_id": 833826,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Shauna-BA22",
+    "status": "verified",
+    "proposed_code": "FST 240",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Shauna-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 17,
+    "variante": "normale",
+    "nome": "Sharpedo",
+    "cardmarket_id": 833817,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Sharpedo-BA22",
+    "status": "verified",
+    "proposed_code": "FST 163",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Sharpedo-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 18,
+    "variante": "normale",
+    "nome": "Sonia",
+    "cardmarket_id": 833828,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Sonia-BA22",
+    "status": "verified",
+    "proposed_code": "RCL 167",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Sonia-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 19,
+    "variante": "normale",
+    "nome": "Zoroark",
+    "cardmarket_id": 833819,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Zoroark-BA22",
+    "status": "verified",
+    "proposed_code": "FST 171",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Zoroark-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "BA22",
+    "numero": 20,
+    "variante": "normale",
+    "nome": "Zorua",
+    "cardmarket_id": 833818,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Zorua-BA22",
+    "status": "verified",
+    "proposed_code": "FST 170",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Battle_Academy_2022_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Battle-Academy-2022/Zorua-BA22"
+    ],
+    "method": "unique_card_identity_in_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 1,
+    "variante": "normale",
+    "nome": "Energia Acqua",
+    "cardmarket_id": 697222,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Water-Energy-V1-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Water-Energy-V1-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 2,
+    "variante": "normale",
+    "nome": "Energia Acqua",
+    "cardmarket_id": 835856,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Water-Energy-V2-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Water-Energy-V2-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 3,
+    "variante": "normale",
+    "nome": "Energia Erba",
+    "cardmarket_id": 697220,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Grass-Energy-V1-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Grass-Energy-V1-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 4,
+    "variante": "normale",
+    "nome": "Energia Erba",
+    "cardmarket_id": 835853,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Grass-Energy-V2-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Grass-Energy-V2-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 5,
+    "variante": "normale",
+    "nome": "Energia Fuoco",
+    "cardmarket_id": 697221,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Fire-Energy-V1-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Fire-Energy-V1-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 6,
+    "variante": "normale",
+    "nome": "Energia Fuoco",
+    "cardmarket_id": 835854,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Fire-Energy-V2-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Fire-Energy-V2-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 7,
+    "variante": "normale",
+    "nome": "Energia Lampo",
+    "cardmarket_id": 697223,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Lightning-Energy-V1-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Lightning-Energy-V1-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 8,
+    "variante": "normale",
+    "nome": "Energia Lampo",
+    "cardmarket_id": 835850,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Lightning-Energy-V2-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Lightning-Energy-V2-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 9,
+    "variante": "normale",
+    "nome": "Energia Lotta",
+    "cardmarket_id": 697225,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Fighting-Energy-V1-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Fighting-Energy-V1-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 10,
+    "variante": "normale",
+    "nome": "Energia Lotta",
+    "cardmarket_id": 835851,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Fighting-Energy-V2-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Fighting-Energy-V2-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 11,
+    "variante": "normale",
+    "nome": "Energia Metallo",
+    "cardmarket_id": 697227,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Metal-Energy-V1-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Metal-Energy-V1-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 12,
+    "variante": "normale",
+    "nome": "Energia Metallo",
+    "cardmarket_id": 835852,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Metal-Energy-V2-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Metal-Energy-V2-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 13,
+    "variante": "normale",
+    "nome": "Energia Oscurità",
+    "cardmarket_id": 697226,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Darkness-Energy-V1-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Darkness-Energy-V1-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 14,
+    "variante": "normale",
+    "nome": "Energia Oscurità",
+    "cardmarket_id": 835849,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Darkness-Energy-V2-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Darkness-Energy-V2-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 15,
+    "variante": "normale",
+    "nome": "Energia Psiche",
+    "cardmarket_id": 697224,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Psychic-Energy-V1-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Psychic-Energy-V1-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS1",
+    "numero": 16,
+    "variante": "normale",
+    "nome": "Energia Psiche",
+    "cardmarket_id": 835855,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Psychic-Energy-V2-PPS1",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-One/Psychic-Energy-V2-PPS1",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_1_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_One_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS2",
+    "numero": 1,
+    "variante": "normale",
+    "nome": "Energia Acqua",
+    "cardmarket_id": 705228,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Water-Energy-PPS2",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Water-Energy-PPS2",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_2_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_Two_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS2",
+    "numero": 2,
+    "variante": "normale",
+    "nome": "Energia Erba",
+    "cardmarket_id": 705226,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Grass-Energy-PPS2",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Grass-Energy-PPS2",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_2_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_Two_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS2",
+    "numero": 3,
+    "variante": "normale",
+    "nome": "Energia Fuoco",
+    "cardmarket_id": 705227,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Fire-Energy-PPS2",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Fire-Energy-PPS2",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_2_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_Two_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS2",
+    "numero": 4,
+    "variante": "normale",
+    "nome": "Energia Lampo",
+    "cardmarket_id": 705229,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Lightning-Energy-PPS2",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Lightning-Energy-PPS2",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_2_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_Two_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS2",
+    "numero": 5,
+    "variante": "normale",
+    "nome": "Energia Lotta",
+    "cardmarket_id": 705231,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Fighting-Energy-PPS2",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Fighting-Energy-PPS2",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_2_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_Two_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS2",
+    "numero": 6,
+    "variante": "normale",
+    "nome": "Energia Metallo",
+    "cardmarket_id": 705233,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Metal-Energy-PPS2",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Metal-Energy-PPS2",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_2_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_Two_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS2",
+    "numero": 7,
+    "variante": "normale",
+    "nome": "Energia Oscurità",
+    "cardmarket_id": 705232,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Darkness-Energy-PPS2",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Darkness-Energy-PPS2",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_2_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_Two_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS2",
+    "numero": 8,
+    "variante": "normale",
+    "nome": "Energia Psiche",
+    "cardmarket_id": 705230,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Psychic-Energy-PPS2",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Two/Psychic-Energy-PPS2",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_2_web_cardlist_en.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Play!_Pok%C3%A9mon_Prize_Pack_Series_Two_(TCG)"
+    ],
+    "method": "published_card_list_has_no_energy_code",
+    "note": "Le liste pubblicate riportano queste Energie senza codice. Il PDF ufficiale collegato non è stato leggibile in questa sessione; nessun numero dedotto dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 1,
+    "variante": "normale",
+    "nome": "Energia base Acqua",
+    "cardmarket_id": 826896,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Water-Energy-V1-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Water-Energy-V1-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 2,
+    "variante": "normale",
+    "nome": "Energia base Acqua",
+    "cardmarket_id": 727075,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Water-Energy-V2-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Water-Energy-V2-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 3,
+    "variante": "normale",
+    "nome": "Energia base Erba",
+    "cardmarket_id": 826883,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Grass-Energy-V1-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Grass-Energy-V1-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 4,
+    "variante": "normale",
+    "nome": "Energia base Erba",
+    "cardmarket_id": 727073,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Grass-Energy-V2-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Grass-Energy-V2-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 5,
+    "variante": "normale",
+    "nome": "Energia base Fuoco",
+    "cardmarket_id": 826891,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Fire-Energy-V1-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Fire-Energy-V1-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 6,
+    "variante": "normale",
+    "nome": "Energia base Fuoco",
+    "cardmarket_id": 727074,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Fire-Energy-V2-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Fire-Energy-V2-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 7,
+    "variante": "normale",
+    "nome": "Energia base Lampo",
+    "cardmarket_id": 826898,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Lightning-Energy-V1-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Lightning-Energy-V1-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 8,
+    "variante": "normale",
+    "nome": "Energia base Lampo",
+    "cardmarket_id": 727076,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Lightning-Energy-V2-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Lightning-Energy-V2-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 9,
+    "variante": "normale",
+    "nome": "Energia base Lotta",
+    "cardmarket_id": 826901,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Fighting-Energy-V1-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Fighting-Energy-V1-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 10,
+    "variante": "normale",
+    "nome": "Energia base Lotta",
+    "cardmarket_id": 727078,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Fighting-Energy-V2-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Fighting-Energy-V2-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 11,
+    "variante": "normale",
+    "nome": "Energia base Metallo",
+    "cardmarket_id": 826909,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Metal-Energy-V1-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Metal-Energy-V1-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 12,
+    "variante": "normale",
+    "nome": "Energia base Metallo",
+    "cardmarket_id": 727080,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Metal-Energy-V2-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Metal-Energy-V2-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 13,
+    "variante": "normale",
+    "nome": "Energia base Oscurità",
+    "cardmarket_id": 826905,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Darkness-Energy-V1-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Darkness-Energy-V1-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 14,
+    "variante": "normale",
+    "nome": "Energia base Oscurità",
+    "cardmarket_id": 727079,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Darkness-Energy-V2-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Darkness-Energy-V2-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 15,
+    "variante": "normale",
+    "nome": "Energia base Psico",
+    "cardmarket_id": 826899,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Psychic-Energy-V1-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Psychic-Energy-V1-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "PPS3",
+    "numero": 16,
+    "variante": "normale",
+    "nome": "Energia base Psico",
+    "cardmarket_id": 727077,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Psychic-Energy-V2-PPS3",
+    "status": "no_code_in_source",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/Play-Pokemon-Prize-Pack-Series-Three/Basic-Psychic-Energy-V2-PPS3",
+      "https://www.pokemon.com/static-assets/content-assets/cms2/pdf/trading-card-game/checklist/prize_pack_series_3_web_cardlist_en.pdf"
+    ],
+    "method": "official_checklist_has_no_energy_code",
+    "note": "Energia base: la checklist ufficiale non indica un codice. Nessuna numerazione derivata dall’ordine della lista.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD11",
+    "numero": 1,
+    "variante": "normale",
+    "nome": "Energia Fuoco",
+    "cardmarket_id": 868211,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Fire-Energy-V1-WCD11",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Fire-Energy-V1-WCD11"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD11",
+    "numero": 2,
+    "variante": "normale",
+    "nome": "Energia Fuoco",
+    "cardmarket_id": 868212,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Fire-Energy-V2-WCD11",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Fire-Energy-V2-WCD11"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD11",
+    "numero": 3,
+    "variante": "normale",
+    "nome": "Energia Fuoco",
+    "cardmarket_id": 868213,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Fire-Energy-V3-WCD11",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Fire-Energy-V3-WCD11"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD11",
+    "numero": 4,
+    "variante": "normale",
+    "nome": "Energia Lampo",
+    "cardmarket_id": 868214,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Lightning-Energy-V1-WCD11",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Lightning-Energy-V1-WCD11"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD11",
+    "numero": 5,
+    "variante": "normale",
+    "nome": "Energia Lampo",
+    "cardmarket_id": 868215,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Lightning-Energy-V2-WCD11",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Lightning-Energy-V2-WCD11"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD11",
+    "numero": 6,
+    "variante": "normale",
+    "nome": "Energia Lotta",
+    "cardmarket_id": 868216,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Fighting-Energy-WCD11",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2011/Fighting-Energy-WCD11"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD19",
+    "numero": 7,
+    "variante": "normale",
+    "nome": "Cobalion GX",
+    "cardmarket_id": 862464,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Cobalion-GX-s8aTEU-106",
+    "status": "verified",
+    "proposed_code": "TEU 106",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Perfection_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Cobalion-GX-s8aTEU-106"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD19",
+    "numero": 8,
+    "variante": "normale",
+    "nome": "Dedenne GX",
+    "cardmarket_id": 862463,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Dedenne-GX-V2-s8aUNB-057",
+    "status": "verified",
+    "proposed_code": "UNB 057",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Fire_Box_(TCG)",
+      "https://bulbapedia.bulbagarden.net/wiki/Mind_Blown_(TCG)",
+      "https://bulbapedia.bulbagarden.net/wiki/Perfection_(TCG)",
+      "https://bulbapedia.bulbagarden.net/wiki/Pikarom_Judge_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Dedenne-GX-V2-s8aUNB-057"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD19",
+    "numero": 9,
+    "variante": "normale",
+    "nome": "Espeon & Deoxys GX",
+    "cardmarket_id": 862465,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Espeon-Deoxys-GX-s8aUNM-072",
+    "status": "verified",
+    "proposed_code": "UNM 072",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Perfection_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Espeon-Deoxys-GX-s8aUNM-072"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD19",
+    "numero": 10,
+    "variante": "normale",
+    "nome": "Jirachi GX",
+    "cardmarket_id": 862466,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Jirachi-GX-s8aUNM-079",
+    "status": "verified",
+    "proposed_code": "UNM 079",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Perfection_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Jirachi-GX-s8aUNM-079"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD19",
+    "numero": 11,
+    "variante": "normale",
+    "nome": "Latios GX",
+    "cardmarket_id": 862467,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Latios-GX-s8aUNM-078",
+    "status": "verified",
+    "proposed_code": "UNM 078",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Perfection_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Latios-GX-s8aUNM-078"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD19",
+    "numero": 12,
+    "variante": "normale",
+    "nome": "Magcargo GX",
+    "cardmarket_id": 862468,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Magcargo-GX-s8aLOT-044",
+    "status": "verified",
+    "proposed_code": "LOT 044",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Perfection_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Magcargo-GX-s8aLOT-044"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD19",
+    "numero": 13,
+    "variante": "normale",
+    "nome": "Marshadow",
+    "cardmarket_id": 862469,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Marshadow-V2-s8aUNB-081",
+    "status": "verified",
+    "proposed_code": "UNB 081",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Perfection_(TCG)",
+      "https://bulbapedia.bulbagarden.net/wiki/Pikarom_Judge_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Marshadow-V2-s8aUNB-081"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD19",
+    "numero": 14,
+    "variante": "normale",
+    "nome": "Naganadel GX",
+    "cardmarket_id": 862470,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Naganadel-GX-V1-s8aUNM-160",
+    "status": "verified",
+    "proposed_code": "UNM 160",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Mind_Blown_(TCG)",
+      "https://bulbapedia.bulbagarden.net/wiki/Perfection_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Naganadel-GX-V1-s8aUNM-160"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD19",
+    "numero": 15,
+    "variante": "normale",
+    "nome": "Reshiram & Charizard GX",
+    "cardmarket_id": 862471,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Reshiram-Charizard-GX-V1-s8aUNB-020",
+    "status": "verified",
+    "proposed_code": "UNB 020",
+    "source_urls": [
+      "https://bulbapedia.bulbagarden.net/wiki/Fire_Box_(TCG)",
+      "https://bulbapedia.bulbagarden.net/wiki/Perfection_(TCG)",
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2019/Reshiram-Charizard-GX-V1-s8aUNB-020"
+    ],
+    "method": "exact_product_slug_and_published_deck",
+    "note": "Codice della carta originale; variante e posizione Bindex invariate. Accesso live Cardmarket non disponibile.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD24",
+    "numero": 1,
+    "variante": "normale",
+    "nome": "Ricerca Accademica - Professor Turum",
+    "cardmarket_id": 815469,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2024/Professors-Research-Professor-Turo-V2-WCD24",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2024/Professors-Research-Professor-Turo-V2-WCD24"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD24",
+    "numero": 2,
+    "variante": "normale",
+    "nome": "Ricerca Accademica - Professor Turum",
+    "cardmarket_id": 815484,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2024/Professors-Research-Professor-Turo-V3-WCD24",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2024/Professors-Research-Professor-Turo-V3-WCD24"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD25",
+    "numero": 98,
+    "variante": "normale",
+    "nome": "Energia base Erba",
+    "cardmarket_id": 884313,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Grass-Energy-V1-WCD25",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Grass-Energy-V1-WCD25"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD25",
+    "numero": 99,
+    "variante": "normale",
+    "nome": "Energia base Erba",
+    "cardmarket_id": 884379,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Grass-Energy-V2-WCD25",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Grass-Energy-V2-WCD25"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD25",
+    "numero": 100,
+    "variante": "normale",
+    "nome": "Energia base Fuoco",
+    "cardmarket_id": 884413,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Fire-Energy-WCD25",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Fire-Energy-WCD25"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD25",
+    "numero": 101,
+    "variante": "normale",
+    "nome": "Energia base Lampo",
+    "cardmarket_id": 884314,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Lightning-Energy-V1-WCD25",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Lightning-Energy-V1-WCD25"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD25",
+    "numero": 102,
+    "variante": "normale",
+    "nome": "Energia base Lampo",
+    "cardmarket_id": 884381,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Lightning-Energy-V2-WCD25",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Lightning-Energy-V2-WCD25"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD25",
+    "numero": 103,
+    "variante": "normale",
+    "nome": "Energia base Lotta",
+    "cardmarket_id": 884380,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Fighting-Energy-WCD25",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Fighting-Energy-WCD25"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD25",
+    "numero": 104,
+    "variante": "normale",
+    "nome": "Energia base Metallo",
+    "cardmarket_id": 884315,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Metal-Energy-WCD25",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Metal-Energy-WCD25"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD25",
+    "numero": 105,
+    "variante": "normale",
+    "nome": "Energia base Psico",
+    "cardmarket_id": 884412,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Psychic-Energy-V2-WCD25",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Basic-Psychic-Energy-V2-WCD25"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD25",
+    "numero": 106,
+    "variante": "normale",
+    "nome": "Munkidori",
+    "cardmarket_id": 883861,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Munkidori-V1-WCD25",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Munkidori-V1-WCD25"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  },
+  {
+    "sigla": "WCD25",
+    "numero": 107,
+    "variante": "normale",
+    "nome": "Ricerca Accademica - Professoressa Olim",
+    "cardmarket_id": 884398,
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Professors-Research-Professor-Sada-V2-WCD25",
+    "status": "pending",
+    "proposed_code": null,
+    "source_urls": [
+      "https://www.cardmarket.com/it/Pokemon/Products/Singles/WCD-2025/Professors-Research-Professor-Sada-V2-WCD25"
+    ],
+    "method": "requires_exact_print_scan",
+    "note": "La pagina prodotto non contiene il numero nel suo indirizzo. Nome o lista del mazzo non bastano a distinguere con certezza la stampa; necessaria la pagina completa o la scansione esatta.",
+    "cardmarket_access": "live_page_blocked; existing product URL only"
+  }
+]

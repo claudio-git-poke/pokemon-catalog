@@ -58,3 +58,27 @@ test('different suffix order preserves the existing key instead of creating a du
 
 import {timestampMicros} from '../scripts/publish-bindex.mjs'
 test('publication cursor preserves Postgres microseconds',()=>{assert.ok(timestampMicros('2026-11-14T12:00:00.123456+00:00')>timestampMicros('2026-11-14T12:00:00.123123+00:00'));assert.equal(timestampMicros('2026-11-14T12:00:00.123Z'),timestampMicros('2026-11-14T12:00:00.123000+00:00'))})
+test('reviewed codes survive a stale worker cache and progress statistics are merged',async()=>{
+ const pg=new PGlite()
+ try{
+  await pg.exec(`create role anon;create role authenticated;create role service_role bypassrls;create table catalog_search_entries(entry_key text primary key,updated_at timestamptz,verification text);`)
+  await pg.exec(await readFile(new URL('../db/bindex-export.sql',import.meta.url),'utf8'))
+  await pg.exec(await readFile(new URL('../db/catalog-code-reviews.sql',import.meta.url),'utf8'))
+  await pg.exec(`insert into set_espansioni(sigla,nome,lingua) values('BA20','Battle Academy','INT');insert into set_carte(sigla,numero,variante,codice) values('BA20',6,'normale',null);
+  insert into catalog_code_reviews(sigla,numero,variante,status,proposed_code,source_urls,method,note,cardmarket_access) values('BA20',6,'normale','verified','SUM 126',array['https://example.test'],'test','test','blocked');
+  update set_carte set codice='SUM 126';update set_carte set codice=null;
+  update catalog_export_state set statistics='{"code_reviews":{"verified":73}}';select catalog_export_progress('2026-11-14','entry:2','{"published":2}');select catalog_export_progress('2026-11-13','entry:1','{"pending":1}');`)
+  assert.equal((await pg.query('select codice from set_carte')).rows[0].codice,'SUM 126')
+  const state=(await pg.query('select * from catalog_export_state')).rows[0];assert.equal(state.statistics.code_reviews.verified,73);assert.equal(state.statistics.published,2);assert.equal(state.cursor_key,'entry:2')
+  await pg.exec('set role anon');assert.equal((await pg.query('select count(*) n from catalog_code_reviews')).rows[0].n,1)
+  await assert.rejects(pg.exec("update catalog_code_reviews set status='pending'"),/permission denied/)
+ }finally{await pg.close()}
+})
+test('the promo review covers all 135 identities without inventing energy numbers',async()=>{
+ const rows=JSON.parse(await readFile(new URL('../data/bindex-code-reviews.json',import.meta.url),'utf8'))
+ assert.equal(rows.length,135);assert.equal(new Set(rows.map(r=>JSON.stringify([r.sigla,r.numero,r.variante]))).size,135)
+ assert.equal(rows.filter(r=>r.status==='verified').length,73)
+ assert.equal(rows.filter(r=>r.status==='no_code_in_source').length,44)
+ assert.equal(rows.filter(r=>r.status==='pending').length,18)
+ for(const r of rows){assert.ok(r.source_urls.includes(r.cardmarket_url));if(r.status!=='verified')assert.equal(r.proposed_code,null);else assert.match(r.proposed_code,/^[A-Z0-9][A-Z0-9.-]*( [A-Z0-9]+)?$/)}
+})

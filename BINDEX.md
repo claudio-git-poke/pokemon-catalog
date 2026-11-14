@@ -45,8 +45,10 @@ sostituisce una foto con una scansione generica di un'altra finitura. Una nuova
 foto viene pubblicata solo da un collegamento a una stampa precisa.
 
 I codici ordinari mancanti sono stati ricavati dalle regole confermate (sigla e
-numero stampato). I 135 codici promozionali non ricostruibili con certezza restano
-null: le loro identità preesistenti restano valide. Le nuove righe senza una terna
+numero stampato). Al bootstrap 135 codici promozionali erano null. La verifica successiva ne ha
+compilati 73: 44 restano senza codice nelle fonti consultate e 18 richiedono
+ancora una scansione o identificazione esatta. Le identità sono rimaste valide.
+Vedere `VERIFICA_CODICI.md` e la tabella `catalog_code_reviews`. Le nuove righe senza una terna
 verificabile non vengono pubblicate e finiscono nella coda privata.
 
 ## Copia incrementale
@@ -80,6 +82,8 @@ node --experimental-strip-types scripts/prepare-bindex-reference.mjs sets.json c
 Lo script valida tutte le chiavi e produce pagine SQL idempotenti e un digest
 MD5 delle sole identità ordinate, da confrontare sul database prima di segnare
 `ready=true`. Il bootstrap non viene ripetuto automaticamente e non sovrascrive
-modifiche già presenti. Il worker chiama `publishBindex` dopo ogni ciclo, usa un
+modifiche già presenti. Installare anche `db/catalog-code-reviews.sql` prima di avviare il worker
+attuale; introduce il registro delle verifiche e la RPC di avanzamento.
+Il worker chiama `publishBindex` dopo ogni ciclo, usa un
 cursore composto e riprova dopo un giorno gli abbinamenti incerti. I nuovi alias
 non confermati e le posizioni asiatiche senza pagina verificata restano sospesi.
