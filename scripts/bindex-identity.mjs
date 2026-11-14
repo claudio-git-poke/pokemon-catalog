@@ -34,6 +34,7 @@ export function resolvePublication(entry,card,sets,reference){
  if(!['INT','EN','IT','FR','DE','ES','PT'].includes(entry.language))return {reason:'asian_ordinal_requires_verified_page'}
  if(!variant)return resolveCurated(entry,card,sets,reference)
  if(!canonical)return {reason:'set_alias_unconfirmed'}
+ if(cm&&reference.some(r=>r.cardmarket_id===cm&&r.sigla!==canonical.sigla))return {reason:'product_namespace_requires_review'}
  const proposed=variantKey(variant,payload.has_normal_variant)
  const candidates=cm?reference.filter(r=>r.sigla===canonical.sigla&&r.cardmarket_id===cm&&(!mfb||mfbName(r.nome)===mfbName(card.nome))):[]
  const printed=entry.collector_number

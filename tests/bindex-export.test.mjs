@@ -82,3 +82,9 @@ test('the promo review covers all 135 identities without inventing energy number
  assert.equal(rows.filter(r=>r.status==='pending').length,18)
  for(const r of rows){assert.ok(r.source_urls.includes(r.cardmarket_url));if(r.status!=='verified')assert.equal(r.proposed_code,null);else assert.match(r.proposed_code,/^[A-Z0-9][A-Z0-9.-]*( [A-Z0-9]+)?$/)}
 })
+test('a product already published in a promo masterset cannot create a second identity in the origin set',()=>{
+ const sets=[{sigla:'TWM',tcgdex_id:'sv06',lingua:'INT'}],card={nome:'Munkidori',sigla:'SV06@INT'}
+ const entry={tags:['family:world-championships'],language:'INT',set_code:card.sigla,collector_number:'95',source_payload:{set:{id:'sv06'},variant:{type:'normal',thirdParty:{cardmarket:883861}},has_normal_variant:true}}
+ const gold=[{sigla:'WCD25',numero:106,variante:'normale',nome:'Munkidori',cardmarket_id:883861}]
+ assert.equal(resolvePublication(entry,card,sets,gold).reason,'product_namespace_requires_review')
+})
