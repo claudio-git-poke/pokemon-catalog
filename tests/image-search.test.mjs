@@ -53,3 +53,15 @@ test('Korean moved CDN is refreshed from exact official feature image, not relat
  const r=await aggressiveSearch({...card,lingua:'KOR',sigla:'M1L',numero:1},{externalCandidates:[{url:'https://cards.image.pokemonkorea.co.kr/data/wmimages/MEGA/M1L/M1L_001.png',source:'atlas-official-ko',page:'https://pokemoncard.co.kr/cards/detail/BS2025009001'}]})
  assert.equal(r.source,'pokemon-korea-official-page');assert.match(r.url,/M1L_001.webp/)
 })
+
+test('MFB offers distinct variants without assigning an arbitrary product image',async()=>{
+ globalThis.fetch=async url=>{
+  if(url.endsWith('/en/sets'))return Response.json([{id:'mfb',name:'My First Battle'}])
+  if(url.endsWith('/sets/mfb'))return Response.json({cards:[{id:'mfb-1',name:'Bulbasaur',localId:'1'}]})
+  if(url.endsWith('/cards/mfb-1'))return Response.json({id:'mfb-1',variants_detailed:[{type:'normal',stamp:['bulbasaur'],thirdParty:{tcgplayer:523985}},{type:'normal',subtype:'blue-border',stamp:['bulbasaur','pokeball'],thirdParty:{tcgplayer:523984}}]})
+  throw Error('An ambiguous image must not be fetched or accepted')
+ }
+ const r=await aggressiveSearch({...card,nome:'Bulbasaur',numero:29})
+ assert.equal(r.url,null);assert.equal(r.alternatives.length,2)
+ assert.match(r.message,/varianti diverse/);assert.match(r.alternatives[1].label,/blue-border/)
+})

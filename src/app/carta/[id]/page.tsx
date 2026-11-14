@@ -19,6 +19,7 @@ export default function CardDetailPage() {
   const [status, setStatus] = useState('missing')
   const [notes, setNotes] = useState('')
   const [message, setMessage] = useState('')
+  const [alternatives,setAlternatives] = useState<{url:string;label:string}[]>([])
   const [logs, setLogs] = useState<string[]>([])
 
   function addLog(msg: string) {
@@ -110,6 +111,7 @@ export default function CardDetailPage() {
       addLog(`API response: ${JSON.stringify(data).slice(0, 200)}`)
 
       if (!res.ok || !data.success) throw new Error(data.error || `HTTP ${res.status}`)
+      setAlternatives(data.alternatives || [])
       data.logs?.forEach((line: string) => addLog(line))
 
       if (data.found && data.url) {
@@ -192,6 +194,8 @@ export default function CardDetailPage() {
         )}
       </div>
 
+      {card.notes && <div className="bg-yellow-50 p-4 rounded-xl text-sm"><strong>Stato della ricerca</strong><p className="mt-2">{card.notes}</p>{card.image_next_attempt_at && <p className="mt-2">Prossimo tentativo: {new Date(card.image_next_attempt_at).toLocaleString('it-IT')}</p>}</div>}
+      {alternatives.length > 0 && <section className="bg-white rounded-xl shadow p-6 space-y-4"><h2 className="font-semibold">Confronta le varianti</h2><p className="text-sm text-gray-500">Queste sono alternative della stessa carta: confronta bordo e timbri con la variante che vuoi catalogare. La selezione prepara il modulo; premi Salva modifiche per confermare.</p><div className="grid grid-cols-2 gap-4">{alternatives.map(option=><div key={option.url} className="space-y-3"><a href={option.url} target="_blank" rel="noreferrer"><img src={option.url} alt={option.label} className="w-full rounded-lg" loading="lazy"/></a><p className="text-xs">{option.label}</p><button className="border rounded-lg px-3 py-2 text-sm" onClick={()=>{setImageUrl(option.url);setStatus('manual');setNotes(`Variante selezionata manualmente: ${option.label}`);setMessage('Selezione pronta: salva le modifiche per confermare.')}}>Usa questa variante</button></div>)}</div></section>}
       <div className="bg-white rounded-xl shadow p-6 space-y-4">
         <h2 className="font-semibold">Gestione foto</h2>
         <div className="flex flex-wrap gap-3">

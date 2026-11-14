@@ -1,187 +1,37 @@
 'use client'
-
 import { useEffect, useState } from 'react'
-import { supabase, Card } from '@/lib/supabase'
 import Link from 'next/link'
-
-const PAGE_SIZE = 50
-
-export default function CartePage() {
-  const [cards, setCards] = useState<Card[]>([])
-  const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState({
-    lingua: '',
-    status: '',
-    search: ''
-  })
-
-  useEffect(() => {
-    loadCards()
-  }, [page, filters])
-
-  async function loadCards() {
-    setLoading(true)
-    let query = supabase
-      .from('cards')
-      .select('*', { count: 'exact' })
-      .order('id', { ascending: true })
-      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
-
-    if (filters.lingua) query = query.eq('lingua', filters.lingua)
-    if (filters.status) query = query.eq('image_status', filters.status)
-    if (filters.search) {
-      query = query.or(`nome.ilike.%${filters.search}%,file_name.ilike.%${filters.search}%,codice.ilike.%${filters.search}%`)
-    }
-
-    const { data, count, error } = await query
-    if (error) {
-      console.error(error)
-    } else {
-      setCards(data || [])
-      setTotal(count || 0)
-    }
-    setLoading(false)
-  }
-
-  const totalPages = Math.ceil(total / PAGE_SIZE)
-
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Tutte le carte</h1>
-        <p className="text-gray-600">{total.toLocaleString('it-IT')} carte totali</p>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white rounded-xl shadow p-4 flex flex-wrap gap-3 items-end">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Lingua</label>
-          <select 
-            className="border rounded-lg px-3 py-2"
-            value={filters.lingua}
-            onChange={e => { setFilters(f => ({...f, lingua: e.target.value})); setPage(0) }}
-          >
-            <option value="">Tutte</option>
-            <option value="JP">JP</option>
-            <option value="CHN">CHN</option>
-            <option value="KOR">KOR</option>
-            <option value="CHN-T">CHN-T</option>
-            <option value="INT">INT</option>
-            {['IT','FR','DE','ES','PT','ID','TH'].map(l => <option key={l} value={l}>{l}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Stato foto</label>
-          <select 
-            className="border rounded-lg px-3 py-2"
-            value={filters.status}
-            onChange={e => { setFilters(f => ({...f, status: e.target.value})); setPage(0) }}
-          >
-            <option value="">Tutti</option>
-            <option value="missing">Senza foto</option>
-            <option value="placeholder">Placeholder</option>
-            <option value="found">Trovata</option>
-            <option value="manual">Manuale</option>
-          </select>
-        </div>
-        <div className="flex-1 min-w-[200px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cerca</label>
-          <input
-            type="text"
-            placeholder="Nome, file o codice..."
-            className="border rounded-lg px-3 py-2 w-full"
-            value={filters.search}
-            onChange={e => { setFilters(f => ({...f, search: e.target.value})); setPage(0) }}
-          />
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="text-left px-4 py-3 font-medium">File</th>
-              <th className="text-left px-4 py-3 font-medium">Nome</th>
-              <th className="text-left px-4 py-3 font-medium">Set</th>
-              <th className="text-left px-4 py-3 font-medium">Lingua</th>
-              <th className="text-left px-4 py-3 font-medium">Stato</th>
-              <th className="text-left px-4 py-3 font-medium"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={6} className="text-center py-10 text-gray-500">Caricamento...</td></tr>
-            ) : cards.length === 0 ? (
-              <tr><td colSpan={6} className="text-center py-10 text-gray-500">Nessuna carta trovata</td></tr>
-            ) : (
-              cards.map(card => (
-                <tr key={card.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3 font-mono text-xs">{card.file_name}</td>
-                  <td className="px-4 py-3 font-medium">{card.nome}</td>
-                  <td className="px-4 py-3">{card.sigla}</td>
-                  <td className="px-4 py-3">
-                    <span className="bg-gray-100 px-2 py-0.5 rounded text-xs">{card.lingua}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={card.image_status} />
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link href={`/carta/${card.id}`} className="text-red-600 hover:underline text-sm">
-                      Modifica
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2">
-          <button
-            disabled={page === 0}
-            onClick={() => setPage(p => p - 1)}
-            className="px-4 py-2 border rounded-lg disabled:opacity-40"
-          >
-            ← Precedente
-          </button>
-          <span className="px-4 py-2">
-            Pagina {page + 1} di {totalPages}
-          </span>
-          <button
-            disabled={page >= totalPages - 1}
-            onClick={() => setPage(p => p + 1)}
-            className="px-4 py-2 border rounded-lg disabled:opacity-40"
-          >
-            Successiva →
-          </button>
-        </div>
-      )}
-    </div>
-  )
+import { Search, ImageOff, ArrowRight, ChevronLeft, ChevronRight, Grid2X2, LayoutList, Check, SlidersHorizontal, RotateCcw } from 'lucide-react'
+import { supabase, Card } from '@/lib/supabase'
+const SIZE=48
+const languages: Record<string,string>={INT:'Inglese / internazionale',IT:'Italiano',JP:'Giapponese',KOR:'Coreano',CHN:'Cinese semplificato','CHN-T':'Cinese tradizionale',FR:'Francese',DE:'Tedesco',ES:'Spagnolo',PT:'Portoghese',ID:'Indonesiano',TH:'Thailandese'}
+type Filters={search:string;set:string;language:string;photo:string}
+const empty:Filters={search:'',set:'',language:'',photo:'all'}
+export default function Catalog(){
+ const [filters,setFilters]=useState<Filters>(empty),[ready,setReady]=useState(false)
+ const [page,setPage]=useState(0),[view,setView]=useState('grid'),[cards,setCards]=useState<Card[]>([])
+ const [counts,setCounts]=useState({total:0,with:0,missing:0}),[total,setTotal]=useState(0),[loading,setLoading]=useState(true),[error,setError]=useState(''),[refresh,setRefresh]=useState(0)
+ useEffect(()=>{const p=new URLSearchParams(location.search);setFilters({search:p.get('q')||'',set:p.get('set')||'',language:p.get('lingua')||'',photo:p.get('foto')||'all'});setPage(Math.max(0,Number(p.get('pagina'))-1||0));setReady(true)},[])
+ // Also handle navigation between the catalogue links without remounting the page.
+ useEffect(()=>{function sync(){const p=new URLSearchParams(location.search);setFilters({search:p.get('q')||'',set:p.get('set')||'',language:p.get('lingua')||'',photo:p.get('foto')||'all'});setPage(Math.max(0,Number(p.get('pagina'))-1||0))}window.addEventListener('popstate',sync);return()=>window.removeEventListener('popstate',sync)},[])
+ function change(key:keyof Filters,value:string){setFilters(f=>({...f,[key]:value}));setPage(0)}
+ useEffect(()=>{if(!ready)return;let active=true;setLoading(true)
+ const timer=setTimeout(async()=>{
+  const p=new URLSearchParams();if(filters.search)p.set('q',filters.search);if(filters.set)p.set('set',filters.set);if(filters.language)p.set('lingua',filters.language);if(filters.photo!=='all')p.set('foto',filters.photo);if(page)p.set('pagina',String(page+1));history.replaceState(null,'',location.pathname+(p.size?'?'+p:''))
+  const clean=(v:string)=>v.replace(/[%_,().\\]/g,' ').trim()
+  function base(head=false){let q=supabase.from('cards').select(head?'id':'*',{count:'exact',head});if(filters.language)q=q.eq('lingua',filters.language);if(clean(filters.set))q=q.ilike('sigla',`%${clean(filters.set)}%`);if(clean(filters.search)){const s=clean(filters.search);q=q.or(`nome.ilike.%${s}%,file_name.ilike.%${s}%,codice.ilike.%${s}%`)}return q}
+  function photo(q:ReturnType<typeof base>,mode:string){if(mode==='with')return q.in('image_status',['found','manual']).not('image_url','is',null).neq('image_url','');if(mode==='missing')return q.or('image_status.in.(missing,placeholder),image_url.is.null,image_url.eq.');return q}
+  const [rows,all,withPhoto,missing]=await Promise.all([photo(base(),filters.photo).order('sigla').order('numero').order('id').range(page*SIZE,(page+1)*SIZE-1),base(true),photo(base(true),'with'),photo(base(true),'missing')])
+  if(!active)return;const errors=[rows.error,all.error,withPhoto.error,missing.error].filter(Boolean);setError(errors.map(e=>e?.message).join('; '));if(!errors.length){setCards((rows.data||[]) as Card[]);setTotal(rows.count||0);setCounts({total:all.count||0,with:withPhoto.count||0,missing:missing.count||0})}setLoading(false)
+ },300);return()=>{active=false;clearTimeout(timer)}
+ },[filters,page,ready,refresh])
+ const pages=Math.max(1,Math.ceil(total/SIZE)),percent=counts.total?Math.round(counts.with/counts.total*100):0
+ return <div className="catalog-page"><section className="catalog-hero"><div><p className="eyebrow">LA COLLEZIONE, A COLPO D’OCCHIO</p><h1>Il tuo catalogo<span>.</span></h1><p className="muted">Sfoglia le carte, confronta le immagini e scopri cosa manca.</p></div><Link href="/automazione" className="worker-link"><span className="status-dot"/>Segui l’automazione <ArrowRight size={16}/></Link></section>
+ <section className="catalog-stats" aria-label="Copertura immagini">{([['all','Carte nel catalogo',counts.total],['with','Con immagine',counts.with],['missing','Da completare',counts.missing]] as const).map(([value,label,count])=><button key={value} className={`stat-tile ${filters.photo===value?'selected':''}`} onClick={()=>change('photo',value)} aria-pressed={filters.photo===value}><span>{label}</span><strong>{loading?'…':count.toLocaleString('it-IT')}</strong><small>{value==='all'?'Nella selezione corrente':value==='with'?'Foto trovate o inserite':'Foto assenti o da verificare'}</small></button>)}<div className="coverage-tile"><span>Copertura della selezione</span><strong>{percent}%</strong><div className="coverage-track"><div style={{width:`${percent}%`}}/></div><small>Le nuove carte arrivano automaticamente</small></div></section>
+ <section className="catalog-controls" aria-label="Filtri catalogo"><div className="search-field"><Search size={20}/><input aria-label="Cerca una carta" placeholder="Cerca un Pokémon, un nome o un codice…" value={filters.search} onChange={e=>change('search',e.target.value)}/></div><div className="filter-row"><SlidersHorizontal size={18}/><label>Espansione<input placeholder="Tutte · es. MFB, base1" value={filters.set} onChange={e=>change('set',e.target.value)}/></label><label>Lingua<select value={filters.language} onChange={e=>change('language',e.target.value)}><option value="">Tutte le lingue</option>{Object.entries(languages).map(([key,name])=><option key={key} value={key}>{name}</option>)}</select></label><button className="subtle-button" onClick={()=>{setFilters(empty);setPage(0)}}>Azzera filtri</button><button className="icon-button" aria-label="Aggiorna catalogo" onClick={()=>setRefresh(r=>r+1)}><RotateCcw size={17}/></button></div></section>
+ <div className="catalog-toolbar"><div className="photo-tabs" aria-label="Stato immagine">{[['all','Tutte'],['with','Con foto'],['missing','Senza foto']].map(([key,label])=><button key={key} aria-pressed={filters.photo===key} className={filters.photo===key?'active':''} onClick={()=>change('photo',key)}>{label}</button>)}</div><div className="view-toggle"><button aria-label="Vista griglia" aria-pressed={view==='grid'} onClick={()=>setView('grid')}><Grid2X2 size={18}/></button><button aria-label="Vista elenco" aria-pressed={view==='list'} onClick={()=>setView('list')}><LayoutList size={18}/></button></div></div>
+ {error?<div className="catalog-empty" role="alert"><h2>Impossibile caricare il catalogo</h2><p>{error}</p><button onClick={()=>setRefresh(r=>r+1)}>Riprova</button></div>:loading?<div className="card-grid" aria-label="Caricamento carte" aria-busy="true">{Array.from({length:12},(_,i)=><div className="card-skeleton" key={i}/>)}</div>:!cards.length?<div className="catalog-empty"><Search size={30}/><h2>Nessuna carta in questa selezione</h2><p>Prova un altro nome, espansione o lingua.</p><button onClick={()=>{setFilters(empty);setPage(0)}}>Mostra tutte le carte</button></div>:<><p className="results-label">{(page*SIZE+1).toLocaleString('it-IT')}–{Math.min((page+1)*SIZE,total).toLocaleString('it-IT')} di {total.toLocaleString('it-IT')} carte · apri una carta per i dettagli</p><div className={view==='grid'?'card-grid':'card-list'}>{cards.map(card=><CardTile key={card.id} card={card}/>)}</div></>}
+ <nav className="catalog-pagination" aria-label="Pagine catalogo"><button disabled={page===0||loading} onClick={()=>{setPage(p=>p-1);window.scrollTo({top:0,behavior:'smooth'})}}><ChevronLeft size={18}/>Precedente</button><span>{page+1} / {pages}</span><button disabled={page>=pages-1||loading} onClick={()=>{setPage(p=>p+1);window.scrollTo({top:0,behavior:'smooth'})}}>Successiva<ChevronRight size={18}/></button></nav>
+ </div>
 }
-
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    missing: 'bg-red-100 text-red-700',
-    placeholder: 'bg-yellow-100 text-yellow-700',
-    found: 'bg-green-100 text-green-700',
-    manual: 'bg-blue-100 text-blue-700',
-  }
-  const labels: Record<string, string> = {
-    missing: 'Senza foto',
-    placeholder: 'Placeholder',
-    found: 'Trovata',
-    manual: 'Manuale',
-  }
-  return (
-    <span className={`px-2 py-0.5 rounded text-xs font-medium ${styles[status] || 'bg-gray-100'}`}>
-      {labels[status] || status}
-    </span>
-  )
-}
+function CardTile({card}:{card:Card}){const [broken,setBroken]=useState(false);const hasPhoto=!!card.image_url&&['found','manual'].includes(card.image_status);const ambiguous=/variant|candidati|ambig|più immagini/.test(card.notes||'');return <Link href={`/carta/${card.id}`} className={`catalog-card ${hasPhoto&&!broken?'complete':'incomplete'}`}><div className="card-art">{hasPhoto&&!broken?<img src={card.image_url!} alt={card.nome} loading="lazy" onError={()=>setBroken(true)}/>:<div className="missing-art"><span className="missing-symbol"><ImageOff size={26}/></span><strong>{broken?'Foto non caricata':ambiguous?'Variante da verificare':'Immagine da trovare'}</strong><span>{card.nome}</span><small>{card.sigla} · {card.source_local_id||card.numero}</small></div>}<span className={`photo-badge ${hasPhoto&&!broken?'ok':''}`}>{hasPhoto&&!broken?<><Check size={12}/>Con foto</>:<><ImageOff size={12}/>{broken?'Non disponibile':'Senza foto'}</>}</span></div><div className="card-caption"><div><span className="card-set">{card.sigla} · #{card.source_local_id||card.numero}</span><span className="language-badge">{card.lingua}</span></div><h2>{card.nome}</h2><p>{card.variante==='normale'?'Edizione normale':card.variante||'Carta da catalogare'}<ArrowRight size={14}/></p></div></Link>}

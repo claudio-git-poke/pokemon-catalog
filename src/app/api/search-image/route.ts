@@ -83,7 +83,8 @@ export async function POST(req: NextRequest) {
       url: null,
       source: result.source,
       message: result.message,
-      logs: result.logs
+      logs: result.logs,
+      alternatives: result.alternatives || []
     })
   } catch (err: any) {
     console.error(err)

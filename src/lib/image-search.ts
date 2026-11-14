@@ -2,6 +2,7 @@
 export type SearchResult = {
   url: string | null; source: string; confidence: 'high' | 'medium' | 'low'
   message: string; logs: string[]
+  alternatives?: { url: string; label: string }[]
 }
 export type ImageCandidate = { url: string; source: string; page?: string | null }
 export type CardInput = {
@@ -11,7 +12,7 @@ export type CardInput = {
 }
 type Brief = { id: string; localId: string; name: string; image?: string }
 type SetBrief = { id: string; name: string }
-type Detail = Brief & { variants_detailed?: { type?: string; thirdParty?: { tcgplayer?: number } }[] }
+type Detail = Brief & { variants_detailed?: { type?: string; subtype?: string; stamp?: string[]; thirdParty?: { tcgplayer?: number } }[] }
 const languages: Record<string, string> = { KOR:'ko', PT: 'pt', ID: 'id', TH: 'th', INT: 'en', EN: 'en', JP: 'ja', 'CHN-T': 'zh-tw', IT: 'it', FR: 'fr', DE: 'de', ES: 'es' }
 const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '')
 const local = (s: string | number) => String(s).split('/')[0].trim().replace(/^0+(?=\d)/, '').toLowerCase()
@@ -92,6 +93,11 @@ async function searchTcgdex(card: CardInput, deadline = Infinity): Promise<Searc
   // English product IDs only: never use an English scan for an Asian card.
   if (lang === 'en') {
     const ids = [...new Set((detail.variants_detailed || []).filter(v => !v.type || v.type === 'normal').map(v => v.thirdParty?.tcgplayer).filter((id): id is number => Number.isInteger(id) && Number(id) > 0))]
+    if (ids.length > 1) {
+      const variants = (detail.variants_detailed || []).filter(v => (!v.type || v.type === 'normal') && v.thirdParty?.tcgplayer)
+      const alternatives = variants.map(v => ({url:`https://product-images.tcgplayer.com/fit-in/600x600/${v.thirdParty!.tcgplayer}.jpg`,label:[v.subtype || 'Bordo standard',v.stamp?.join(' + '),`TCGPlayer ${v.thirdParty!.tcgplayer}`].filter(Boolean).join(' · ')}))
+      return {...miss(`Carta ${match.id}: ${ids.length} immagini di varianti diverse (bordi/timbri). Il catalogo non specifica quale usare: confronto manuale necessario; nessuna immagine assegnata automaticamente.`),alternatives}
+    }
     if (ids.length === 1) {
       const url = `https://product-images.tcgplayer.com/fit-in/600x600/${ids[0]}.jpg`
       if (await validImage(url, logs, deadline)) return { url, source: 'tcgplayer-via-tcgdex', confidence: 'medium', message: `TCGPlayer ${ids[0]} collegato a ${match.id} (${lang}). Controllare visivamente stampa e variante.`, logs }
