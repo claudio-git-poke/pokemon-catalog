@@ -41,3 +41,9 @@ Il risultato può essere in attesa, concordante, differente, ambiguo o temporane
 La sezione “Confronto fra fonti” in `/copertura` legge solo i risultati salvati, con pagine di 20 coppie e aggiornamento ogni minuto mentre la pagina è visibile. Le scritture e la selezione del lavoro sono riservate al servizio. La migrazione va applicata prima del nuovo worker.
 
 Verifica reale del 15 novembre 2026: per S8a giapponese TCGdex restituisce zero voci; lo snapshot Atlas contiene 34 voci, di cui otto senza numero utilizzabile. Il risultato è ambiguo, senza dichiarare completa l’espansione o trattare le voci senza numero come carte equivalenti.
+
+## Ripresa dei vecchi tag dopo timeout
+
+Il recupero retroattivo usa una sola elaborazione per volta e pubblica i contatori durante il lotto. Un timeout o un errore transitorio del database sospende il lotto senza tentare subito una seconda scrittura sulla carta per annotare lo stesso errore. Il recupero successivo seleziona ancora le carte prive del checkpoint; gli upsert riusano le stesse chiavi delle stampe, anche se queste erano state salvate prima del timeout. Permessi o vincoli errati restano errori da correggere.
+
+I log conservano in memoria i batch non confermati, ritentano una volta dopo 1,5 secondi gli errori transitori e riusano le stesse chiavi evento. Se fallisce anche il tentativo successivo, l’errore resta visibile: non viene dichiarato salvato ciò che il database non ha confermato. Un successivo flush nella stessa sessione può recuperare i batch trattenuti; la memoria non sopravvive alla chiusura del processo. L’output GitHub riceve comunque ogni messaggio prima del salvataggio.

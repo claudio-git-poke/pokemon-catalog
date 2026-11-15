@@ -7,6 +7,9 @@ on:
     paths:
       - 'scripts/run-catalog-sync.mjs'
       - 'scripts/catalog-session.mjs'
+      - 'scripts/catalog-logger.mjs'
+      - 'scripts/database-errors.mjs'
+      - 'scripts/enrich-catalog.mjs'
   workflow_dispatch:
     inputs:
       duration_minutes:

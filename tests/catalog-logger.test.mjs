@@ -41,3 +41,17 @@ test('incremental log retains every event beyond 2000 and legacy updates do not 
   assert.equal((await pg.query("select has_table_privilege('anon','catalog_sync_events','INSERT') allowed")).rows[0].allowed,false)
  }finally{await pg.close()}
 })
+
+test('logger replays a failed flush without losing events or poisoning later writes',async()=>{
+ const seen=new Set(),summaries=[],waits=[];let failures=2
+ const db={from(table){return {
+  async upsert(rows){for(const r of rows)seen.add(r.event_key);return {error:null}},
+  update(row){return {async eq(){if(failures-->0)return {error:{code:'57014',message:'statement timeout'}};summaries.push(row.summary.current);return {error:null}}}}
+ }}}
+ const log=createCatalogLogger({db,runId:1,summary:{},output:()=>{},wait:async ms=>waits.push(ms)})
+ await assert.rejects(log('Prima carta',true),/statement timeout/)
+ await log('Seconda carta',true)
+ assert.equal(seen.size,2,'replayed committed events retain their keys')
+ assert.deepEqual(summaries,['Prima carta','Seconda carta'])
+ assert.deepEqual(waits,[1500],'a flush only retries once before reporting failure')
+})

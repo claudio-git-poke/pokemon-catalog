@@ -1,10 +1,11 @@
+import {databaseError,isTransientDatabaseError} from './database-errors.mjs'
 import {mapVariant,termsForEntries} from './variant-mappings.mjs'
 import {createHash} from 'node:crypto'
 import {readFile} from 'node:fs/promises'
 import {sourcePrinting,expandTags,printingFacts,normalizeSearch} from '../src/lib/catalog-identification.ts'
 const now=()=>new Date().toISOString()
 const normNumber=value=>String(value||'').split('/')[0].replace(/^0+(?=\d)/,'').toLowerCase()
-const check=async query=>{const{data,error}=await query;if(error)throw Error(error.message);return data}
+const check=async query=>{try{const{data,error}=await query;if(error)throw error;return data}catch(error){throw databaseError(error)}}
 export function baseFacts(card){
  const facts={}
  if(['JP','KOR','CHN','CHN-T','TH','INT','EN','IT','FR','DE','ES','PT','ID','NL','PL','RU','ES-LA'].includes(card.lingua))facts.asian_script=['JP','KOR','CHN','CHN-T','TH'].includes(card.lingua)
@@ -31,36 +32,64 @@ export function curatedEntry(card,row){
  const tags=expandTags(['family:'+family,'stamp:'+stamp,row.holo?'finish:holo':'finish:normal'])
  return {entry_key:`${row.release_code||'trick-or-trade-'+row.year}:${card.id}:${row.holo?'holo':'normal'}`,card_id:card.id,release_code:row.release_code||`trick-or-trade-${row.year}`,release_year:row.year,collector_number:normNumber(row.local_id.replace(/^[A-Za-z]+/,'')),denominator:row.printed_number.split('/')[1]||null,name:card.nome,set_code:card.sigla,language:card.lingua,tags,facts:{...baseFacts(card),...printingFacts(tags,{stamp:[stamp]})},source_url:row.source,source_payload:{...row,reference_image_only:true},verification:'source',label:`${row.release_name||'Trick or Trade '+row.year} · ${row.holo?'Holo':'Non-Holo'} · ${stamp==='trick-or-trade'?'Timbro zucca Pikachu':'Logo Play! Pokémon'}`,search_text:normalizeSearch(`${card.nome} ${card.sigla} ${row.release_name||'Trick or Trade'} ${row.year}`),updated_at:now()}
 }
-export async function enrichCatalog({db,log=console.log,budgetMs=60000,limit=100,fetchDetail,clock=Date.now,onlyUnchecked=false}){
+export async function enrichCatalog({db,log=console.log,budgetMs=60000,limit=100,fetchDetail,clock=Date.now,onlyUnchecked=false,concurrency=3,onProgress=()=>{}}){
  const deadline=clock()+budgetMs
  const select=()=>db.from('cards').select('*').like('source_uid','tcgdex:%').not('source_card_id','is',null).lte('traits_next_attempt_at',now())
- let cards=await check(select().is('traits_checked_at',null).order('traits_next_attempt_at').order('id').limit(limit))
- if(!cards.length&&!onlyUnchecked)cards=await check(select().not('traits_checked_at','is',null).order('traits_next_attempt_at').order('id').limit(limit))
  const stats={attempted:0,checked:0,indexed:0,errors:0}
+ let cards
+ try{
+  cards=await check(select().is('traits_checked_at',null).order('traits_next_attempt_at').order('id').limit(limit))
+  if(!cards.length&&!onlyUnchecked)cards=await check(select().not('traits_checked_at','is',null).order('traits_next_attempt_at').order('id').limit(limit))
+ }catch(error){
+  if(!isTransientDatabaseError(error))throw error
+  await log(`Recupero tag rinviato prima della selezione: ${String(error)}. Nessuna carta segnata come controllata.`,true)
+  return {...stats,errors:1,databaseUnavailable:true}
+ }
  if(!cards.length)return stats
  await log(`Identificazione: arricchimento di massimo ${cards.length} carte; stampini e finiture solo da metadati espliciti.`,true)
- let cursor=0,sourceUnavailable=false
+ let cursor=0,sourceUnavailable=false,databaseUnavailable=false
  async function consume(){while(cursor<cards.length){
-  if(clock()>deadline-8000||sourceUnavailable)break
+  if(clock()>deadline-8000||sourceUnavailable||databaseUnavailable)break
   const card=cards[cursor++]
   stats.attempted++
   if(card.source_uid&&!card.source_uid.startsWith('tcgdex:')){await check(db.from('cards').update({traits_next_attempt_at:new Date(Date.now()+30*86400000).toISOString(),traits_last_error:'Metadati dettagliati non disponibili per questa fonte.'}).eq('id',card.id));continue}
+  let entries,detail
   try{
    const url=`https://api.tcgdex.net/v2/${card.source_language}/cards/${encodeURIComponent(card.source_card_id)}`
    const response=fetchDetail?await fetchDetail(card):await fetch(url,{signal:AbortSignal.timeout(7000)})
-   const detail=fetchDetail?response:await (async()=>{if(!response.ok)throw Error(`TCGdex metadati HTTP ${response.status}`);return response.json()})()
+   detail=fetchDetail?response:await (async()=>{if(!response.ok)throw Error(`TCGdex metadati HTTP ${response.status}`);return response.json()})()
    if(detail.id!==card.source_card_id)throw Error('Identità della fonte non corrispondente: nessun tag assegnato.')
-   const entries=detailEntries(card,detail)
+   entries=detailEntries(card,detail)
    if(entries.length){const terms=termsForEntries(entries);if(terms.length)await check(db.from('catalog_terms').upsert(terms,{onConflict:'code',ignoreDuplicates:true}));await check(db.from('catalog_search_entries').upsert(entries,{onConflict:'entry_key'}))}
    await check(db.from('cards').update({traits_checked_at:now(),traits_next_attempt_at:new Date(Date.now()+14*86400000).toISOString(),traits_last_error:null}).eq('id',card.id))
-   stats.checked++;stats.indexed+=entries.length
-   await log(`Identificazione #${card.id} ${card.nome}: ${entries.length} stampe indicizzate, fonte ${detail.id}.`)
-  }catch(error){stats.errors++;if(/HTTP (429|503)\b/.test(String(error)))sourceUnavailable=true;await check(db.from('cards').update({traits_next_attempt_at:new Date(Date.now()+6*3600000).toISOString(),traits_last_error:String(error)}).eq('id',card.id));await log(`Identificazione #${card.id}: ${String(error)}; riprovo più tardi.`)}
+   stats.checked++;stats.indexed+=entries.length;onProgress({...stats})
+  }catch(error){
+   stats.errors++;onProgress({...stats})
+   if(isTransientDatabaseError(error)){
+    databaseUnavailable=true
+    await log(`Identificazione #${card.id}: database temporaneamente indisponibile (${String(error)}). Sospendo il lotto; la carta resta da riprendere.`,true)
+    continue
+   }
+   if(error.database)throw error
+   if(/HTTP (429|503)\b/.test(String(error)))sourceUnavailable=true
+   try{
+    await check(db.from('cards').update({traits_next_attempt_at:new Date(Date.now()+6*3600000).toISOString(),traits_last_error:String(error)}).eq('id',card.id))
+   }catch(saveError){
+    if(!isTransientDatabaseError(saveError))throw saveError
+    databaseUnavailable=true
+    await log(`Identificazione #${card.id}: impossibile salvare il rinvio (${String(saveError)}). Sospendo il lotto senza segnare la carta come controllata.`,true)
+    continue
+   }
+   await log(`Identificazione #${card.id}: ${String(error)}; riprovo più tardi.`)
+   continue
+  }
+  await log(`Identificazione #${card.id} ${card.nome}: ${entries.length} stampe indicizzate, fonte ${detail.id}.`)
  }}
- await Promise.all(Array.from({length:3},()=>consume()))
- await log('Arricchimento tag concluso; continuo importazioni e immagini.',true)
- return sourceUnavailable?{...stats,sourceUnavailable:true}:stats
+ await Promise.all(Array.from({length:Math.max(1,Math.min(3,Math.floor(concurrency)||1))},()=>consume()))
+ await log(databaseUnavailable?'Arricchimento tag sospeso per database occupato; il lavoro salvato è conservato.':'Arricchimento tag concluso; continuo importazioni e immagini.',true)
+ return {...stats,...(sourceUnavailable?{sourceUnavailable:true}:{}),...(databaseUnavailable?{databaseUnavailable:true}:{})}
 }
+
 export async function syncCuratedReleases({db,log=console.log}){
  const rows=JSON.parse(await readFile(new URL('../data/catalog-releases.json',import.meta.url),'utf8'))
  let indexed=0,unresolved=0

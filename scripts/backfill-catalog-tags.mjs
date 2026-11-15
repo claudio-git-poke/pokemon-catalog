@@ -18,14 +18,21 @@ try{
  summary.remaining=await count()
  await log(`Recupero tag retroattivo: ${summary.remaining} carte TCGdex mai esaminate. Nessun tag visivo viene dedotto dalle immagini generiche.`,true)
  while(Date.now()<deadline-90000){
-  const stats=await enrichCatalog({db,log,onlyUnchecked:true,limit:200,budgetMs:60000})
-  for(const key of ['attempted','checked','indexed','errors'])summary[key]+=stats[key]
+  const keys=['attempted','checked','indexed','errors'],before={...summary}
+  const progress=stats=>{for(const key of keys)summary[key]=before[key]+stats[key]}
+  const stats=await enrichCatalog({db,log,onlyUnchecked:true,limit:200,budgetMs:60000,concurrency:1,onProgress:progress})
+  progress(stats)
+  if(stats.databaseUnavailable){
+   summary.deferred=true
+   await log('Database temporaneamente occupato: lotto sospeso. Riprenderò dalle carte ancora in attesa al prossimo avvio.',true)
+   break
+  }
   summary.remaining=await count()
   await log(`Recupero tag: ${summary.checked} carte controllate, ${summary.indexed} stampe indicizzate, ${summary.remaining} carte ancora da controllare; ${summary.errors} errori rinviati.`,true)
   if(stats.sourceUnavailable){await log('Fonte temporaneamente indisponibile o limite richieste raggiunto: sospendo il recupero fino al prossimo avvio.',true);break}
   if(!stats.attempted)break
  }
- await log(`Recupero tag concluso per questa sessione. Restanti: ${summary.remaining}. Ripresa automatica dal prossimo lotto.`,true)
+ await log(`Recupero tag concluso per questa sessione. Ultimo conteggio carte in attesa: ${summary.remaining}. Ripresa automatica dal prossimo lotto.`,true)
  await check(db.from('catalog_sync_runs').update({finished_at:new Date().toISOString(),status:summary.errors?'partial':'success',summary:{...summary,log_version:2,current:'Recupero tag retroattivo concluso'}}).eq('id',run.id))
 }catch(error){
  await log(`Recupero tag interrotto: ${String(error)}`,true)

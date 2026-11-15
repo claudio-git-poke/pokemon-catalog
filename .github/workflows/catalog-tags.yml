@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/backfill-catalog-tags.mjs'
       - 'scripts/enrich-catalog.mjs'
+      - 'scripts/catalog-logger.mjs'
+      - 'scripts/database-errors.mjs'
       - '.github/workflows/catalog-tags.yml'
   schedule:
     - cron: '17 * * * *'

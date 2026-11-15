@@ -39,3 +39,49 @@ test('metadata gives historical cards source variants without assuming normal fi
  assert.ok(entry.tags.includes('finish:reverse'));assert.ok(entry.tags.includes('pattern:cosmos'))
  assert.ok(!entry.tags.includes('finish:normal'))
 })
+
+test('database timeout pauses before another card and preserves the unchecked checkpoint',async()=>{
+ const cards=Array.from({length:5},(_,i)=>({id:i+1,nome:'Pikachu',sigla:'BASE1',lingua:'INT',source_uid:`tcgdex:en:${i}`,source_card_id:String(i),source_language:'en'}))
+ const base=database([cards]),messages=[]
+ const db={from(table){const q=base.from(table);if(table==='catalog_search_entries')q.then=(resolve,reject)=>Promise.resolve({data:null,error:{code:'57014',message:'canceling statement due to statement timeout'}}).then(resolve,reject);return q}}
+ const stats=await enrichCatalog({db,concurrency:1,onlyUnchecked:true,log:async m=>messages.push(m),fetchDetail:async c=>({id:c.source_card_id,localId:'1',variants_detailed:[{type:'holo'}]})})
+ assert.equal(stats.attempted,1);assert.equal(stats.checked,0);assert.equal(stats.databaseUnavailable,true)
+ assert.ok(!base.queries.some(q=>q.table==='cards'&&q.calls.some(c=>c[0]==='update')),'do not retry an error write against an occupied database')
+ assert.ok(messages.some(m=>m.includes('Sospendo il lotto')))
+})
+
+test('failed error checkpoint pauses instead of rejecting the whole batch',async()=>{
+ const card={id:1,source_uid:'tcgdex:en:a',source_card_id:'a',source_language:'en'}
+ const base=database([[card]])
+ const db={from(table){const q=base.from(table),original=q.then;q.then=(resolve,reject)=>q.calls.some(c=>c[0]==='update')?Promise.resolve({data:null,error:{code:'57014',message:'statement timeout'}}).then(resolve,reject):original.call(q,resolve,reject);return q}}
+ const stats=await enrichCatalog({db,concurrency:1,onlyUnchecked:true,log:async()=>{},fetchDetail:async()=>{throw Error('TCGdex metadati HTTP 503')}})
+ assert.equal(stats.checked,0);assert.equal(stats.databaseUnavailable,true);assert.equal(stats.sourceUnavailable,true)
+})
+
+test('selection timeout defers the batch but permission errors are not swallowed',async()=>{
+ const failing=error=>({from(){const q={then:resolve=>resolve({error})};for(const m of ['select','like','not','lte','is','order','limit'])q[m]=()=>q;return q}})
+ const stats=await enrichCatalog({db:failing({code:'57014',message:'timeout'}),log:async()=>{}})
+ assert.equal(stats.attempted,0);assert.equal(stats.databaseUnavailable,true)
+ await assert.rejects(enrichCatalog({db:failing({code:'42501',message:'permission denied'}),log:async()=>{}}),/permission denied/)
+})
+
+test('partial persistence replays the same printing keys and only completes after the checkpoint saves',async()=>{
+ const card={id:7,nome:'Pikachu',sigla:'BASE1',lingua:'INT',source_uid:'tcgdex:en:a',source_card_id:'a',source_language:'en'}
+ const rows=new Map();let failCheckpoint=true,checked=false
+ const db={from(table){let mode,payload
+ const q={then(resolve){if(mode==='select')return resolve({data:checked?[]:[card],error:null});if(table==='catalog_search_entries')for(const e of payload)rows.set(e.entry_key,e);if(table==='cards'&&mode==='update'){if(failCheckpoint)return resolve({error:{code:'57014',message:'statement timeout'}});checked=true}return resolve({data:[],error:null})}}
+ for(const m of ['like','not','lte','is','order','limit','eq'])q[m]=()=>q
+ for(const m of ['select','upsert','update'])q[m]=p=>{mode=m;payload=p;return q}
+ return q}}
+ const options={db,concurrency:1,onlyUnchecked:true,log:async()=>{},fetchDetail:async()=>({id:'a',localId:'1',variants_detailed:[{type:'holo'}]})}
+ assert.equal((await enrichCatalog(options)).databaseUnavailable,true);assert.equal(checked,false);assert.equal(rows.size,1)
+ failCheckpoint=false
+ assert.equal((await enrichCatalog(options)).checked,1);assert.equal(checked,true);assert.equal(rows.size,1)
+})
+
+test('completed checkpoints publish progress before the next card can fail',async()=>{
+ const cards=[1,2].map(id=>({id,nome:'Pikachu',sigla:'BASE1',lingua:'INT',source_uid:`tcgdex:en:${id}`,source_card_id:String(id),source_language:'en'}))
+ const db=database([cards]),progress=[]
+ const stats=await enrichCatalog({db,concurrency:1,onlyUnchecked:true,log:async()=>{},onProgress:p=>progress.push(p),fetchDetail:async c=>{if(c.id===2){assert.equal(progress[0].checked,1);throw Error('TCGdex metadati HTTP 503')}return {id:c.source_card_id,variants_detailed:[{type:'holo'}]}}})
+ assert.equal(stats.checked,1);assert.equal(stats.errors,1);assert.equal(progress.at(-1).checked,1);assert.equal(progress.at(-1).errors,1)
+})
