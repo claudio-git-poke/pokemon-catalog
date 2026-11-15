@@ -91,3 +91,13 @@ L'anno è quello dell'edizione dei campionati, non necessariamente l'anno di mes
 in vendita del prodotto. Foto, texture e finitura non sono dedotte dalla lista.
 Installazione iniziale: `db/catalog-world-decks.sql`; collegamento incrementale
 nelle sessioni del worker tramite `syncDeckMappings`.
+
+## Fonti aggiuntive EN / TH / ID
+
+Il workflow `Fonti aggiuntive EN TH ID` importa le schede inglesi di PkmnCards tramite `data_en` di type-null/PTCG-database e legge direttamente i cataloghi ufficiali thailandese e indonesiano. Usa gli stessi secrets Supabase del catalogo. Sessioni di massimo 8 minuti, avvio ogni 30 minuti, indici aggiornati ogni giorno e schede ricontrollate settimanalmente; GitHub può ritardare gli avvii pianificati.
+
+Gli identificativi delle fonti rimangono distinti; `catalog_sync_sets` conserva le pagine/set ancora da elaborare. Errori e pagine incomplete restano visibili nei log e vengono riprovati; non si deduce la completezza globale dai totali dichiarati. Una seconda lettura invariata non aggiorna le evidenze né la coda inventario. Gli URL delle immagini vengono conservati, i file non vengono copiati nel database.
+
+Le nuove carte entrano con variante `da-identificare`, senza collegamento Cardmarket o identità Bindex inventati. Le evidenze hanno ambito `card-metadata-only` e `reference_image_only: true`: le foto sono riferimenti nella lingua documentata, non prove di finiture, stampini o ristampe. L’inventario Bindex le espone come evidenze della carta in attesa di mappatura; la copia nel database di Bindex resta un passaggio separato. Le evidenze revisionate manualmente non vengono sovrascritte dall’importatore.
+
+PkmnCards e la sua copia in Atlas sono una sola provenienza, non due conferme indipendenti. Bulbapedia, Pokumon, Limitless e lo strumento cinese WeChat non sono ancora importatori attivi. Non è stato attivato alcun servizio a pagamento.
