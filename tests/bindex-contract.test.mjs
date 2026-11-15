@@ -12,8 +12,11 @@ test('publication gate validates canonical identities and requires documented ph
  assert.equal(canonicalMarketPage('https://www.cardmarket.com/it/Pokemon/Products?idProduct=100'),null)
  assert.ok(canonicalMarketPage('https://www.cardmarket.com/it/Pokemon/Products/Singles/Paldea/Pikachu'))
  const e={image_url:'https://images.test/en.jpg',source_url:'https://source.test/card',source_payload:{source_language:'en'},verification:'source'}
- assert.equal(publicationPhoto(e,{}).image_language,'EN')
- assert.equal(publicationPhoto(e,{}).image_verified,false)
+ assert.equal(publicationPhoto(e,{}),null,'generic image is not a printing photo')
+ const scoped={...e,source_payload:{...e.source_payload,variant:{type:'normal'},image_scope:'printing-language',image_language:'en'}}
+ assert.equal(publicationPhoto(scoped,{}).image_language,'EN')
+ assert.equal(publicationPhoto(scoped,{}).image_verified,false)
+ assert.equal(publicationPhoto({...scoped,source_payload:{...scoped.source_payload,image_language:'it'}},{}),null,'wrong language cannot fill the photo')
  assert.equal(publicationPhoto({...e,source_payload:{reference_image_only:true,source_language:'en'}},{}),null)
  assert.equal(publicationPhoto({...e,source_payload:{}},{}),null)
 })
@@ -60,7 +63,7 @@ test('Bindex contract repairs URLs without changing keys, preserves Italian phot
 import {publishBindex} from '../scripts/publish-bindex.mjs'
 test('publisher validates first and sends language photos through the protected RPC',async()=>{
  const writes=[],rpcs=[]
- const entry={entry_key:'tcgdex:1:holo',card_id:1,verification:'source',tags:[],language:'INT',set_code:'SV02@INT',collector_number:'50',updated_at:'2020-01-01T00:00:00.123456Z',image_url:'https://img.test/photo.jpg',source_url:'https://source.test',source_payload:{source_language:'en',set:{id:'sv02'},variant:{type:'normal'},has_normal_variant:true}}
+ const entry={entry_key:'tcgdex:1:holo',card_id:1,verification:'source',tags:[],language:'INT',set_code:'SV02@INT',collector_number:'50',updated_at:'2020-01-01T00:00:00.123456Z',image_url:'https://img.test/photo.jpg',source_url:'https://source.test',source_payload:{source_language:'en',image_language:'en',image_scope:'printing-language',set:{id:'sv02'},variant:{type:'normal'},has_normal_variant:true}}
  const db={from(table){let mutation=false;const q={select(){return q},eq(){return q},in(){return q},order(){return q},range(){return q},limit(){return q},upsert(row){mutation=true;writes.push({table,row});return q},delete(){mutation=true;return q},then(resolve){let data=[];if(!mutation){if(table==='catalog_export_state')data=[{ready:true}];if(table==='set_espansioni')data=[{sigla:'PAL',lingua:'INT',tcgdex_id:'sv02'}];if(table==='cards')data=[{id:1,nome:'Pikachu',sigla:'SV02@INT',source_language:'en'}]}return Promise.resolve({data}).then(resolve)}};return q},async rpc(name,args){rpcs.push({name,args});return {data:name==='catalog_export_queue'?[entry]:null}}}
  const result=await publishBindex({db,log:()=>{}})
  assert.equal(result.published,1)

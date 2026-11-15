@@ -88,3 +88,11 @@ test('a product already published in a promo masterset cannot create a second id
  const gold=[{sigla:'WCD25',numero:106,variante:'normale',nome:'Munkidori',cardmarket_id:883861}]
  assert.equal(resolvePublication(entry,card,sets,gold).reason,'product_namespace_requires_review')
 })
+
+test('a shared product identifier cannot collapse a reverse printing into a normal row',()=>{
+ const sets=[{sigla:'PAL',tcgdex_id:'sv02',lingua:'INT'}],card={nome:'Pikachu',sigla:'SV02@INT'}
+ const e={tags:['finish:reverse'],language:'INT',set_code:card.sigla,collector_number:'50',source_payload:{set:{id:'sv02'},variant:{type:'reverse',thirdParty:{cardmarket:100}},has_normal_variant:true}}
+ const ref=[{sigla:'PAL',numero:50,variante:'normale',nome:'Pikachu',cardmarket_id:100}]
+ assert.equal(resolvePublication(e,card,sets,ref).reason,'product_variant_identity_conflict')
+ assert.equal(resolvePublication({...e,source_payload:{...e.source_payload,variant:{type:'normal',thirdParty:{cardmarket:100}}}},card,sets,ref).row.variante,'normale')
+})

@@ -43,7 +43,11 @@ export function resolvePublication(entry,card,sets,reference){
  const coherent=candidates.filter(r=>mfb||!numeric||r.numero===Number(printed))
  const exact=coherent.filter(r=>proposed&&equivalentVariant(r.variante,proposed))
  if(payload.product_variant_count>1&&coherent.length===1&&exact.length!==1)return {reason:'ambiguous_source_product_id'}
- if(coherent.length===1)return {row:coherent[0],method:'cardmarket+set+identity',cm}
+ if(coherent.length===1){
+  if(!proposed)return {reason:'variant_identity_unconfirmed'}
+  if(!equivalentVariant(coherent[0].variante,proposed))return {reason:'product_variant_identity_conflict'}
+  return {row:coherent[0],method:'cardmarket+set+identity',cm}
+ }
  if(exact.length===1)return {row:exact[0],method:'cardmarket+set+variant',cm}
  if(coherent.length>1)return {reason:'ambiguous_product_variants'}
  if(mfb)return {reason:'mfb_product_identity_unverified'}
