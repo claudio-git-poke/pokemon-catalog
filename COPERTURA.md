@@ -34,7 +34,7 @@ Il riepilogo generale preesistente legge ora `catalog_quality_cache`, aggiornato
 
 `db/catalog-cross-source.sql` aggiunge un registro diagnostico separato. Le coppie candidate hanno la stessa lingua e lo stesso codice di espansione in TCGdex e Card Atlas. Questo criterio non certifica l’identità delle distribuzioni né l’indipendenza dei dati originali: il registro espone sempre `independence_status=unestablished` e `variants_status=unverified`.
 
-Il worker confronta al massimo una coppia per ciclo, leggendo lo snapshot Atlas già importato (entro otto giorni, con conteggio coerente) e l’elenco attuale TCGdex. Confronta numero stampato e nome nella stessa lingua; conserva conteggi, impronte SHA-256 e fino a 20 esempi per categoria. Numeri ripetuti, mancanti, zero o nomi assenti producono ambiguità: non vengono accorpate automaticamente stampe diverse. Due elenchi vuoti non sono concordanza.
+Il workflow dedicato confronta al massimo 60 coppie per sessione di 12 minuti, una alla volta, leggendo lo snapshot Atlas già importato (entro otto giorni, con conteggio coerente) e l’elenco attuale TCGdex. Confronta numero stampato e nome nella stessa lingua; conserva conteggi, impronte SHA-256 e fino a 20 esempi per categoria. Numeri ripetuti, mancanti, zero o nomi assenti producono ambiguità: non vengono accorpate automaticamente stampe diverse. Due elenchi vuoti non sono concordanza.
 
 Il risultato può essere in attesa, concordante, differente, ambiguo o temporaneamente non disponibile. I tentativi falliti conservano l’ultima evidenza e riprovano dopo sei ore; le differenze dopo un giorno, gli altri confronti dopo sette giorni. Una voce presente solo in una fonte non prova che manchi nel nostro database. Questa diagnostica non modifica chiavi Bindex, immagini o carte: eventuali importazioni restano affidate alle normali code.
 
@@ -47,3 +47,12 @@ Verifica reale del 15 novembre 2026: per S8a giapponese TCGdex restituisce zero 
 Il recupero retroattivo usa una sola elaborazione per volta e pubblica i contatori durante il lotto. Un timeout o un errore transitorio del database sospende il lotto senza tentare subito una seconda scrittura sulla carta per annotare lo stesso errore. Il recupero successivo seleziona ancora le carte prive del checkpoint; gli upsert riusano le stesse chiavi delle stampe, anche se queste erano state salvate prima del timeout. Permessi o vincoli errati restano errori da correggere.
 
 I log conservano in memoria i batch non confermati, ritentano una volta dopo 1,5 secondi gli errori transitori e riusano le stesse chiavi evento. Se fallisce anche il tentativo successivo, l’errore resta visibile: non viene dichiarato salvato ciò che il database non ha confermato. Un successivo flush nella stessa sessione può recuperare i batch trattenuti; la memoria non sopravvive alla chiusura del processo. L’output GitHub riceve comunque ogni messaggio prima del salvataggio.
+
+
+## Sessioni autonome dei confronti
+
+Il workflow `Confronto fonti catalogo` parte su modifica del suo codice, manualmente e ogni ora al minuto 37 (UTC). Ha una propria coda GitHub con una sola esecuzione attiva; non attende che la sessione di importazione di 330 minuti termini. Il processo principale non esegue più i confronti.
+
+La sessione seleziona una coppia dovuta alla volta e si ferma dopo 60 coppie, a esaurimento coda, avvicinandosi al budget di 12 minuti oppure se la fonte risponde HTTP 429/503. Il limite GitHub è 18 minuti, comprendendo installazione e margine per richieste in corso. Ogni risultato viene salvato prima dell’avanzamento del contatore. Gli errori delle fonti restano nel registro con il proprio rinvio; un fallimento nel salvataggio interrompe la sessione con errore. Non vengono ripetuti i confronti non ancora scaduti.
+
+L’automazione scrive il dettaglio di ciascun confronto nel normale registro in `/automazione`, con contatori di concordanze, differenze, ambiguità ed errori. La frequenza del workflow indica quando viene controllata la coda, non forza una nuova scansione oraria di tutte le fonti.

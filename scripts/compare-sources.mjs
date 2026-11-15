@@ -38,7 +38,3 @@ export async function compareSourcePair({db,pair,fetchSet,clock=Date.now}){
   return result
  }catch(error){await save({status:'error',result:pair.result||{},last_success_at:pair.last_success_at||null,last_error:String(error),next_check_at:new Date(clock()+6*3600000).toISOString()});return {status:'error',reason:String(error)}}
 }
-export async function compareSources({db,log=console.log,fetchSet}){
- try{const pairs=await check(db.rpc('catalog_cross_source_due',{batch_size:1}));for(const pair of pairs){const r=await compareSourcePair({db,pair,fetchSet});await log(`Confronto fonti ${pair.source_language}/${pair.primary_set}: ${r.status} · ${r.reason}`)}return {checked:pairs.length,errors:0}}
- catch(error){await log('Confronto fonti rimandato: '+String(error));return {checked:0,errors:1}}
-}

@@ -1,0 +1,35 @@
+name: Confronto fonti catalogo
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/backfill-cross-source.mjs'
+      - 'scripts/cross-source-session.mjs'
+      - 'scripts/compare-sources.mjs'
+      - 'src/lib/catalog-languages.ts'
+      - '.github/workflows/catalog-comparisons.yml'
+  schedule:
+    - cron: '37 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: catalog-source-comparisons
+  cancel-in-progress: false
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node --experimental-strip-types scripts/backfill-cross-source.mjs
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
