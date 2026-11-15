@@ -49,7 +49,9 @@ test('worker retains cursor and retries missing images while saving valid record
    create table catalog_search_entries(entry_key text primary key,card_id bigint references cards(id),name text,set_code text,language text,collector_number text,denominator text,tags text[],facts jsonb,source_url text,source_payload jsonb,verification text,image_url text,label text,search_text text,updated_at timestamptz default now());
    create table catalog_sync_sets(source_uid text primary key,provider text,source_language text,set_id text,name text,last_sync_at timestamptz,next_sync_at timestamptz default now(),last_error text,card_count integer default 0);`)
   const db=postgresClient(pg),page=JSON.parse(await fixture('bulbapedia-card.json')),it=await fixture('limitless-it.html'),en=await fixture('limitless-card.html'),jp=await fixture('limitless-jp-card.html')
+  const requests=[]
   const request=async(raw)=>{
+   requests.push(raw)
    const u=new URL(raw)
    if(u.hostname==='pokumon.com')return {pages:1,body:[poku]}
    if(u.hostname.includes('bulbapedia'))return {body:{query:{pages:{[page.pageid]:page}},continue:{gcmcontinue:'saved-token',continue:'gcmcontinue||'}}}
@@ -60,6 +62,7 @@ test('worker retains cursor and retries missing images while saving valid record
    return {body:lang==='it'?it:lang==='jp'?jp:en}
   }
   const result=await runResearch({db,request,log:()=>{}});assert.ok(result.added>=5);assert.ok(result.errors>0)
+  assert.deepEqual(requests.filter(u=>/\/cards\/(it|en)\/SVP\/47$/.test(u)).map(u=>new URL(u).pathname.split('/')[2]),['it','en'])
   const bulba=(await pg.query("select set_id from catalog_sync_sets where provider='research-bulbapedia' limit 1")).rows[0]
   assert.equal(JSON.parse(bulba.set_id).continuation.gcmcontinue,'saved-token')
   const missing=(await pg.query("select set_id,last_error from catalog_sync_sets where source_uid='research:limitless:fr:SVP'")).rows[0]
