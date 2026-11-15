@@ -38,3 +38,10 @@ test('PostgreSQL accepts repeated imports and quarantines ambiguous legacy entri
   assert.deepEqual(old.source_payload,{})
  }finally{await pg.close()}
 })
+
+test('unambiguous variants without vendor IDs retain their historical fallback keys',async()=>{
+ const {createHash}=await import('node:crypto')
+ const variant={type:'holo',foil:'cosmos',stamp:['staff','pre-release']}
+ const old=createHash('sha256').update(JSON.stringify(variant)).digest('hex').slice(0,24)
+ assert.equal(detailEntries(card,{id:'x',variants_detailed:[variant]})[0].entry_key,`tcgdex:${card.id}:${old}`)
+})

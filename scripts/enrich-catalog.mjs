@@ -19,12 +19,14 @@ function sourceVariants(raw,lang){
  for(const v of raw.filter(v=>!v.languages||v.languages.includes(lang))){
   const {pricing,...clean}=v
   if(!clean.stamp&&Array.isArray(clean.stamps))clean.stamp=clean.stamps
+  // Preserve the historical fallback key for variants without an upstream ID.
+  const base=clean.variantId||createHash('sha256').update(JSON.stringify({...clean,thirdParty:undefined})).digest('hex').slice(0,24)
   delete clean.stamps
   if(Array.isArray(clean.stamp))clean.stamp=[...new Set(clean.stamp)].sort()
   if(Array.isArray(clean.languages))clean.languages=[...new Set(clean.languages)].sort()
-  unique.set(digest(clean),clean)
+  if(!unique.has(digest(clean)))unique.set(digest(clean),{clean,base})
  }
- return [...unique].map(([fingerprint,clean])=>({fingerprint,clean,base:clean.variantId||digest({...clean,thirdParty:undefined})}))
+ return [...unique].map(([fingerprint,row])=>({fingerprint,...row}))
 }
 export async function quarantineVariantCollisions(db,entries){
  const keys=[...new Set(entries.map(e=>e.source_payload.ambiguous_legacy_entry_key).filter(Boolean))]
