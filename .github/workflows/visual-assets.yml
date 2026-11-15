@@ -1,0 +1,26 @@
+name: Registro simboli visivi
+on:
+  push:
+    branches: [main]
+    paths: ['data/visual-archive/**','scripts/import-visual-assets.mjs','.github/workflows/visual-assets.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: visual-assets
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node scripts/import-visual-assets.mjs
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
