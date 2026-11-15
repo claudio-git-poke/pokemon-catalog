@@ -12,19 +12,44 @@ export function baseFacts(card){
  for(const[key,re]of Object.entries({name_has_lv:/(?:^|\s)LV\.?/i,name_has_ex:/(?:^|\s)ex(?:$|\s)/i,name_has_gx:/(?:^|[\s-])GX(?:$|\s)/i,name_has_vmax:/(?:^|\s)VMAX(?:$|\s)/i,name_has_vstar:/(?:^|\s)VSTAR(?:$|\s)/i}))if(card.nome)facts[key]=re.test(card.nome)
  return facts
 }
+const stableValue=value=>Array.isArray(value)?value.map(stableValue):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().filter(k=>value[k]!==undefined).map(k=>[k,stableValue(value[k])])):value
+const digest=value=>createHash('sha256').update(JSON.stringify(stableValue(value))).digest('hex').slice(0,24)
+function sourceVariants(raw,lang){
+ const unique=new Map()
+ for(const v of raw.filter(v=>!v.languages||v.languages.includes(lang))){
+  const {pricing,...clean}=v
+  if(!clean.stamp&&Array.isArray(clean.stamps))clean.stamp=clean.stamps
+  delete clean.stamps
+  if(Array.isArray(clean.stamp))clean.stamp=[...new Set(clean.stamp)].sort()
+  if(Array.isArray(clean.languages))clean.languages=[...new Set(clean.languages)].sort()
+  unique.set(digest(clean),clean)
+ }
+ return [...unique].map(([fingerprint,clean])=>({fingerprint,clean,base:clean.variantId||digest({...clean,thirdParty:undefined})}))
+}
+export async function quarantineVariantCollisions(db,entries){
+ const keys=[...new Set(entries.map(e=>e.source_payload.ambiguous_legacy_entry_key).filter(Boolean))]
+ if(!keys.length)return
+ const old=await check(db.from('catalog_search_entries').select('entry_key,source_payload').in('entry_key',keys).neq('verification','reviewed'))
+ for(const row of old)await check(db.from('catalog_search_entries').update({source_payload:{...row.source_payload,identity_review_required:true,metadata_scope:'card-metadata-only',reference_image_only:true,identity_conflict:'reused_source_variant_id'},updated_at:now()}).eq('entry_key',row.entry_key).neq('verification','reviewed'))
+}
 export function detailEntries(card,detail){
  const lang=card.source_language
  const raw=Array.isArray(detail.variants_detailed)&&detail.variants_detailed.length?detail.variants_detailed:Array.isArray(detail.variants)?detail.variants:[...Object.entries(detail.variants||{}).filter(([key,value])=>value===true&&['normal','holo','reverse'].includes(key)).map(([type])=>({type})),...Object.entries(detail.variants||{}).filter(([key,value])=>value===true&&['firstEdition','wPromo','preRelease','jumbo'].includes(key)).map(([key])=>key==='jumbo'?{size:'jumbo'}:{stamp:[{firstEdition:'1st-edition',wPromo:'w-promo',preRelease:'pre-release'}[key]]})]
- return raw.filter(v=>!v.languages||v.languages.includes(lang)).map(v=>{
-  const {pricing,...clean}=v
-  if(!clean.stamp&&Array.isArray(clean.stamps))clean.stamp=clean.stamps
+ const variants=sourceVariants(raw,lang),counts=new Map()
+ for(const row of variants)counts.set(row.base,(counts.get(row.base)||0)+1)
+ return variants.map(({clean:original,base,fingerprint})=>{
+  const clean={...original}
+  const types={normal:'normal',normale:'normal',holo:'holo',olografica:'holo',reverse:'reverse',metal:'metal',lenticular:'lenticular'}
+  if(typeof clean.type==='string')clean.type=types[clean.type.toLowerCase()]||clean.type
+  if(typeof clean.size==='string'&&['standard','jumbo'].includes(clean.size.toLowerCase()))clean.size=clean.size.toLowerCase()
+  const collision=counts.get(base)>1
   const {tags,facts,attributes}=mapVariant(card,detail,clean)
   if((card.sigla||'').split('@')[0].toLowerCase()==='mfb')tags.push('family:my-first-battle')
-  const key=v.variantId || createHash('sha256').update(JSON.stringify({...clean,thirdParty:undefined})).digest('hex').slice(0,24)
+  const key=collision?`${base}:source:${fingerprint}`:base
   return {entry_key:`tcgdex:${card.id}:${key}`,card_id:card.id,collector_number:tags.includes('family:my-first-battle')?null:normNumber(detail.localId),denominator:tags.includes('family:my-first-battle')?null:detail.set?.cardCount?.official?String(detail.set.cardCount.official):null,release_year:attributes.release_year||null,deck_code:attributes.deck||null,deck_number:null,
    name:card.nome,set_code:card.sigla,language:card.lingua,tags:expandTags(tags),facts:{...baseFacts(card),...facts},
-   source_url:`https://api.tcgdex.net/v2/${lang}/cards/${encodeURIComponent(detail.id)}`,source_payload:{id:detail.id,localId:detail.localId,set:detail.set,rarity:detail.rarity,source_name:detail.name,source_language:lang,product_variant_count:clean.thirdParty?.cardmarket?raw.filter(x=>x.thirdParty?.cardmarket===clean.thirdParty.cardmarket).length:0,has_normal_variant:raw.some(x=>x.type==='normal'),variant:clean,attributes},verification:'source',
-   label:[v.type,v.foil,v.subtype,...(v.stamp||[])].filter(Boolean).join(' · ')||'Stampa dichiarata dalla fonte',updated_at:now(),search_text:normalizeSearch(`${card.nome} ${card.sigla} ${detail.set?.name||''} ${card.codice||''}`)}
+   source_url:`https://api.tcgdex.net/v2/${lang}/cards/${encodeURIComponent(detail.id)}`,source_payload:{id:detail.id,localId:detail.localId,set:detail.set,rarity:detail.rarity,source_name:detail.name,source_language:lang,product_variant_count:clean.thirdParty?.cardmarket?variants.filter(x=>x.clean.thirdParty?.cardmarket===clean.thirdParty.cardmarket).length:0,has_normal_variant:variants.some(x=>['normal','normale'].includes(String(x.clean.type).toLowerCase())),variant:clean,source_variant_values:{type:original.type,size:original.size},...(collision?{identity_review_required:true,identity_conflict:'reused_source_variant_id',ambiguous_legacy_entry_key:`tcgdex:${card.id}:${base}`}:{ }),attributes},verification:'source',
+   label:[clean.type,clean.foil,clean.subtype,...(clean.stamp||[])].filter(Boolean).join(' · ')||'Stampa dichiarata dalla fonte',updated_at:now(),search_text:normalizeSearch(`${card.nome} ${card.sigla} ${detail.set?.name||''} ${card.codice||''}`)}
  })
 }
 export function curatedEntry(card,row){
@@ -60,6 +85,7 @@ export async function enrichCatalog({db,log=console.log,budgetMs=60000,limit=100
    detail=fetchDetail?response:await (async()=>{if(!response.ok)throw Error(`TCGdex metadati HTTP ${response.status}`);return response.json()})()
    if(detail.id!==card.source_card_id)throw Error('Identità della fonte non corrispondente: nessun tag assegnato.')
    entries=detailEntries(card,detail)
+   await quarantineVariantCollisions(db,entries)
    if(entries.length){const terms=termsForEntries(entries);if(terms.length)await check(db.from('catalog_terms').upsert(terms,{onConflict:'code',ignoreDuplicates:true}));await check(db.from('catalog_search_entries').upsert(entries,{onConflict:'entry_key'}))}
    await check(db.from('cards').update({traits_checked_at:now(),traits_next_attempt_at:new Date(Date.now()+14*86400000).toISOString(),traits_last_error:null}).eq('id',card.id))
    stats.checked++;stats.indexed+=entries.length;onProgress({...stats})

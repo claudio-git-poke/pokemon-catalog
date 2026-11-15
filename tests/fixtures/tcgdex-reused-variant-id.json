@@ -1,0 +1,76 @@
+{
+  "id": "sv03-125",
+  "localId": "125",
+  "name": "Charizard-ex",
+  "set": {
+    "cardCount": {
+      "official": 197,
+      "total": 230
+    },
+    "id": "sv03",
+    "logo": "https://assets.tcgdex.net/it/sv/sv03/logo",
+    "name": "Ossidiana Infuocata",
+    "symbol": "https://assets.tcgdex.net/univ/sv/sv03/symbol"
+  },
+  "variants": {
+    "firstEdition": false,
+    "holo": true,
+    "normal": false,
+    "reverse": false,
+    "wPromo": false
+  },
+  "variants_detailed": [
+    {
+      "type": "Olografica",
+      "size": "Standard",
+      "thirdParty": {
+        "cardmarket": 725205,
+        "tcgplayer": 509879,
+        "cardtrader": 255810
+      },
+      "variantId": "jr7oetx1mqug9"
+    },
+    {
+      "type": "Olografica",
+      "size": "Jumbo",
+      "thirdParty": {
+        "cardmarket": 749033,
+        "tcgplayer": 581987
+      },
+      "variantId": "slwlv6rn87"
+    },
+    {
+      "type": "Olografica",
+      "size": "Standard",
+      "stamp": [
+        "player-rewards-program"
+      ],
+      "thirdParty": {
+        "cardmarket": 756342
+      },
+      "variantId": "mtltux8quqoc7vwp24c9zzhgmzduu8xcik8"
+    },
+    {
+      "type": "Olografica",
+      "size": "Standard",
+      "stamp": [
+        "player-rewards-program"
+      ],
+      "thirdParty": {
+        "cardmarket": 782239
+      },
+      "variantId": "mtltux8quqoc7vwp24c9zzhgmzduu8xcik8"
+    },
+    {
+      "type": "Olografica",
+      "size": "Standard",
+      "stamp": [
+        "player-rewards-program"
+      ],
+      "thirdParty": {
+        "cardmarket": 811099
+      },
+      "variantId": "mtltux8quqoc7vwp24c9zzhgmzduu8xcik8"
+    }
+  ]
+}
