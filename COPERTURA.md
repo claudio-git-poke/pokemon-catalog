@@ -69,3 +69,9 @@ Per i numeri presenti soltanto in TCGdex, il worker cerca gli esatti `source_uid
 La pagina conserva la data del controllo e mostra fino a 20 esempi con collegamenti alle carte esistenti. Nessuna identità, immagine o riga canonica viene modificata da questa diagnostica. I vecchi risultati sono arricchiti alle successive verifiche.
 
 Controllo reale del 15 novembre 2026 su SM12a giapponese: 226 voci nell’elenco TCGdex e 210 nello snapshot Atlas; le 16 voci esclusive di TCGdex sono tutte già collegate nel catalogo. Quattro dei 23 nomi discordanti differiscono solo per spazi; i restanti 19 rimangono da verificare.
+
+## Controllo anche delle voci esclusive di Card Atlas
+
+La versione 3 esegue il controllo dei collegamenti in entrambe le direzioni. Le voci esclusive di Atlas vengono cercate usando il loro `source_uid` originale, validandone il prefisso `atlas:<lingua>:`. Non vengono trasformate in identificativi TCGdex e un identificativo di un’altra lingua resta indeterminabile. La pagina mostra separatamente i due risultati, con data e collegamenti alle carte esistenti. Rimangono validi tutti i limiti del controllo precedente: niente equivalenze automatiche tra fonti, nessuna assenza fisica dedotta da un collegamento non trovato, nessuna modifica a carte o chiavi Bindex.
+
+Verifica reale del 15 novembre 2026 su CP3 giapponese: TCGdex restituisce un elenco vuoto, Atlas 32 voci; tutte le 32 voci hanno già un collegamento Atlas nel catalogo. La discrepanza resta visibile, ma non rappresenta 32 carte da aggiungere.

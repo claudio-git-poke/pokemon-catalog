@@ -51,7 +51,7 @@ test('spacing differences stay visible without hiding suffixes or certifying ide
  const r=compareCardLists([card('1','アローラロコン'),card('2','シェイミ')],[card('1','アローラ ロコン'),card('2','シェイミprismstar')])
  assert.equal(r.status,'differences');assert.equal(r.spacing_difference_count,1);assert.equal(r.other_name_difference_count,1)
  assert.equal(r.name_differences[0].kind,'spacing_only');assert.equal(r.name_differences[1].kind,'other')
- assert.equal(r.comparison_version,2);assert.equal(r.variants_status,'unverified')
+ assert.equal(r.comparison_version,3);assert.equal(r.variants_status,'unverified')
 })
 
 test('source-only cards are checked by exact source identity without assuming absence or merging duplicates',async()=>{
@@ -72,4 +72,16 @@ test('failed catalog-link reads stay unknown and never report zero missing cards
  const db={from(){return {select(){return this},in(){return Promise.resolve({data:null,error:{message:'statement timeout'}})}}}}
  const result=await auditPrimaryCatalogLinks({db,primary:[card('1')],secondary:[],language:'ja'})
  assert.equal(result.status,'unavailable');assert.equal(result.not_linked_count,undefined)
+})
+
+test('Atlas-only evidence uses its original namespace and rejects a different language',async()=>{
+ const {auditPrimaryCatalogLinks}=await import('../scripts/compare-sources.mjs')
+ const pg=new PGlite()
+ try{
+  await pg.exec("create table cards(id int,source_uid text);insert into cards values(8,'atlas:ja:CP3-31601'),(9,'tcgdex:ja:CP3-2')")
+  const result=await auditPrimaryCatalogLinks({db:postgresClient(pg),provider:'atlas',language:'ja',secondary:[],primary:[{...card('1'),id:'atlas:ja:CP3-31601'},{...card('2'),id:'atlas:ja:CP3-31602'},{...card('3'),id:'atlas:ko:CP3-31603'}]})
+  assert.equal(result.scope,'secondary_only_exact_source_links');assert.equal(result.linked_count,1);assert.equal(result.linked[0].catalog_id,8)
+  assert.equal(result.not_linked_count,1);assert.equal(result.uncheckable_count,1)
+  assert.equal(result.not_linked[0].source_uid,'atlas:ja:CP3-31602','no double prefix or translation to another provider')
+ }finally{await pg.close()}
 })

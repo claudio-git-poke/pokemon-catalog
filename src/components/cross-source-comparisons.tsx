@@ -4,7 +4,7 @@ import {supabase} from '@/lib/supabase'
 import {evidenceSource} from '@/lib/identification-evidence'
 type Item={number:string;name?:string;primary?:string;secondary?:string;count?:number;kind?:string;catalog_id?:number}
 type CatalogLinks={status:string;checked_at?:string|null;checked?:number;linked_count?:number;not_linked_count?:number;uncheckable_count?:number;linked?:Item[];not_linked?:Item[];error?:string}
-type Result={spacing_difference_count?:number;other_name_difference_count?:number;catalog_links?:CatalogLinks;primary_count?:number;secondary_count?:number;only_primary_count?:number;only_secondary_count?:number;name_difference_count?:number;only_primary?:Item[];only_secondary?:Item[];name_differences?:Item[];duplicate_primary?:Item[];duplicate_secondary?:Item[];unnumbered_primary?:number;unnumbered_secondary?:number;reason?:string}
+type Result={spacing_difference_count?:number;other_name_difference_count?:number;catalog_links?:CatalogLinks;catalog_secondary_links?:CatalogLinks;primary_count?:number;secondary_count?:number;only_primary_count?:number;only_secondary_count?:number;name_difference_count?:number;only_primary?:Item[];only_secondary?:Item[];name_differences?:Item[];duplicate_primary?:Item[];duplicate_secondary?:Item[];unnumbered_primary?:number;unnumbered_secondary?:number;reason?:string}
 type Pair={pair_key:string;name:string;primary_set:string;language_label:string;status:string;checked_at:string|null;last_success_at:string|null;last_error:string|null;primary_url:string;secondary_url:string;result:Result}
 type Report={stats:Record<string,number>;total:number;rows:Pair[]}
 const states:Record<string,string>={pending:'In attesa',concordant:'Elenchi concordanti',differences:'Differenze',uncomparable:'Ambiguità',error:'Fonte non disponibile'}
@@ -25,19 +25,19 @@ export default function CrossSourceComparisons(){
     <p className="text-sm">{r.checked_at?`Controllato il ${new Date(r.checked_at).toLocaleString('it-IT')}`:'Confronto ancora da eseguire'}{r.status==='error'&&r.last_success_at?` · Dati del precedente confronto: ${new Date(r.last_success_at).toLocaleString('it-IT')}`:''}</p>
     <p className="text-sm">{r.last_error||r.result.reason||'Il worker confronterà i numeri stampati e i nomi a piccoli lotti.'}</p>
     {r.result.primary_count!=null&&<p>TCGdex: <strong>{r.result.primary_count}</strong> voci · Card Atlas: <strong>{r.result.secondary_count}</strong> voci · Nomi discordanti: {r.result.name_difference_count||0}</p>}
-    {r.result.catalog_links&&<div className="border rounded p-3 text-sm space-y-1">
-     <strong>Voci presenti solo in TCGdex: controllo nel nostro catalogo</strong>
-     {r.result.catalog_links.status==='checked'?<>
-      <p>{r.result.catalog_links.linked_count} già collegate · {r.result.catalog_links.not_linked_count} senza collegamento di fonte · {r.result.catalog_links.uncheckable_count} non determinabili.</p>
-      <p>Controllo dei soli identificativi TCGdex, rilevato il {new Date(r.result.catalog_links.checked_at!).toLocaleString('it-IT')}. Un collegamento assente non prova che la carta manchi: potrebbe essere presente con un’altra identità.</p>
-     </>:<p>Controllo non disponibile: {r.result.catalog_links.error}. Nessuna assenza dedotta.</p>}
-    </div>}
+    {([['TCGdex',r.result.catalog_links],['Card Atlas',r.result.catalog_secondary_links]] as const).map(([provider,links])=>links&&<div key={provider} className="border rounded p-3 text-sm space-y-1">
+     <strong>Voci presenti solo in {provider}: controllo nel nostro catalogo</strong>
+     {links.status==='checked'?<>
+      <p>{links.linked_count} già collegate · {links.not_linked_count} senza collegamento di fonte · {links.uncheckable_count} non determinabili.</p>
+      <p>Controllo dei soli identificativi {provider}, rilevato il {new Date(links.checked_at!).toLocaleString('it-IT')}. Un collegamento assente non prova che la carta manchi: potrebbe essere presente con un’altra identità.</p>
+     </>:<p>Controllo non disponibile: {links.error}. Nessuna assenza dedotta.</p>}
+    </div>)}
     <div className="flex flex-wrap gap-4 text-sm">{[['TCGdex',r.primary_url],['Card Atlas',r.secondary_url]].map(([label,url])=>evidenceSource(url)&&<a key={label} className="underline" href={evidenceSource(url)!.url} target="_blank" rel="noopener noreferrer">Consulta {label} ↗</a>)}</div>
     {r.status!=='pending'&&r.result.primary_count!=null&&<details><summary className="cursor-pointer font-semibold">Differenze e ambiguità da controllare</summary><div className="mt-3 space-y-3 text-sm">
      <div><strong>Presenti solo in TCGdex: {r.result.only_primary_count||0}</strong><ul>{r.result.only_primary?.map(c=><li key={c.number}>{c.number} · {c.name}</li>)}</ul></div>
      <div><strong>Presenti solo in Card Atlas: {r.result.only_secondary_count||0}</strong><ul>{r.result.only_secondary?.map(c=><li key={c.number}>{c.number} · {c.name}</li>)}</ul></div>
      <div><strong>Nomi discordanti</strong>{r.result.spacing_difference_count!=null&&<p>{r.result.spacing_difference_count} differiscono solo per spazi · {r.result.other_name_difference_count} altre differenze. Anche le differenze di spaziatura restano da verificare e non cambiano l’identità della carta.</p>}<ul>{r.result.name_differences?.map(c=><li key={c.number}>{c.number} · {c.primary} / {c.secondary}{c.kind==='spacing_only'?' · Solo spazi':''}</li>)}</ul></div>
-     {r.result.catalog_links?.status==='checked'&&<div><strong>Collegamenti già presenti</strong><ul>{r.result.catalog_links.linked?.map(c=><li key={c.number}><a className="underline" href={`/carte/${c.catalog_id}`}>{c.number} · {c.name} ↗</a></li>)}</ul><strong>Collegamento di fonte da controllare</strong><ul>{r.result.catalog_links.not_linked?.map(c=><li key={c.number}>{c.number} · {c.name}</li>)}</ul></div>}
+     {([['TCGdex',r.result.catalog_links],['Card Atlas',r.result.catalog_secondary_links]] as const).map(([provider,links])=>links?.status==='checked'&&<div key={provider}><strong>Collegamenti già presenti · {provider}</strong><ul>{links.linked?.map(c=><li key={c.number}><a className="underline" href={`/carte/${c.catalog_id}`}>{c.number} · {c.name} ↗</a></li>)}</ul><strong>Collegamento di fonte da controllare · {provider}</strong><ul>{links.not_linked?.map(c=><li key={c.number}>{c.number} · {c.name}</li>)}</ul></div>)}
      <p>Voci senza numero confrontabile: TCGdex {r.result.unnumbered_primary||0}, Card Atlas {r.result.unnumbered_secondary||0}.</p>
      {!!(r.result.duplicate_primary?.length||r.result.duplicate_secondary?.length)&&<p>Numeri ripetuti: {[...(r.result.duplicate_primary||[]).map(c=>`TCGdex ${c.number} (${c.count})`),...(r.result.duplicate_secondary||[]).map(c=>`Atlas ${c.number} (${c.count})`)].join(' · ')}. Possono indicare varianti: non vengono accorpate automaticamente.</p>}
      <p>Mostrati al massimo 20 esempi per categoria. Nessuna chiave Bindex o foto viene modificata dal confronto.</p>
