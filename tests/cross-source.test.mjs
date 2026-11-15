@@ -46,3 +46,30 @@ test('regional pairing is read-only publicly and failed comparisons retain previ
   await assert.rejects(pg.exec('select catalog_cross_source_due(1)'),/permission denied/)
  }finally{await pg.close()}
 })
+
+test('spacing differences stay visible without hiding suffixes or certifying identities',()=>{
+ const r=compareCardLists([card('1','アローラロコン'),card('2','シェイミ')],[card('1','アローラ ロコン'),card('2','シェイミprismstar')])
+ assert.equal(r.status,'differences');assert.equal(r.spacing_difference_count,1);assert.equal(r.other_name_difference_count,1)
+ assert.equal(r.name_differences[0].kind,'spacing_only');assert.equal(r.name_differences[1].kind,'other')
+ assert.equal(r.comparison_version,2);assert.equal(r.variants_status,'unverified')
+})
+
+test('source-only cards are checked by exact source identity without assuming absence or merging duplicates',async()=>{
+ const {auditPrimaryCatalogLinks}=await import('../scripts/compare-sources.mjs')
+ const pg=new PGlite()
+ try{
+  await pg.exec("create table cards(id int,source_uid text);insert into cards values(1,'tcgdex:ja:card-1'),(2,'tcgdex:ko:card-2')")
+  const result=await auditPrimaryCatalogLinks({db:postgresClient(pg),primary:[card('1'),card('2'),card('3'),card('3'),{localId:'4',name:'無名'}],secondary:[],language:'ja',clock:()=>0})
+  assert.equal(result.linked_count,1);assert.equal(result.not_linked_count,1);assert.equal(result.uncheckable_count,2)
+  assert.equal(result.linked[0].catalog_id,1);assert.equal(result.not_linked[0].number,'2','Korean identity does not satisfy Japanese source link')
+  assert.equal(result.checked_at,'1970-01-01T00:00:00.000Z')
+  assert.equal((await pg.query('select count(*) n from cards')).rows[0].n,2)
+ }finally{await pg.close()}
+})
+
+test('failed catalog-link reads stay unknown and never report zero missing cards',async()=>{
+ const {auditPrimaryCatalogLinks}=await import('../scripts/compare-sources.mjs')
+ const db={from(){return {select(){return this},in(){return Promise.resolve({data:null,error:{message:'statement timeout'}})}}}}
+ const result=await auditPrimaryCatalogLinks({db,primary:[card('1')],secondary:[],language:'ja'})
+ assert.equal(result.status,'unavailable');assert.equal(result.not_linked_count,undefined)
+})

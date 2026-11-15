@@ -59,3 +59,13 @@ L’automazione scrive il dettaglio di ciascun confronto nel normale registro in
 
 
 Il conteggio globale dei vecchi tag è una rilevazione facoltativa effettuata solo all’avvio, con data propria (`initial_pending`, `initial_pending_at`). Un suo errore viene segnalato senza interrompere l’elaborazione. Non viene più ricalcolato dopo ogni minuto di lavoro e non viene presentato come totale residuo corrente: le nuove importazioni possono aggiungere altre carte. I contatori `checked` e `indexed` misurano invece i risultati confermati della sessione.
+
+## Differenze fra fonti e presenza nel catalogo
+
+La versione 2 dei confronti conserva tutte le differenze di nome e distingue quelle dovute soltanto a spazi da altre differenze. Non rimuove suffissi o simboli per far concordare i nomi e non certifica automaticamente identità o varianti.
+
+Per i numeri presenti soltanto in TCGdex, il worker cerca gli esatti `source_uid` nello stesso namespace linguistico di importazione, usando l’indice univoco delle carte e letture di massimo 200 identificativi. Mostra quante voci sono già collegate, quante non hanno quel collegamento e quante non sono determinabili. Il controllo riguarda solo questo sottoinsieme della fonte primaria: non misura la completezza dell’intero catalogo né cerca equivalenze con righe precedenti prive di identificativo di fonte. Un collegamento assente non viene chiamato carta mancante. Identificativi ripetuti o numeri duplicati restano indeterminabili; un errore di lettura lascia l’esito sconosciuto, senza inventare zeri.
+
+La pagina conserva la data del controllo e mostra fino a 20 esempi con collegamenti alle carte esistenti. Nessuna identità, immagine o riga canonica viene modificata da questa diagnostica. I vecchi risultati sono arricchiti alle successive verifiche.
+
+Controllo reale del 15 novembre 2026 su SM12a giapponese: 226 voci nell’elenco TCGdex e 210 nello snapshot Atlas; le 16 voci esclusive di TCGdex sono tutte già collegate nel catalogo. Quattro dei 23 nomi discordanti differiscono solo per spazi; i restanti 19 rimangono da verificare.
