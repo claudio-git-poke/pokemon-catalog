@@ -1,3 +1,4 @@
+create index if not exists catalog_entry_inventory_seed on public.catalog_search_entries(entry_key) where verification<>'catalog';
 -- Source evidence inventory, additive to the immutable Bindex v1 keys.
 create table public.catalog_printing_inventory(
  record_key text primary key,

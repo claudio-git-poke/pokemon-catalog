@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/printing-inventory.mjs'
+      - 'db/printing-inventory-index.sql'
       - 'scripts/run-printing-inventory.mjs'
       - '.github/workflows/printing-inventory.yml'
   schedule:
