@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import CrossSourceComparisons from '@/components/cross-source-comparisons'
 import CoverageRegister from '@/components/coverage-register'
 import {useState} from 'react'
 import {useLiveCatalog} from '@/lib/use-live-catalog'
@@ -23,6 +24,7 @@ export default function CoveragePage(){
   {error&&<p role="alert" className="p-4 bg-red-50 text-red-800 rounded">Impossibile leggere la copertura: {error}. I dati precedenti, se presenti, restano visibili.</p>}
   <p className="text-sm text-gray-600" role="status">{live.status==='live'?'● Collegato · riepilogo salvato dopo ogni ciclo di importazione':'Riconnessione in corso · aggiornamento periodico di riserva attivo'}</p>
   <CoverageRegister/>
+  <CrossSourceComparisons/>
   {report&&<>
    <p className="text-sm text-gray-600">Rilevazione: {new Date(report.generated_at).toLocaleString('it-IT')} · <Link className="underline" href="/automazione">Segui il lavoro automatico</Link></p>
    <section className="bg-white rounded-xl p-4 shadow space-y-3"><h2 className="font-bold text-lg">Esplora per fonte ed espansione</h2><div className="flex flex-wrap gap-3">

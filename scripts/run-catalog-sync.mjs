@@ -1,3 +1,4 @@
+import {compareSources} from './compare-sources.mjs'
 import {refreshQualityCache} from './refresh-quality-cache.mjs'
 import {linkCardmarket} from './link-cardmarket.mjs'
 import {publishBindexSafely} from './publish-bindex-safely.mjs'
@@ -28,9 +29,10 @@ await syncDeckMappings({db})
 await linkMfbIdentities({db})
 await runSession({ minutes, runCycle: async () => {
   const result=await syncCatalog({db,enrich:true})
+  const crossSources=await compareSources({db})
   const publication=await publishBindexSafely({db})
   const marketplace=await linkCardmarket({db})
   const coverage=await refreshQualityCache({db})
-  result.errors+=publication.errors+marketplace.errors+coverage.errors
+  result.errors+=publication.errors+marketplace.errors+coverage.errors+crossSources.errors
   return result
 }, hasWork })

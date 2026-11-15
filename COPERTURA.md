@@ -29,3 +29,15 @@ Le voci delle distribuzioni note in `catalog_releases` compaiono con lingua e qu
 Applicare `db/catalog-coverage-register.sql` dopo lo schema di automazione e identificazione, quindi `db/catalog-coverage-photo-languages.sql` dopo il contratto Bindex. Tabelle con RLS: lettura anonima, scrittura del worker. Vista e RPC SECURITY INVOKER. Nessuna chiave Bindex `(sigla,numero,variante)` viene modificata. I percorsi regionali senza corrispondenza certa restano fuori dalla pubblicazione canonica.
 
 Il riepilogo generale preesistente legge ora `catalog_quality_cache`, aggiornato dal worker dopo ogni ciclo. La lettura pubblica non riesegue la query generale e conserva l’ultima rilevazione se un aggiornamento fallisce. La data del report indica la sua età. Applicare `db/catalog-quality-cache.sql` dopo la funzione del riepilogo e il segnale Realtime. Questa copia contiene statistiche del catalogo esplicitamente pubblico; non è destinata a dati privati o a statistiche per utente.
+
+## Confronto fra archivi
+
+`db/catalog-cross-source.sql` aggiunge un registro diagnostico separato. Le coppie candidate hanno la stessa lingua e lo stesso codice di espansione in TCGdex e Card Atlas. Questo criterio non certifica l’identità delle distribuzioni né l’indipendenza dei dati originali: il registro espone sempre `independence_status=unestablished` e `variants_status=unverified`.
+
+Il worker confronta al massimo una coppia per ciclo, leggendo lo snapshot Atlas già importato (entro otto giorni, con conteggio coerente) e l’elenco attuale TCGdex. Confronta numero stampato e nome nella stessa lingua; conserva conteggi, impronte SHA-256 e fino a 20 esempi per categoria. Numeri ripetuti, mancanti, zero o nomi assenti producono ambiguità: non vengono accorpate automaticamente stampe diverse. Due elenchi vuoti non sono concordanza.
+
+Il risultato può essere in attesa, concordante, differente, ambiguo o temporaneamente non disponibile. I tentativi falliti conservano l’ultima evidenza e riprovano dopo sei ore; le differenze dopo un giorno, gli altri confronti dopo sette giorni. Una voce presente solo in una fonte non prova che manchi nel nostro database. Questa diagnostica non modifica chiavi Bindex, immagini o carte: eventuali importazioni restano affidate alle normali code.
+
+La sezione “Confronto fra fonti” in `/copertura` legge solo i risultati salvati, con pagine di 20 coppie e aggiornamento ogni minuto mentre la pagina è visibile. Le scritture e la selezione del lavoro sono riservate al servizio. La migrazione va applicata prima del nuovo worker.
+
+Verifica reale del 15 novembre 2026: per S8a giapponese TCGdex restituisce zero voci; lo snapshot Atlas contiene 34 voci, di cui otto senza numero utilizzabile. Il risultato è ambiguo, senza dichiarare completa l’espansione o trattare le voci senza numero come carte equivalenti.
