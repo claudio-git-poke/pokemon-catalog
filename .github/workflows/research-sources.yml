@@ -1,0 +1,31 @@
+name: Fonti promo e varianti
+on:
+  schedule:
+    - cron: '23,53 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/research-sources.mjs'
+      - 'scripts/run-research-sources.mjs'
+      - '.github/workflows/research-sources.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: research-sources
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node --experimental-strip-types scripts/run-research-sources.mjs
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

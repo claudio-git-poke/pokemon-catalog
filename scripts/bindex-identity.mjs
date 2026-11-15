@@ -28,6 +28,7 @@ const firstNames=new Map([['Pozione','Potion'],['Scambio','Switch'],['Energia ba
 const mfbName=x=>firstNames.get(normalizeSearch(x))||normalizeSearch(x)
 export function resolvePublication(entry,card,sets,reference){
  const payload=entry.source_payload||{},variant=payload.variant,cm=variant?.thirdParty?.cardmarket
+ if(payload.identity_review_required)return {reason:'source_identity_requires_verified_mapping'}
  const mfb=entry.tags.includes('family:my-first-battle')
  const sourceSet=(payload.set?.id||card?.sigla?.split('@')[0]||entry.set_code.split('@')[0]).toLowerCase()
  const canonical=mfb?sets.find(s=>s.sigla==='MFB'):sets.find(s=>s.lingua==='INT'&&s.tcgdex_id?.toLowerCase()===sourceSet)
