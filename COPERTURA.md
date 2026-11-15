@@ -27,3 +27,5 @@ Le voci delle distribuzioni note in `catalog_releases` compaiono con lingua e qu
 ## Database e permessi
 
 Applicare `db/catalog-coverage-register.sql` dopo lo schema di automazione e identificazione, quindi `db/catalog-coverage-photo-languages.sql` dopo il contratto Bindex. Tabelle con RLS: lettura anonima, scrittura del worker. Vista e RPC SECURITY INVOKER. Nessuna chiave Bindex `(sigla,numero,variante)` viene modificata. I percorsi regionali senza corrispondenza certa restano fuori dalla pubblicazione canonica.
+
+Il riepilogo generale preesistente legge ora `catalog_quality_cache`, aggiornato dal worker dopo ogni ciclo. La lettura pubblica non riesegue la query generale e conserva l’ultima rilevazione se un aggiornamento fallisce. La data del report indica la sua età. Applicare `db/catalog-quality-cache.sql` dopo la funzione del riepilogo e il segnale Realtime. Questa copia contiene statistiche del catalogo esplicitamente pubblico; non è destinata a dati privati o a statistiche per utente.
