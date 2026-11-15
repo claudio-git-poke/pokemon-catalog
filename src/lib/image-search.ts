@@ -1,3 +1,4 @@
+import {CATALOG_LANGUAGES} from './catalog-languages.ts'
 /** Exact-set resolver. Never substitute a same-name card from another set/language. */
 export type SearchResult = {
   url: string | null; source: string; confidence: 'high' | 'medium' | 'low'
@@ -13,7 +14,7 @@ export type CardInput = {
 type Brief = { id: string; localId: string; name: string; image?: string }
 type SetBrief = { id: string; name: string }
 type Detail = Brief & { variants_detailed?: { type?: string; subtype?: string; stamp?: string[]; thirdParty?: { tcgplayer?: number } }[] }
-const languages: Record<string, string> = { KOR:'ko', PT: 'pt', ID: 'id', TH: 'th', INT: 'en', EN: 'en', JP: 'ja', 'CHN-T': 'zh-tw', IT: 'it', FR: 'fr', DE: 'de', ES: 'es' }
+const languages: Record<string,string> = {...Object.fromEntries(CATALOG_LANGUAGES.map(l=>[l.code,l.api])),EN:'en'}
 const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '')
 const local = (s: string | number) => String(s).split('/')[0].trim().replace(/^0+(?=\d)/, '').toLowerCase()
 const translations: Record<string, string> = {

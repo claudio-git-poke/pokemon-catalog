@@ -1,3 +1,4 @@
+import {sourceManifest} from './catalog-manifest.mjs'
 import { readdir,readFile } from 'node:fs/promises'
 import path from 'node:path'
 export const ATLAS_LANGUAGES=[['jp','ja','JP'],['ko','ko','KOR'],['tc','zh-tw','CHN-T']]
@@ -45,10 +46,11 @@ export async function importAtlasSet({db,set,root,loadCards=atlasCards,newCard,s
  const existing=[]
  for(let offset=0;;offset+=500){const rows=await check(db.from('cards').select('*').eq('lingua',language).in('sigla',names).range(offset,offset+499));existing.push(...rows);if(rows.length<500)break}
  let ambiguous=0
+ const resolvedIds=[]
  for(const card of cards){
   if(Date.now()>deadline-120000)throw Error('Budget archivio raggiunto; ripresa alla prossima esecuzione')
   const uid=`atlas:${set.source_language}:${card.id}`
-  if(existing.some(c=>c.source_uid===uid)){await log(`Già presente: ${card.name} · ${set.set_id}/${card.localId} · ${language}.`);continue}
+  if(existing.some(c=>c.source_uid===uid)){resolvedIds.push(card.id);await log(`Già presente: ${card.name} · ${set.set_id}/${card.localId} · ${language}.`);continue}
   const number=normalizedNumber(card.localId)
   const matches=existing.filter(c=>normalizedNumber(c.source_local_id || c.numero)===number && ['normale','normal',''].includes(c.variante || ''))
   const repeated=cards.filter(c=>normalizedNumber(c.localId)===number).length>1
@@ -68,7 +70,8 @@ export async function importAtlasSet({db,set,root,loadCards=atlasCards,newCard,s
    existing.push(row);summary.added++
    await log(`Inserita: ${card.name} · ${set.set_id}/${card.localId} · ${language}.`)
   }
+  resolvedIds.push(card.id)
  }
- await check(db.from('catalog_sync_sets').update({last_sync_at:new Date().toISOString(),next_sync_at:new Date(Date.now()+7*86400000).toISOString(),card_count:cards.length,last_error:ambiguous?`${ambiguous} numeri ripetuti: variante da verificare.`:null}).eq('source_uid',set.source_uid))
+ await check(db.from('catalog_sync_sets').update({...sourceManifest(cards.map(c=>c.id),resolvedIds),last_sync_at:new Date().toISOString(),next_sync_at:new Date(Date.now()+7*86400000).toISOString(),card_count:cards.length,last_error:ambiguous?`${ambiguous} numeri ripetuti: variante da verificare.`:null}).eq('source_uid',set.source_uid))
  summary.processedSets++
 }

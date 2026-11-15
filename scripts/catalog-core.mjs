@@ -1,7 +1,5 @@
-export const SOURCES = [
-  ['en','INT'], ['it','IT'], ['fr','FR'], ['de','DE'], ['es','ES'], ['pt','PT'],
-  ['ko','KOR'], ['ja','JP'], ['zh-tw','CHN-T'], ['id','ID'], ['th','TH']
-]
+import {CATALOG_LANGUAGES} from '../src/lib/catalog-languages.ts'
+export const SOURCES = CATALOG_LANGUAGES.map(l=>[l.api,l.code])
 const normalize = value => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '')
 const aliases = { 'Energia base Fuoco': 'Fire Energy', 'Energia base Erba': 'Grass Energy', 'Energia base Lampo': 'Lightning Energy', 'Energia base Acqua': 'Water Energy', Pozione: 'Potion', Scambio: 'Switch' }
 export function sourceUid(lang, id) { return `tcgdex:${lang}:${id}` }

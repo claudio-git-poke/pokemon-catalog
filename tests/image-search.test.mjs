@@ -26,7 +26,7 @@ test('ambiguous MFB name remains unresolved', async () => {
   assert.equal((await aggressiveSearch(card)).url, null)
 })
 test('broken image is not accepted', async () => { mock({ imageOK: false }); assert.equal((await aggressiveSearch(card)).url, null) })
-test('unsupported language never falls back to English', async () => { const calls = mock(); assert.equal((await aggressiveSearch({ ...card, lingua: 'CHN' })).url, null); assert.equal(calls.length, 0) })
+test('unsupported language never falls back to English', async () => { const calls = mock(); assert.equal((await aggressiveSearch({ ...card, lingua: 'ZZZ' })).url, null); assert.equal(calls.length, 0) })
 test('upstream error propagates instead of becoming placeholder', async () => { mock({ failure: true }); await assert.rejects(aggressiveSearch(card), /503/) })
 test('non-normal variant is not silently replaced', async () => { mock(); assert.equal((await aggressiveSearch({ ...card, variante: 'reverse' })).url, null) })
 test('imported source ID bypasses ambiguous legacy numbering', async () => {
@@ -64,4 +64,8 @@ test('MFB offers distinct variants without assigning an arbitrary product image'
  const r=await aggressiveSearch({...card,nome:'Bulbasaur',numero:29})
  assert.equal(r.url,null);assert.equal(r.alternatives.length,2)
  assert.match(r.message,/varianti diverse/);assert.match(r.alternatives[1].label,/blue-border/)
+})
+
+test('new regional language paths never substitute an English search',async()=>{
+ for(const [code,api] of [['CHN','zh-cn'],['NL','nl'],['PL','pl'],['RU','ru'],['ES-LA','es-mx']]){const calls=mock();assert.equal((await aggressiveSearch({...card,lingua:code})).url,null);assert.equal(calls[0],`https://api.tcgdex.net/v2/${api}/sets`);assert.ok(calls.every(url=>!url.includes('/en/')))}
 })

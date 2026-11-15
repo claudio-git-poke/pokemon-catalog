@@ -9,7 +9,7 @@ const url = process.env.NEXT_PUBLIC_SUPABASE_URL
 const secret = process.env.SUPABASE_SERVICE_ROLE_KEY
 if (!url || !secret) throw new Error('Configurare URL Supabase e SERVICE_ROLE_KEY nei secrets del worker.')
 const db = createClient(url, secret, { auth: { persistSession: false, autoRefreshToken: false } })
-console.log(`Registro incrementale v3, contratto Bindex, recupero fonti temporanee e priorità nuove espansioni: versione worker ${process.env.GITHUB_SHA||'locale'}.`)
+console.log(`Registro incrementale v3, contratto Bindex, registro copertura, 16 percorsi linguistici e confronto elenchi: versione worker ${process.env.GITHUB_SHA||'locale'}.`)
 const minutes = sessionMinutes(process.env.CATALOG_RUN_MINUTES || '330')
 async function hasWork() {
   const now = new Date().toISOString()

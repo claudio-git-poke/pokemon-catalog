@@ -31,7 +31,8 @@ export function resolvePublication(entry,card,sets,reference){
  const mfb=entry.tags.includes('family:my-first-battle')
  const sourceSet=(payload.set?.id||card?.sigla?.split('@')[0]||entry.set_code.split('@')[0]).toLowerCase()
  const canonical=mfb?sets.find(s=>s.sigla==='MFB'):sets.find(s=>s.lingua==='INT'&&s.tcgdex_id?.toLowerCase()===sourceSet)
- if(!['INT','EN','IT','FR','DE','ES','PT'].includes(entry.language))return {reason:'asian_ordinal_requires_verified_page'}
+ if(entry.language==='ES-LA')return {reason:'regional_identity_requires_verified_mapping'}
+ if(!['INT','EN','IT','FR','DE','ES','PT','NL','PL','RU'].includes(entry.language))return {reason:'asian_ordinal_requires_verified_page'}
  if(!variant)return resolveCurated(entry,card,sets,reference)
  if(!canonical)return {reason:'set_alias_unconfirmed'}
  if(cm&&reference.some(r=>r.cardmarket_id===cm&&r.sigla!==canonical.sigla))return {reason:'product_namespace_requires_review'}

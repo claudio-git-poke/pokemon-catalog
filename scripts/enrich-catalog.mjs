@@ -7,7 +7,7 @@ const normNumber=value=>String(value||'').split('/')[0].replace(/^0+(?=\d)/,'').
 const check=async query=>{const{data,error}=await query;if(error)throw Error(error.message);return data}
 export function baseFacts(card){
  const facts={}
- if(['JP','KOR','CHN','CHN-T','TH','INT','EN','IT','FR','DE','ES','PT','ID'].includes(card.lingua))facts.asian_script=['JP','KOR','CHN','CHN-T','TH'].includes(card.lingua)
+ if(['JP','KOR','CHN','CHN-T','TH','INT','EN','IT','FR','DE','ES','PT','ID','NL','PL','RU','ES-LA'].includes(card.lingua))facts.asian_script=['JP','KOR','CHN','CHN-T','TH'].includes(card.lingua)
  for(const[key,re]of Object.entries({name_has_lv:/(?:^|\s)LV\.?/i,name_has_ex:/(?:^|\s)ex(?:$|\s)/i,name_has_gx:/(?:^|[\s-])GX(?:$|\s)/i,name_has_vmax:/(?:^|\s)VMAX(?:$|\s)/i,name_has_vstar:/(?:^|\s)VSTAR(?:$|\s)/i}))if(card.nome)facts[key]=re.test(card.nome)
  return facts
 }

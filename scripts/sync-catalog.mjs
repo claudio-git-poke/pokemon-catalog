@@ -1,3 +1,4 @@
+import {sourceManifest} from './catalog-manifest.mjs'
 import {dueSetBatch} from './catalog-set-queue.mjs'
 import { enrichCatalog } from './enrich-catalog.mjs'
 import { createCatalogLogger } from './catalog-logger.mjs'
@@ -91,10 +92,11 @@ export async function syncCatalog({ db, enrich = false, search = aggressiveSearc
         const data = await source(`${set.source_language}/sets/${encodeURIComponent(set.set_id)}`)
         if (data.serie?.id === 'tcgp') {
           await log(`Set ${set.set_id}: escluso perché Pokémon TCG Pocket.`, true)
-          await check(db.from('catalog_sync_sets').update({ next_sync_at:later(720),last_sync_at:now(),last_error:null }).eq('source_uid',set.source_uid))
+          await check(db.from('catalog_sync_sets').update({ next_sync_at:later(720),last_sync_at:now(),last_error:null,coverage_scope:'digital' }).eq('source_uid',set.source_uid))
           continue
         }
         if (!Array.isArray(data.cards) || !data.cards.length) throw new Error('Set privo di carte nella fonte: verrà riprovato')
+        if(data.cards.some(card=>typeof card.id!=='string'||!card.id))throw Error('Identificativi mancanti nell’elenco della fonte: nessuna importazione del set')
         await log(`Set ${set.set_id}: ${data.cards.length} carte da confrontare.`)
         const localLanguage = SOURCES.find(([lang]) => lang === set.source_language)[1]
         const variants = [set.set_id, set.set_id.toUpperCase(), `${set.set_id}@${localLanguage}`, `${set.set_id.toUpperCase()}@${localLanguage}`]
@@ -104,12 +106,13 @@ export async function syncCatalog({ db, enrich = false, search = aggressiveSearc
           existing.push(...rows); if (rows.length < 500) break
         }
         let ambiguous = 0
+        const resolvedIds=[]
         for (const card of data.cards) {
           if (Date.now() > deadline - 120000) throw new Error('Budget esecuzione raggiunto: ripresa automatica prossima esecuzione')
           const uid = sourceUid(set.source_language,card.id)
-          if (existing.some(c => c.source_uid === uid)) { await log(`Già presente: ${card.name} · ${set.set_id}/${card.localId} · ${set.source_language}.`); continue }
+          if (existing.some(c => c.source_uid === uid)) { resolvedIds.push(card.id);await log(`Già presente: ${card.name} · ${set.set_id}/${card.localId} · ${set.source_language}.`); continue }
           const linked = await check(db.from('cards').select('id').eq('source_uid',uid).maybeSingle())
-          if (linked) { await log(`Già collegata: ${card.name} · ${set.set_id}/${card.localId}.`); continue }
+          if (linked) { resolvedIds.push(card.id);await log(`Già collegata: ${card.name} · ${set.set_id}/${card.localId}.`); continue }
           const { match, ambiguous: conflict } = legacyMatch(existing,data.cards,card,set.set_id)
           if (conflict) { ambiguous++; summary.ambiguous++; await log(`Ambigua: ${card.name} · ${card.localId}, lasciata da verificare.`); continue }
           if (match?.source_uid) {
@@ -124,8 +127,9 @@ export async function syncCatalog({ db, enrich = false, search = aggressiveSearc
             summary.added++
             await log(`Inserita: ${card.name} · ${set.set_id}/${card.localId} · ${set.source_language}.`)
           }
+          resolvedIds.push(card.id)
         }
-        await check(db.from('catalog_sync_sets').update({ next_sync_at:later(168), last_sync_at:now(), card_count:data.cards.length, last_error:ambiguous ? `${ambiguous} abbinamenti ambigui con il catalogo originale: revisione necessaria.` : null }).eq('source_uid',set.source_uid))
+        await check(db.from('catalog_sync_sets').update({ ...sourceManifest(data.cards.map(c=>c.id),resolvedIds),next_sync_at:later(168), last_sync_at:now(), card_count:data.cards.length, last_error:ambiguous ? `${ambiguous} abbinamenti ambigui con il catalogo originale: revisione necessaria.` : null }).eq('source_uid',set.source_uid))
         summary.processedSets++
         await log(`Set ${set.set_id}: completato; ${ambiguous} abbinamenti ambigui.`, true)
       } catch (error) {
