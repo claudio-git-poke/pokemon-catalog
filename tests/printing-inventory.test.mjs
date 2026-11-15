@@ -88,3 +88,18 @@ test('stale or conflicting canonical links remain review items without rewriting
  const pending=inventoryRecord({entry:entry(),link:{...linked,pending_reason:'product_number_conflict'}})
  assert.equal(pending.mapping_reason,'product_number_conflict');assert.equal(pending.canonical_mapping_status,'review')
 })
+
+test('a seeding timeout pauses seeding but drains already queued records',async()=>{
+ const {runInventorySession}=await import('../scripts/printing-inventory.mjs');let seeds=0,batches=0
+ const db={async rpc(){seeds++;return {error:{code:'57014',message:'statement timeout'}}}}
+ const result=await runInventorySession({db,log:()=>{},processBatch:async()=>({processed:batches++<2?100:0,printings:0,cardOnly:batches<=2?100:0,missingImages:0})})
+ assert.equal(seeds,1);assert.equal(batches,3);assert.equal(result.processed,200);assert.equal(result.deferred,true)
+})
+test('a storage timeout preserves retry work but authorization failures remain visible',async()=>{
+ const {runInventorySession}=await import('../scripts/printing-inventory.mjs')
+ const {databaseError}=await import('../scripts/database-errors.mjs')
+ const db={async rpc(){return {data:{complete:true}}}}
+ const result=await runInventorySession({db,log:()=>{},processBatch:async()=>{throw databaseError({code:'57014',message:'statement timeout'})}})
+ assert.equal(result.processed,0);assert.equal(result.deferred,true)
+ await assert.rejects(runInventorySession({db,log:()=>{},processBatch:async()=>{throw databaseError({code:'42501',message:'permission denied'})}}),/permission denied/)
+})

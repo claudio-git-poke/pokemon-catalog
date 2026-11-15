@@ -1,3 +1,4 @@
+import {databaseError,isTransientDatabaseError} from './database-errors.mjs'
 import {variantKey,equivalentVariant} from './bindex-identity.mjs'
 import {CATALOG_LANGUAGES} from '../src/lib/catalog-languages.ts'
 const known=new Set([...CATALOG_LANGUAGES.map(l=>l.code).filter(l=>l!=='INT'),'EN'])
@@ -39,7 +40,7 @@ export function inventoryRecord({entry,card={},link=null}){
   image_status:verified?'verified':photo?'candidate':'missing',image_evidence:photo?{scope:p.image_scope,language:imageLanguage,reviewed:verified,source:source}:{},reference_image_url:reference,reference_source_url:reference?source:null,
   source_updated_at:entry.updated_at,deleted:false}
 }
-const check=async query=>{const {data,error}=await query;if(error)throw Error(error.message||error.code||'Errore database');return data}
+const check=async query=>{try{const {data,error}=await query;if(error)throw error;return data}catch(error){throw databaseError(error)}}
 export async function syncPrintingInventory({db,limit=100,log=console.log}){
  const queued=await check(db.rpc('catalog_inventory_queue',{batch_size:limit}))
  if(!queued.length)return {processed:0,printings:0,cardOnly:0,missingImages:0}
@@ -49,4 +50,33 @@ export async function syncPrintingInventory({db,limit=100,log=console.log}){
  const result={processed:records.length,printings:records.filter(r=>r.scope==='printing').length,cardOnly:records.filter(r=>r.scope==='card').length,missingImages:records.filter(r=>r.scope==='printing'&&r.image_status==='missing').length}
  await log(`Inventario Bindex: ${result.processed} dichiarazioni esportabili, ${result.printings} versioni descritte, ${result.cardOnly} carte con versione da identificare, ${result.missingImages} versioni senza foto specifica.`)
  return result
+}
+
+export async function runInventorySession({db,log=console.log,onProgress=()=>{},budgetMs=8*60000,clock=Date.now,processBatch=syncPrintingInventory}){
+ const deadline=clock()+budgetMs
+ const summary={processed:0,printings:0,cardOnly:0,missingImages:0,deferred:false,seed_complete:false}
+ let seedPaused=false
+ while(clock()<deadline-20000){
+  if(!seedPaused&&!summary.seed_complete){
+   try{const seed=await check(db.rpc('catalog_inventory_seed',{batch_size:100}));summary.seed_complete=seed.complete}
+   catch(error){
+    if(!isTransientDatabaseError(error))throw error
+    seedPaused=true;summary.deferred=true;summary.deferred_reason=String(error)
+    await log('Preparazione inventario rinviata: '+String(error)+'. Continuo sui record già in coda.',true)
+   }
+  }
+  let result
+  try{result=await processBatch({db,log,limit:100})}
+  catch(error){
+   if(!isTransientDatabaseError(error))throw error
+   summary.deferred=true;summary.deferred_reason=String(error)
+   await log('Inventario sospeso per database occupato. Il lotto non confermato resta in coda: '+String(error),true)
+   break
+  }
+  for(const k of ['processed','printings','cardOnly','missingImages'])summary[k]+=result[k]
+  onProgress({...summary})
+  if(!result.processed)break
+ }
+ onProgress({...summary})
+ return summary
 }

@@ -35,7 +35,7 @@ Il nuovo flusso registra le foto mancanti; non certifica automaticamente uno sta
 
 ## Alimentazione automatica e retroattiva
 
-`Inventario versioni e lingue Bindex` avvia una sessione di massimo otto minuti, ogni mezz’ora e sulle modifiche del worker. Il primo caricamento scorre gli indici esistenti a piccoli lotti. In seguito i trigger accodano soltanto i record cambiati, comprese immagini della carta e collegamenti canonici. La conferma della coda controlla il timestamp richiesto: una modifica arrivata durante l’elaborazione non viene persa. Ripetere un lotto è sicuro; una foto revisionata non viene sostituita da dati più deboli della stessa lingua.
+`Inventario versioni e lingue Bindex` avvia una sessione di massimo otto minuti, ogni mezz’ora e sulle modifiche del worker. Il primo caricamento scorre gli indici esistenti a lotti di 100. Se la preparazione incontra un timeout, continua sui record già in coda; se si blocca il salvataggio, sospende il lotto senza confermarlo. La sessione viene segnata parziale e riprende al successivo avvio. In seguito i trigger accodano soltanto i record cambiati, comprese immagini della carta e collegamenti canonici. La conferma della coda controlla il timestamp richiesto: una modifica arrivata durante l’elaborazione non viene persa. Ripetere un lotto è sicuro; una foto revisionata non viene sostituita da dati più deboli della stessa lingua.
 
 Non vengono eseguiti conteggi globali a ogni lotto o consultazione. Le tabelle interne di lavoro sono accessibili solo al servizio; l’inventario e il feed sono leggibili anonimamente.
 
