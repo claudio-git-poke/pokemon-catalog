@@ -1,0 +1,16 @@
+{
+  "pageid": 283754,
+  "ns": 0,
+  "title": "Charmander (SVP Promo 47)",
+  "revisions": [
+    {
+      "slots": {
+        "main": {
+          "contentmodel": "wikitext",
+          "contentformat": "text/x-wiki",
+          "*": "{{PokémoncardInfobox\n|cardname=Charmander\n|jname=ヒトカゲ\n|jtrans=Hitokage\n|image=CharmanderSVPPromo47.jpg\n|caption=Illus. [[NC Empire]]\n|species=Charmander\n|evostage=Basic\n|type=Fire\n|hp=70\n|weakness=Water\n|retreatcost=1\n}}\n{{PokémoncardInfobox/Expansion|type=Fire|expansion={{TCG|SVP Black Star Promos}}|cardno=047|jpexpansion={{TCG|SV-P Promotional cards}}|jpcardno=060/SV-P}}\n{{PokémoncardInfobox/Footer|type=Fire|species=Charmander}}\n\n'''Charmander''' (Japanese: '''ヒトカゲ''' ''Hitokage'') is a {{ct|Fire}} Basic Pokémon card. It is one of the {{TCG|SVP Black Star Promos}}.\n\n\n==Release information==\nEnglish examples: Smooth Cosmos, Pixel Cosmos. Japanese examples: Poké Ball, Mirror Holofoil.\n"
+        }
+      }
+    }
+  ]
+}

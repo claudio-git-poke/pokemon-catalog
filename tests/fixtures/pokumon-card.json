@@ -1,0 +1,97 @@
+{
+  "id": 120956,
+  "modified_gmt": "2026-10-18T21:11:41",
+  "status": "publish",
+  "link": "https://pokumon.com/card/pikachu-001-m-p-simplified-chinese-promo/",
+  "title": {
+    "rendered": "Pikachu  (001/M-P Simplified Chinese Promo)"
+  },
+  "_embedded": {
+    "wp:term": [
+      [
+        {
+          "id": 646,
+          "slug": "non-holo",
+          "name": "Non-holo",
+          "taxonomy": "holofoil"
+        },
+        {
+          "id": 7490,
+          "slug": "simplified-chinese",
+          "name": "Simplified Chinese",
+          "taxonomy": "language"
+        },
+        {
+          "id": 9715,
+          "slug": "m-p",
+          "name": "M-P",
+          "taxonomy": "promo_set"
+        },
+        {
+          "id": 691,
+          "slug": "event-stamp",
+          "name": "Event Stamp",
+          "taxonomy": "additional_attributes"
+        },
+        {
+          "id": 8807,
+          "slug": "2026",
+          "name": "2026",
+          "taxonomy": "release_year"
+        }
+      ]
+    ],
+    "wp:featuredmedia": [
+      {
+        "id": 1057,
+        "slug": "placeholdercard",
+        "title": {
+          "rendered": "PlaceholderCard"
+        },
+        "media_details": {
+          "width": 474,
+          "height": 659,
+          "file": "2021/03/PlaceholderCard.jpg",
+          "sizes": {
+            "medium": {
+              "file": "PlaceholderCard-216x300.jpg",
+              "width": 216,
+              "height": 300,
+              "mime_type": "image/jpeg",
+              "source_url": "https://cdn6966.templcdn.com/wp-content/uploads/2021/03/PlaceholderCard-216x300.jpg"
+            },
+            "thumbnail": {
+              "file": "PlaceholderCard-150x150.jpg",
+              "width": 150,
+              "height": 150,
+              "mime_type": "image/jpeg",
+              "source_url": "https://cdn6966.templcdn.com/wp-content/uploads/2021/03/PlaceholderCard-150x150.jpg"
+            },
+            "full": {
+              "file": "PlaceholderCard.jpg",
+              "width": 474,
+              "height": 659,
+              "mime_type": "image/jpeg",
+              "source_url": "https://cdn6966.templcdn.com/wp-content/uploads/2021/03/PlaceholderCard.jpg"
+            }
+          },
+          "image_meta": {
+            "aperture": "0",
+            "credit": "",
+            "camera": "",
+            "caption": "",
+            "created_timestamp": "0",
+            "copyright": "",
+            "focal_length": "0",
+            "iso": "0",
+            "shutter_speed": "0",
+            "title": "",
+            "orientation": "1",
+            "keywords": []
+          }
+        },
+        "source_url": "https://cdn6966.templcdn.com/wp-content/uploads/2021/03/PlaceholderCard.jpg"
+      }
+    ]
+  }
+}
