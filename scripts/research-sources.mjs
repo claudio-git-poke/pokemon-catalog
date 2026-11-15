@@ -96,7 +96,16 @@ export async function runResearch({db,budgetMs=8*60000,request=researchFetcher()
  }catch(error){stats.errors++;await log('Indice Limitless: '+String(error),true)}
  await put(['Pokémon cards','Trainer cards','Energy cards'].map(category=>({source_uid:`research:bulbapedia:${category}`,provider:'research-bulbapedia',source_language:'en',set_id:JSON.stringify({category}),name:`Bulbapedia · ${category}`})))
  const groups=[]
- for(const provider of ['research-pokumon','research-bulbapedia','research-limitless'])groups.push(await check(db.from('catalog_sync_sets').select('*').eq('provider',provider).lte('next_sync_at',now()).order('next_sync_at').order('source_uid').limit(40)))
+ for(const provider of ['research-pokumon','research-bulbapedia','research-limitless']){
+  if(provider!=='research-limitless'){
+   groups.push(await check(db.from('catalog_sync_sets').select('*').eq('provider',provider).lte('next_sync_at',now()).order('next_sync_at').order('source_uid').limit(40)))
+   continue
+  }
+  const languages=[]
+  for(const lang of ['it','en','fr','de','es','pt','ja'])languages.push(await check(db.from('catalog_sync_sets').select('*').eq('provider',provider).eq('source_language',lang).lte('next_sync_at',now()).order('next_sync_at').order('source_uid').limit(6)))
+  const fair=[];for(let slot=0;slot<6;slot++)for(const rows of languages)if(rows[slot])fair.push(rows[slot])
+  groups.push(fair.slice(0,40))
+ }
  for(let n=0;n<40;n++)for(const group of groups){
   const job=group[n];if(!job)continue
   if(Date.now()>end-30000)return {...stats,deferred:true}
