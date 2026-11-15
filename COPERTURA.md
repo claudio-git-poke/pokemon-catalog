@@ -56,3 +56,6 @@ Il workflow `Confronto fonti catalogo` parte su modifica del suo codice, manualm
 La sessione seleziona una coppia dovuta alla volta e si ferma dopo 60 coppie, a esaurimento coda, avvicinandosi al budget di 12 minuti oppure se la fonte risponde HTTP 429/503. Il limite GitHub è 18 minuti, comprendendo installazione e margine per richieste in corso. Ogni risultato viene salvato prima dell’avanzamento del contatore. Gli errori delle fonti restano nel registro con il proprio rinvio; un fallimento nel salvataggio interrompe la sessione con errore. Non vengono ripetuti i confronti non ancora scaduti.
 
 L’automazione scrive il dettaglio di ciascun confronto nel normale registro in `/automazione`, con contatori di concordanze, differenze, ambiguità ed errori. La frequenza del workflow indica quando viene controllata la coda, non forza una nuova scansione oraria di tutte le fonti.
+
+
+Il conteggio globale dei vecchi tag è una rilevazione facoltativa effettuata solo all’avvio, con data propria (`initial_pending`, `initial_pending_at`). Un suo errore viene segnalato senza interrompere l’elaborazione. Non viene più ricalcolato dopo ogni minuto di lavoro e non viene presentato come totale residuo corrente: le nuove importazioni possono aggiungere altre carte. I contatori `checked` e `indexed` misurano invece i risultati confermati della sessione.

@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/backfill-catalog-tags.mjs'
+      - 'scripts/tag-backlog.mjs'
       - 'scripts/enrich-catalog.mjs'
       - 'scripts/catalog-logger.mjs'
       - 'scripts/database-errors.mjs'
