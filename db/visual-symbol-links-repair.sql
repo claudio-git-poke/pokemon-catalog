@@ -35,7 +35,7 @@ grant select on public.catalog_visual_group_members to anon,authenticated,servic
 
 -- Shared implementation keeps per-reference and grouped APIs consistent.
 create or replace function public.catalog_visual_matches(wanted_assets text[],after_key text default '',page_size integer default 24,include_review boolean default false,filter_language text default null)
-returns jsonb language plpgsql stable security invoker set search_path='' set statement_timeout='5s' set plan_cache_mode='force_custom_plan' as $
+returns jsonb language plpgsql stable security invoker set search_path='' set statement_timeout='5s' set plan_cache_mode='force_custom_plan' as $$
 declare result jsonb;
 begin
  if page_size is null or page_size<1 or page_size>100 or coalesce(cardinality(wanted_assets),0)>1000 then raise exception 'Limite non valido';end if;
