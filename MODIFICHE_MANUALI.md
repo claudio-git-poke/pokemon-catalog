@@ -33,3 +33,15 @@ Applicare `db/manual-precedence.sql` al database catalogo prima del codice aggio
 ## Verifiche
 
 `tests/manual-precedence.test.mjs` esegue SQL reale con i trigger di pubblicazione, Cardmarket e revisione codici. Copre aggiornamenti ripetuti, upsert, campi vuoti, tag rimossi, booleani falsi, modifiche successive, editor anonimo, API automatica, foto pubblicate via RPC, collegamenti manuali, marcatori storici e classificazioni BOO con mappatura ambigua.
+
+## Confermare dati precedenti e consultare lo storico
+
+Nella scheda carta, **Correzioni manuali → Controlla e proteggi i valori attuali** permette di scegliere i campi da mantenere. Il pulsante protegge i valori visualizzati senza riscriverli. Foto, stato e fonte costituiscono una scelta unica. Se nel frattempo una fonte cambia uno dei valori selezionati, il salvataggio viene rifiutato e occorre ricaricare: non vengono protetti dati diversi da quelli controllati.
+
+La funzione `catalog_protect_card_fields` mantiene i permessi già previsti sulle carte e non concede ai client la scrittura diretta sull'indice delle stampe. Il relativo aggiornamento derivato avviene tramite un trigger privato limitato alla carta effettivamente modificata. Una correzione manuale specifica sulla stampa continua a prevalere sulla correzione generale della carta.
+
+Da `db/manual-review-history.sql`, le nuove decisioni vengono conservate in `catalog_manual_history`: chiave della riga, campi coinvolti, valori prima/dopo, protezioni prima/dopo, ora, ruolo del chiamante ed eventuale identità autenticata. Gli utenti anonimi vengono registrati come anonimi: non viene attribuito loro il nome del proprietario. Lo storico è amministrativo, non leggibile o modificabile dai client pubblici; il worker ha accesso in sola lettura. Gli aggiornamenti automatici senza cambiamento delle protezioni non aggiungono eventi.
+
+Le revisioni storiche con stato `verified`, codice esplicito e fonte registrata vengono protette; il codice pubblicato viene protetto solo se codice e prodotto coincidono con la revisione. Eventuali precedenti correzioni manuali del codice hanno priorità. Questi eventi hanno motivo `existing_verified_code_review`: sono verifiche documentate, non una ricostruzione dell'autore delle vecchie modifiche. I casi `pending` e `no_code_in_source` non vengono promossi a verificati.
+
+La migrazione non ricostruisce uno storico precedente alla sua installazione. Per altre vecchie correzioni prive di marcatori, l'azione esplicita sulla scheda è il percorso sicuro.

@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import { supabase, Card } from '@/lib/supabase'
 import Link from 'next/link'
 import PrintingTraits from '@/components/printing-traits'
+import {MANUAL_CARD_FIELDS, protectionExpectedValues, type ManualCardField} from '@/lib/manual-fields'
 
 export default function CardDetailPage() {
   const params = useParams()
@@ -20,6 +21,8 @@ export default function CardDetailPage() {
   const [status, setStatus] = useState('missing')
   const [notes, setNotes] = useState('')
   const [dirtyFields, setDirtyFields] = useState<string[]>([])
+  const [fieldsToProtect, setFieldsToProtect] = useState<ManualCardField[]>([])
+  const [protecting, setProtecting] = useState(false)
   function markDirty(...fields: string[]) { setDirtyFields(previous => [...new Set([...previous, ...fields])]) }
   const [message, setMessage] = useState('')
   const [alternatives,setAlternatives] = useState<{url:string;label:string}[]>([])
@@ -67,6 +70,7 @@ export default function CardDetailPage() {
         setStatus(data.image_status)
         setNotes(data.notes || '')
         setDirtyFields([])
+        setFieldsToProtect([])
       }
     } catch (e: any) {
       addLog(`Exception: ${e.message}`)
@@ -107,6 +111,25 @@ export default function CardDetailPage() {
       await loadCard()
     }
     setSaving(false)
+  }
+
+  async function protectExistingFields() {
+    if (!card || !fieldsToProtect.length) return
+    if (dirtyFields.length) { setMessage('Salva prima le modifiche del modulo.'); return }
+    setProtecting(true)
+    setMessage('')
+    try {
+      const {error: err} = await supabase.rpc('catalog_protect_card_fields', {
+        target_card_id: card.id,
+        field_names: fieldsToProtect,
+        expected_values: protectionExpectedValues(card,fieldsToProtect)
+      })
+      if (err) throw err
+      setMessage('Valori attuali protetti. Gli aggiornamenti automatici li manterranno.')
+      await loadCard()
+    } catch (err: any) {
+      setMessage('Errore: ' + (err.message || 'Protezione non riuscita'))
+    } finally { setProtecting(false) }
   }
 
   async function autoSearch() {
@@ -203,10 +226,35 @@ export default function CardDetailPage() {
       </div>
 
       <PrintingTraits cardId={card.id}/>
+      <section className="bg-white rounded-xl shadow p-6 space-y-3">
+        <h2 className="font-semibold">Correzioni manuali</h2>
+        <p className="text-sm">Puoi proteggere anche dati già presenti, senza riscriverli. Seleziona solo i valori che hai controllato: gli altri continueranno ad aggiornarsi.</p>
+        <p className="text-sm">Una scelta sulla foto protegge insieme immagine, stato e fonte. I valori protetti cambiano solo quando fai una nuova correzione manuale.</p>
+        {message && <p role="status" className="text-sm p-3 rounded-lg border">{message}</p>}
+        <details>
+          <summary className="cursor-pointer font-medium">Controlla e proteggi i valori attuali</summary>
+          <div className="mt-3 space-y-2">
+            {MANUAL_CARD_FIELDS.map(([field,label]) => {
+              const locked = Object.hasOwn(card.manual_overrides || {},field)
+              const value = card[field]
+              return <label key={field} className="flex items-start gap-3 rounded-lg border p-3">
+                <input type="checkbox" className="mt-1" checked={locked || fieldsToProtect.includes(field)} disabled={locked || protecting || saving || searching}
+                  onChange={e => setFieldsToProtect(previous => e.target.checked ? [...previous,field] : previous.filter(f => f !== field))}/>
+                <span className="min-w-0 text-sm"><strong>{label}</strong>{locked && <span className="ml-2">· Protetto</span>}<span className="block break-all">{value === null || value === undefined || value === '' ? 'Vuoto' : String(value)}</span></span>
+              </label>
+            })}
+            <button onClick={protectExistingFields} disabled={!fieldsToProtect.length || protecting || saving || searching || !!dirtyFields.length}
+              className="bg-purple-600 text-white px-5 py-2.5 rounded-lg disabled:opacity-50">{protecting ? 'Protezione in corso...' : 'Proteggi i campi selezionati'}</button>
+            <button onClick={loadCard} disabled={protecting || saving || searching || !!dirtyFields.length}
+              className="ml-2 border px-4 py-2.5 rounded-lg disabled:opacity-50">Ricarica i valori</button>
+            {!!dirtyFields.length && <p className="text-sm">Salva prima le modifiche del modulo.</p>}
+          </div>
+        </details>
+      </section>
       <div className="bg-white rounded-xl shadow p-6">
         <h2 className="font-semibold mb-3">Anteprima foto</h2>
         <p className="text-sm mb-3">Le modifiche che salvi qui hanno priorità sugli aggiornamenti automatici, anche quando lasci un campo vuoto.</p>
-        {!!Object.keys(card.manual_overrides || {}).length && <p className="text-sm mb-3">Questa carta contiene correzioni manuali protette. Puoi modificarle nuovamente salvando qui.</p>}
+        {!!Object.keys(card.manual_overrides || {}).length && <p className="text-sm mb-3">Questa carta contiene correzioni manuali protette dagli aggiornamenti delle fonti.</p>}
         {imageUrl ? (
           <img src={imageUrl} alt={card.nome} className="max-w-[300px] border rounded-lg shadow"
             onError={(e) => { addLog('Errore caricamento immagine'); e.currentTarget.style.display = 'none' }} />
