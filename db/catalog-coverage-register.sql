@@ -1,5 +1,6 @@
 -- Lightweight register: only source/set metadata, never a full scan of card records.
 alter table public.catalog_sync_sets
+ add column coverage_detail jsonb check(coverage_detail is null or jsonb_typeof(coverage_detail)='object'),
  add column manifest_count integer check(manifest_count>=0),
  add column resolved_count integer check(resolved_count>=0),
  add column manifest_digest text,

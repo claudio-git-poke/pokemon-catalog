@@ -1,0 +1,34 @@
+name: Controllo copertura carte versioni e foto
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/coverage-audit.mjs'
+      - 'scripts/run-coverage-audit.mjs'
+      - 'db/coverage-audit.sql'
+      - '.github/workflows/coverage-audit.yml'
+  schedule:
+    - cron: '23,53 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: catalog-coverage-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node --experimental-strip-types scripts/run-coverage-audit.mjs
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
