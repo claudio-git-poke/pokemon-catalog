@@ -13,6 +13,7 @@ if(!key){
  const chunks=await Promise.allSettled(urls.map(async u=>(await request(u)).text()))
  for(const chunk of chunks){
   if(chunk.status!=='fulfilled')continue
+  if(chunk.value.includes('vjpvbsvpumzrqzoupxee.supabase.co')){const modern=chunk.value.match(/sb_publishable_[A-Za-z0-9_-]{20,}/);if(modern)key=modern[0]}
   for(const token of chunk.value.matchAll(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g)){
    try{const p=JSON.parse(Buffer.from(token[0].split('.')[1],'base64url'));if(p.role==='anon'&&p.ref==='vjpvbsvpumzrqzoupxee')key=token[0]}catch{}
   }
