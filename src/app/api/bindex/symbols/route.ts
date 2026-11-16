@@ -13,7 +13,11 @@ export async function GET(req:NextRequest){
  let query=db.from('catalog_visual_assets').select('*').gt('asset_key',after).order('asset_key').limit(limit+1)
  if(p.get('all')!=='true')query=query.not('match_mode','is',null)
  if(p.get('kind'))query=query.eq('kind',p.get('kind')!)
- if(p.get('language'))query=query.eq('source_language',p.get('language')!)
+ if(p.get('language')){
+  const language=p.get('language')!
+  if(!/^[a-z]{2}(?:-[a-z]{2})?$|^und$/.test(language))return NextResponse.json({error:'Lingua non valida'},{status:400})
+  query=query.in('source_language',[language,'und'])
+ }
  const {data,error}=await query
  if(error)return NextResponse.json({error:error.message},{status:503})
  const results=(data||[]).slice(0,limit)
