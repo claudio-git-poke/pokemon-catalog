@@ -22,6 +22,7 @@ async function fixture(){
  insert into catalog_quality_cache values('catalog','{"old":true}',now()-interval '2 days');`)
  await pg.exec(await sql('catalog-coverage-register'))
  await pg.exec(await sql('coverage-audit'))
+ await pg.exec(await sql('source-manifest-audit'))
  await pg.exec(await sql('coverage-audit-report'))
  await pg.exec(`insert into cards values
  (1,'BOO@INT','INT','tcgdex:en:test-1','test-1','1','en','found','https://image.test/generic.png',null,null),
@@ -98,6 +99,20 @@ test('importer refresh requests do not execute an expensive aggregate, and incom
  assert.equal((await pg.query("select count(*)::int n from catalog_coverage_snapshots where scope='request'")).rows[0].n,1)
  await assert.rejects(pg.query('select catalog_publish_coverage_audit($1,$2)',[JSON.stringify({complete:false}),JSON.stringify({})]),/incompleta/)
  assert.equal((await pg.query("select report from catalog_quality_cache where scope='catalog'")).rows[0].report.old,true)
+ }finally{await pg.close()}
+})
+
+test('page manifests expose missing exact links, preserve unknown extra IDs and never invent inventory zeroes',async()=>{
+ const pg=await fixture();try{
+  await pg.exec(`insert into catalog_sync_sets(source_uid,provider,source_language,set_id,name,last_sync_at) values
+   ('official:page:1','supplement-th','th','1','Official page',now());`)
+  const manifest=sourceManifest(['asia-official:th:1','asia-official:th:2'],['asia-official:th:1'])
+  manifest.coverage_detail={...manifest.coverage_detail,comparison_scope:'expected_source_links',unexpected_count:null}
+  assert.equal((await pg.query('select catalog_save_manifest_audit($1,$2,$3,$4) ok',['official:page:1','1',null,JSON.stringify(manifest)])).rows[0].ok,true)
+  await runCoverageAudit({db:dbFor(pg),log:()=>{},minAgeMs:0})
+  await pg.exec("update catalog_sync_sets set manifest_last_attempt_at=now(),manifest_last_error='HTTP 503' where source_uid='official:page:1';reset role;set role anon")
+  const row=(await pg.query("select * from catalog_coverage_audit_rows where target_key='official:page:1'")).rows[0]
+  assert.equal(row.missing_count,1);assert.equal(row.unexpected_count,null);assert.equal(row.cards,null);assert.equal(row.inventory_entries,null);assert.match(row.reason,/503/)
  }finally{await pg.close()}
 })
 

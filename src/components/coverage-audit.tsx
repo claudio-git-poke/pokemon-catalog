@@ -6,7 +6,7 @@ import {CATALOG_LANGUAGES} from '@/lib/catalog-languages'
 import {evidenceSource} from '@/lib/identification-evidence'
 type Inventory={inventory_entries:number;printing_entries:number;unidentified_entries:number;pending_identity:number;missing_exact:number;candidate_exact:number;verified_exact:number;unknown_language:number}
 type Snapshot={started_at:string;generated_at:string;totals:{total:number;printings:number};inventory:Inventory;languages:(Inventory&{language:string})[]}
-type Row=Inventory&{target_key:string;name:string;provider:string;source_language:string;language_label:string;source_set:string;source_url:string|null;status:string;reason:string;reported_count:number|null;manifest_count:number|null;resolved_count:number|null;missing_count:number|null;unexpected_count:number|null;checked_at:string|null;cards:number|null;reference_missing:number|null;placeholder:number|null;source_printings:number|null;coverage_detail:{missing_ids?:string[];unexpected_ids?:string[];duplicate_count?:number}|null}
+type Row=Inventory&{target_key:string;name:string;provider:string;source_language:string;language_label:string;source_set:string;source_url:string|null;status:string;reason:string;reported_count:number|null;manifest_count:number|null;resolved_count:number|null;missing_count:number|null;unexpected_count:number|null;checked_at:string|null;cards:number|null;reference_missing:number|null;placeholder:number|null;source_printings:number|null;manifest_last_attempt_at?:string|null;manifest_last_error?:string|null;coverage_detail:{missing_ids?:string[];unexpected_ids?:string[];duplicate_count?:number;comparison_scope?:string;source_url?:string}|null}
 type Report={snapshot:Snapshot|null;stats:{lists:number;unmeasured:number;known_missing_ids:number;identity_lists:number;photo_lists:number};total:number;rows:Row[];languages:{source_language:string;label:string}[];providers:string[]}
 const n=(v:number|null|undefined)=>v==null?'Non rilevato':v.toLocaleString('it-IT')
 const languages:Record<string,string>=Object.fromEntries([...CATALOG_LANGUAGES.map(l=>[l.code,l.label]),['EN','Inglese'],['und','Lingua non determinata']])
@@ -31,9 +31,9 @@ export default function CoverageAudit(){
   {!report&&!error&&<p role="status">Lettura delle rilevazioni…</p>}
   {report&&<>
    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    {[['Elenchi da confrontare',report.stats.unmeasured],['Identificativi mancanti nei soli elenchi confrontati',report.stats.known_missing_ids],['Elenchi con versioni da identificare',snapshot?report.stats.identity_lists:null],['Elenchi con foto esatte mancanti',snapshot?report.stats.photo_lists:null]].map(([label,value])=><div className="border rounded-lg p-3" key={String(label)}><p className="text-sm">{label}</p><strong className="text-2xl">{n(value as number|null)}</strong></div>)}
+    {[['Elenchi da confrontare',report.stats.unmeasured],['Identificativi senza collegamento negli elenchi confrontati',report.stats.known_missing_ids],['Elenchi con versioni da identificare',snapshot?report.stats.identity_lists:null],['Elenchi con foto esatte mancanti',snapshot?report.stats.photo_lists:null]].map(([label,value])=><div className="border rounded-lg p-3" key={String(label)}><p className="text-sm">{label}</p><strong className="text-2xl">{n(value as number|null)}</strong></div>)}
    </div>
-   <p className="text-xs">Questi sono riepiloghi globali di {n(report.stats.lists)} elenchi o gruppi di fonte. Fonti, pagine e lingue possono sovrapporsi: non sommare gli identificativi per ottenere carte fisiche uniche.</p>
+   <p className="text-xs">Questi sono riepiloghi globali di {n(report.stats.lists)} elenchi o gruppi di fonte. Fonti, pagine e lingue possono sovrapporsi: non sommare gli identificativi per ottenere carte fisiche uniche. Un identificativo senza collegamento esatto può appartenere a una carta già presente sotto un’altra fonte o corretta manualmente.</p>
    {snapshot?<div className={`border rounded-lg p-3 space-y-2 ${stale?'border-amber-500':''}`}>
     <p><strong>{stale?'Rilevazione da aggiornare':'Ultima rilevazione completata'}</strong> · {new Date(snapshot.generated_at).toLocaleString('it-IT')}</p>
     <p className="text-sm">Letture effettuate dal {new Date(snapshot.started_at).toLocaleString('it-IT')} mentre le importazioni continuavano. {n(snapshot.totals.total)} carte importate · {n(snapshot.totals.printings)} voci di fonte indicizzate · {n(snapshot.inventory.inventory_entries)} voci già elaborate nell’inventario.</p>
@@ -59,9 +59,11 @@ export default function CoverageAudit(){
     </div>
     <details><summary className="text-sm cursor-pointer">Esito e identificativi da controllare</summary><div className="mt-2 text-sm space-y-2"><p>{r.reason}</p><p>{r.checked_at?`Confronto con l’elenco: ${new Date(r.checked_at).toLocaleString('it-IT')}`:'Nessun confronto degli identificativi registrato.'}</p>
      {!!r.coverage_detail?.duplicate_count&&<p>Identificativi duplicati nell’elenco della fonte: {n(r.coverage_detail.duplicate_count)}</p>}
+     {r.coverage_detail?.comparison_scope==='expected_source_links'&&<p>Controllati i collegamenti agli identificativi elencati dalla fonte. L’assenza di un collegamento non dimostra l’assenza della carta fisica. Gli identificativi esterni a questo elenco non sono stati misurati.</p>}
+     {r.manifest_last_error&&<p>Ultimo tentativo: {r.manifest_last_attempt_at?new Date(r.manifest_last_attempt_at).toLocaleString('it-IT'):'data non disponibile'}. L’ultima rilevazione valida resta conservata.</p>}
      {!!r.coverage_detail?.missing_ids?.length&&<p>Identificativi mancanti, fino a 30 esempi: {r.coverage_detail.missing_ids.join(', ')}</p>}
      {!!r.coverage_detail?.unexpected_ids?.length&&<p>Identificativi inattesi, fino a 30 esempi: {r.coverage_detail.unexpected_ids.join(', ')}</p>}
-     {!!r.source_url&&evidenceSource(r.source_url)&&<a className="underline" href={evidenceSource(r.source_url)!.url} target="_blank" rel="noopener noreferrer">Consulta la fonte ↗</a>}
+     {!!(r.coverage_detail?.source_url||r.source_url)&&evidenceSource((r.coverage_detail?.source_url||r.source_url)!)&&<a className="underline" href={evidenceSource((r.coverage_detail?.source_url||r.source_url)!)!.url} target="_blank" rel="noopener noreferrer">Consulta la fonte ↗</a>}
     </div></details>
    </article>)}</div>
    {!report.rows.length&&<p>Nessun elenco corrisponde ai filtri. Questo non certifica la completezza mondiale del catalogo.</p>}

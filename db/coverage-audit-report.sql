@@ -1,4 +1,4 @@
-create view public.catalog_coverage_audit_rows with(security_invoker=true) as
+create or replace view public.catalog_coverage_audit_rows with(security_invoker=true) as
 with snapshot as(select report from public.catalog_coverage_snapshots where scope='latest'),observed as(
  select x.* from snapshot s cross join lateral jsonb_to_recordset(s.report->'groups') as x(
  source_provider text,origin_language text,origin_set text,cards bigint,reference_missing bigint,placeholder bigint,source_printings bigint,
@@ -9,34 +9,37 @@ with snapshot as(select report from public.catalog_coverage_snapshots where scop
  case when jsonb_typeof(s.coverage_detail->'missing_count')='number' then(s.coverage_detail->>'missing_count')::bigint
  when s.manifest_digest is not null and s.manifest_digest=s.resolved_digest then 0 end missing_count,
  case when jsonb_typeof(s.coverage_detail->'unexpected_count')='number' then(s.coverage_detail->>'unexpected_count')::bigint
- when s.manifest_digest is not null and s.manifest_digest=s.resolved_digest then 0 end unexpected_count
+ when s.coverage_detail->>'comparison_scope'='expected_source_links' then null
+ when s.manifest_digest is not null and s.manifest_digest=s.resolved_digest then 0 end unexpected_count,
+ s.manifest_last_attempt_at,s.manifest_last_error
  from public.catalog_sync_sets s join public.catalog_coverage_register r on r.target_key=s.source_uid and r.target_type='set'
  where s.set_id<>'__index__' order by s.provider,s.source_language,lower(s.set_id),s.coverage_checked_at desc nulls last,s.source_uid
 )
 select coalesce(m.source_uid,jsonb_build_array(o.source_provider,o.origin_language,o.origin_set)::text) target_key,
  coalesce(m.provider,o.source_provider) provider,coalesce(m.source_language,o.origin_language) source_language,coalesce(l.label,'Lingua non determinata') language_label,
  coalesce(m.source_set,o.origin_set) source_set,coalesce(m.name,o.origin_set) name,coalesce(m.status,'unregistered') status,
- coalesce(m.reason,'Voci importate: manca un elenco di riferimento abbinato con certezza.') reason,m.source_url,
+ coalesce(m.reason,'Voci importate: manca un elenco di riferimento abbinato con certezza.')||case when m.manifest_last_error is not null then ' Ultimo confronto rinviato: '||m.manifest_last_error else '' end reason,m.source_url,
  m.reported_count,m.manifest_count,m.resolved_count,m.coverage_checked_at checked_at,m.missing_count,m.unexpected_count,m.coverage_detail,
- case when exists(select 1 from snapshot) then coalesce(o.cards,0) end cards,
- case when exists(select 1 from snapshot) then coalesce(o.reference_missing,0) end reference_missing,
- case when exists(select 1 from snapshot) then coalesce(o.placeholder,0) end placeholder,
- case when exists(select 1 from snapshot) then coalesce(o.source_printings,0) end source_printings,
- case when exists(select 1 from snapshot) then coalesce(o.inventory_entries,0) end inventory_entries,
- case when exists(select 1 from snapshot) then coalesce(o.printing_entries,0) end printing_entries,
- case when exists(select 1 from snapshot) then coalesce(o.unidentified_entries,0) end unidentified_entries,
- case when exists(select 1 from snapshot) then coalesce(o.pending_identity,0) end pending_identity,
- case when exists(select 1 from snapshot) then coalesce(o.missing_exact,0) end missing_exact,
- case when exists(select 1 from snapshot) then coalesce(o.candidate_exact,0) end candidate_exact,
- case when exists(select 1 from snapshot) then coalesce(o.verified_exact,0) end verified_exact,
- case when exists(select 1 from snapshot) then coalesce(o.unknown_language,0) end unknown_language
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.cards,0) end cards,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.reference_missing,0) end reference_missing,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.placeholder,0) end placeholder,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.source_printings,0) end source_printings,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.inventory_entries,0) end inventory_entries,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.printing_entries,0) end printing_entries,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.unidentified_entries,0) end unidentified_entries,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.pending_identity,0) end pending_identity,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.missing_exact,0) end missing_exact,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.candidate_exact,0) end candidate_exact,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.verified_exact,0) end verified_exact,
+ case when exists(select 1 from snapshot) and(o.source_provider is not null or m.provider in ('tcgdex','atlas')) then coalesce(o.unknown_language,0) end unknown_language,
+ m.manifest_last_attempt_at,m.manifest_last_error
 from metadata m full join observed o on(o.source_provider,o.origin_language,o.origin_set)=(m.provider,m.source_language,m.source_set)
 left join public.catalog_language_sources l on l.source_language=coalesce(m.source_language,o.origin_language)
 where coalesce(m.coverage_scope,'unclassified')<>'digital';
 revoke all on public.catalog_coverage_audit_rows from public,anon,authenticated;
 grant select on public.catalog_coverage_audit_rows to anon,authenticated,service_role;
 
-create function public.catalog_coverage_audit_report(wanted_issue text default null,wanted_language text default null,wanted_provider text default null,query_text text default '',page_offset integer default 0,page_size integer default 25)
+create or replace function public.catalog_coverage_audit_report(wanted_issue text default null,wanted_language text default null,wanted_provider text default null,query_text text default '',page_offset integer default 0,page_size integer default 25)
 returns jsonb language sql stable security invoker set search_path='' set statement_timeout='8s' set work_mem='8MB' as $$
  with all_rows as materialized(select * from public.catalog_coverage_audit_rows),filtered as materialized(
  select * from all_rows where(wanted_language is null or source_language=wanted_language)and(wanted_provider is null or provider=wanted_provider)
