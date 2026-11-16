@@ -5,6 +5,11 @@ export async function GET(req:NextRequest){
  const p=req.nextUrl.searchParams,limit=Number(p.get('limit')||48),after=p.get('after')||''
  if(!Number.isInteger(limit)||limit<1||limit>100||after&&!/^[a-f0-9]{32}$/.test(after))return NextResponse.json({error:'Limite o cursore non valido'},{status:400})
  const db=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,{auth:{persistSession:false}})
+ if(p.get('grouped')==='true'){
+  const {data,error}=await db.rpc('catalog_visual_group_page',{after_group:after,page_size:limit,filter_kind:p.get('kind')||null,filter_language:p.get('language')||null,include_unlinked:p.get('all')==='true'})
+  if(error)return NextResponse.json({error:error.message},{status:503})
+  return NextResponse.json(data,{headers:{'Access-Control-Allow-Origin':'*','Cache-Control':'no-store'}})
+ }
  let query=db.from('catalog_visual_assets').select('*').gt('asset_key',after).order('asset_key').limit(limit+1)
  if(p.get('all')!=='true')query=query.not('match_mode','is',null)
  if(p.get('kind'))query=query.eq('kind',p.get('kind')!)
