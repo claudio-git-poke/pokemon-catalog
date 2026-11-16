@@ -19,6 +19,8 @@ export default function CardDetailPage() {
   const [imageUrl, setImageUrl] = useState('')
   const [status, setStatus] = useState('missing')
   const [notes, setNotes] = useState('')
+  const [dirtyFields, setDirtyFields] = useState<string[]>([])
+  function markDirty(...fields: string[]) { setDirtyFields(previous => [...new Set([...previous, ...fields])]) }
   const [message, setMessage] = useState('')
   const [alternatives,setAlternatives] = useState<{url:string;label:string}[]>([])
   const [logs, setLogs] = useState<string[]>([])
@@ -64,6 +66,7 @@ export default function CardDetailPage() {
         setImageUrl(data.image_url || '')
         setStatus(data.image_status)
         setNotes(data.notes || '')
+        setDirtyFields([])
       }
     } catch (e: any) {
       addLog(`Exception: ${e.message}`)
@@ -73,16 +76,25 @@ export default function CardDetailPage() {
   }
 
   async function save() {
+    if (!dirtyFields.length) { setMessage('Nessuna modifica da salvare.'); return }
     setSaving(true)
     setMessage('')
     addLog('Salvataggio...')
+    const patch: Record<string, unknown> = {}
+    if (dirtyFields.includes('photo')) Object.assign(patch, {
+      image_url: imageUrl || null,
+      image_status: status,
+      image_source: status === 'manual' ? 'manual' : card?.image_source || null
+    })
+    if (dirtyFields.includes('notes')) patch.notes = notes || null
     const { error: err } = await supabase
       .from('cards')
       .update({
-        image_url: imageUrl || null,
-        image_status: status as any,
-        notes: notes || null,
-        image_source: status === 'manual' ? 'manual' : card?.image_source
+        ...patch,
+        manual_overrides: {
+          ...card?.manual_overrides,
+          ...patch
+        }
       })
       .eq('id', id)
 
@@ -90,7 +102,7 @@ export default function CardDetailPage() {
       setMessage('Errore: ' + err.message)
       addLog('Errore salvataggio: ' + err.message)
     } else {
-      setMessage('Salvato con successo!')
+      setMessage('Modifiche salvate e protette dagli aggiornamenti automatici.')
       addLog('Salvato OK')
       await loadCard()
     }
@@ -112,6 +124,12 @@ export default function CardDetailPage() {
       addLog(`API response: ${JSON.stringify(data).slice(0, 200)}`)
 
       if (!res.ok || !data.success) throw new Error(data.error || `HTTP ${res.status}`)
+      if (data.skipped) {
+        setMessage(data.message || 'Scelta manuale mantenuta.')
+        await loadCard()
+        setSearching(false)
+        return
+      }
       setAlternatives(data.alternatives || [])
       data.logs?.forEach((line: string) => addLog(line))
 
@@ -135,6 +153,7 @@ export default function CardDetailPage() {
   }
 
   function setPlaceholder() {
+    markDirty('photo', 'notes')
     setImageUrl('')
     setStatus('placeholder')
     setNotes(notes || 'Segnata come placeholder - da sostituire manualmente')
@@ -186,6 +205,8 @@ export default function CardDetailPage() {
       <PrintingTraits cardId={card.id}/>
       <div className="bg-white rounded-xl shadow p-6">
         <h2 className="font-semibold mb-3">Anteprima foto</h2>
+        <p className="text-sm mb-3">Le modifiche che salvi qui hanno priorità sugli aggiornamenti automatici, anche quando lasci un campo vuoto.</p>
+        {!!Object.keys(card.manual_overrides || {}).length && <p className="text-sm mb-3">Questa carta contiene correzioni manuali protette. Puoi modificarle nuovamente salvando qui.</p>}
         {imageUrl ? (
           <img src={imageUrl} alt={card.nome} className="max-w-[300px] border rounded-lg shadow"
             onError={(e) => { addLog('Errore caricamento immagine'); e.currentTarget.style.display = 'none' }} />
@@ -197,7 +218,7 @@ export default function CardDetailPage() {
       </div>
 
       {card.notes && <div className="bg-yellow-50 p-4 rounded-xl text-sm"><strong>Stato della ricerca</strong><p className="mt-2">{card.notes}</p>{card.image_next_attempt_at && <p className="mt-2">Prossimo tentativo: {new Date(card.image_next_attempt_at).toLocaleString('it-IT')}</p>}</div>}
-      {alternatives.length > 0 && <section className="bg-white rounded-xl shadow p-6 space-y-4"><h2 className="font-semibold">Confronta le varianti</h2><p className="text-sm text-gray-500">Queste sono alternative della stessa carta: confronta bordo e timbri con la variante che vuoi catalogare. La selezione prepara il modulo; premi Salva modifiche per confermare.</p><div className="grid grid-cols-2 gap-4">{alternatives.map(option=><div key={option.url} className="space-y-3"><a href={option.url} target="_blank" rel="noreferrer"><img src={option.url} alt={option.label} className="w-full rounded-lg" loading="lazy"/></a><p className="text-xs">{option.label}</p><button className="border rounded-lg px-3 py-2 text-sm" onClick={()=>{setImageUrl(option.url);setStatus('manual');setNotes(`Variante selezionata manualmente: ${option.label}`);setMessage('Selezione pronta: salva le modifiche per confermare.')}}>Usa questa variante</button></div>)}</div></section>}
+      {alternatives.length > 0 && <section className="bg-white rounded-xl shadow p-6 space-y-4"><h2 className="font-semibold">Confronta le varianti</h2><p className="text-sm text-gray-500">Queste sono alternative della stessa carta: confronta bordo e timbri con la variante che vuoi catalogare. La selezione prepara il modulo; premi Salva modifiche per confermare.</p><div className="grid grid-cols-2 gap-4">{alternatives.map(option=><div key={option.url} className="space-y-3"><a href={option.url} target="_blank" rel="noreferrer"><img src={option.url} alt={option.label} className="w-full rounded-lg" loading="lazy"/></a><p className="text-xs">{option.label}</p><button className="border rounded-lg px-3 py-2 text-sm" onClick={()=>{markDirty('photo','notes');setImageUrl(option.url);setStatus('manual');setNotes(`Variante selezionata manualmente: ${option.label}`);setMessage('Selezione pronta: salva le modifiche per confermare.')}}>Usa questa variante</button></div>)}</div></section>}
       <div className="bg-white rounded-xl shadow p-6 space-y-4">
         <h2 className="font-semibold">Gestione foto</h2>
         <div className="flex flex-wrap gap-3">
@@ -213,12 +234,12 @@ export default function CardDetailPage() {
         <div>
           <label className="block text-sm font-medium mb-1">URL della foto</label>
           <input type="url" className="w-full border rounded-lg px-3 py-2" placeholder="Incolla qui l'URL dell'immagine..."
-            value={imageUrl} onChange={e => { setImageUrl(e.target.value); if (e.target.value) setStatus('manual') }} />
+            value={imageUrl} onChange={e => { markDirty('photo'); setImageUrl(e.target.value); if (e.target.value) setStatus('manual') }} />
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-1">Stato</label>
-          <select className="border rounded-lg px-3 py-2" value={status} onChange={e => setStatus(e.target.value)}>
+          <select className="border rounded-lg px-3 py-2" value={status} onChange={e => {markDirty('photo'); setStatus(e.target.value)}}>
             <option value="missing">Senza foto</option>
             <option value="placeholder">Placeholder</option>
             <option value="found">Trovata (automatica)</option>
@@ -229,7 +250,7 @@ export default function CardDetailPage() {
         <div>
           <label className="block text-sm font-medium mb-1">Note</label>
           <textarea className="w-full border rounded-lg px-3 py-2" rows={3} value={notes}
-            onChange={e => setNotes(e.target.value)} placeholder="Note..." />
+            onChange={e => {markDirty('notes'); setNotes(e.target.value)}} placeholder="Note..." />
         </div>
 
         <button onClick={save} disabled={saving}

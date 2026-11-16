@@ -7,7 +7,8 @@ export const maxDuration = 60
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { global: { headers: { 'x-catalog-write-mode': 'automatic' } } }
 )
 
 export async function POST(req: NextRequest) {
@@ -27,6 +28,10 @@ export async function POST(req: NextRequest) {
 
     if (error || !card) {
       return NextResponse.json({ error: 'Carta non trovata' }, { status: 404 })
+    }
+
+    if (['image_url','image_status','image_source'].some(key => Object.hasOwn(card.manual_overrides || {},key))) {
+      return NextResponse.json({success:true,found:!!card.image_url,skipped:true,url:card.image_url,message:'Foto protetta da una scelta manuale: ricerca automatica ignorata.'})
     }
 
     if (card.image_status === 'found' || card.image_status === 'manual') {
@@ -51,9 +56,13 @@ export async function POST(req: NextRequest) {
           image_source: result.source,
           notes: result.message
         })
-        .eq('id', cardId).select('id').single()
+        .eq('id', cardId).select('id,image_url,image_status,image_source,manual_overrides').single()
 
       if (saveError || !saved) throw new Error('Immagine trovata ma salvataggio fallito: ' + (saveError?.message || 'nessuna riga aggiornata'))
+
+      if (['image_url','image_status','image_source'].some(key => Object.hasOwn(saved.manual_overrides || {},key))) {
+        return NextResponse.json({success:true,found:!!saved.image_url,skipped:true,url:saved.image_url,message:'Scelta manuale salvata durante la ricerca: mantenuta.'})
+      }
 
       return NextResponse.json({
         success: true,
@@ -73,9 +82,13 @@ export async function POST(req: NextRequest) {
         image_source: result.source,
         notes: result.message
       })
-      .eq('id', cardId).select('id').single()
+        .eq('id', cardId).select('id,image_url,image_status,image_source,manual_overrides').single()
 
     if (saveError || !saved) throw new Error('Salvataggio esito fallito: ' + (saveError?.message || 'nessuna riga aggiornata'))
+
+    if (['image_url','image_status','image_source'].some(key => Object.hasOwn(saved.manual_overrides || {},key))) {
+      return NextResponse.json({success:true,found:!!saved.image_url,skipped:true,url:saved.image_url,message:'Scelta manuale salvata durante la ricerca: mantenuta.'})
+    }
 
     return NextResponse.json({
       success: true,

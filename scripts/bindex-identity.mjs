@@ -27,6 +27,13 @@ export const equivalentVariant=(a,b)=>{const parts=x=>x.replace(/^normale(?=-|$)
 const firstNames=new Map([['Pozione','Potion'],['Scambio','Switch'],['Energia base Fuoco','Fire Energy'],['Energia base Erba','Grass Energy'],['Energia base Lampo','Lightning Energy'],['Energia base Acqua','Water Energy']].map(([a,b])=>[normalizeSearch(a),normalizeSearch(b)]))
 const mfbName=x=>firstNames.get(normalizeSearch(x))||normalizeSearch(x)
 export function resolvePublication(entry,card,sets,reference){
+ // A human identity correction must never be reinterpreted from upstream metadata.
+ const own=(r,k)=>Object.hasOwn(r?.manual_overrides||{},k)
+ if(own(entry,'set_code')||['sigla','numero','variante'].some(k=>own(card,k))){
+  const sigla=own(entry,'set_code')?entry.set_code:card?.sigla
+  const match=reference.find(r=>r.sigla===sigla&&r.numero===card?.numero&&r.variante===card?.variante)
+  return match?{row:match,method:'manual_identity'}:{reason:'manual_identity_requires_explicit_mapping'}
+ }
  const payload=entry.source_payload||{},variant=payload.variant,cm=variant?.thirdParty?.cardmarket
  if(payload.identity_review_required)return {reason:'source_identity_requires_verified_mapping'}
  const mfb=entry.tags.includes('family:my-first-battle')
