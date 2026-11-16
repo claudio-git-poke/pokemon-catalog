@@ -3,8 +3,9 @@ import assert from 'node:assert/strict'
 import {PGlite} from '@electric-sql/pglite'
 import {readFile} from 'node:fs/promises'
 import {resolvePublication} from '../scripts/bindex-identity.mjs'
+import {selectedManualFields,protectionExpectedValues} from '../src/lib/manual-fields.ts'
 const sql=async name=>readFile(new URL(`../db/${name}.sql`,import.meta.url),'utf8')
-async function fixture({legacy=false}={}){
+async function fixture({legacy=false,history=false,review=false}={}){
  const pg=new PGlite()
  try{
  await pg.exec(`create role anon;create role authenticated;create role service_role bypassrls;
@@ -25,6 +26,12 @@ async function fixture({legacy=false}={}){
  if(legacy)await pg.exec(`update cards set image_status='manual',image_url='https://manual.test/legacy.png' where id=1;update catalog_search_entries set verification='reviewed' where entry_key='source:1';`)
  await pg.exec(await sql('manual-precedence'))
  await pg.exec('grant all on all tables in schema public to service_role;grant select,update on cards to anon;grant select on catalog_search_entries to anon;')
+ if(history){
+  await pg.exec(`alter table cards add column file_name text;
+   create schema auth;create function auth.uid() returns uuid language sql stable as $$ select (nullif(current_setting('request.jwt.claims',true),'')::jsonb->>'sub')::uuid $$;`)
+  if(review)await pg.exec(`set role service_role;insert into catalog_code_reviews(sigla,numero,variante,cardmarket_id,status,proposed_code,source_urls,method,note,cardmarket_access) values('PAL',52,'normale',123,'verified','PAL 052',array['https://source.test/verified'],'source-review','checked','ok');reset role;`)
+  await pg.exec(await sql('manual-review-history'))
+ }
  return pg
  }catch(error){await pg.close();throw error}
 }
@@ -95,4 +102,48 @@ test('publication respects manual BOO identity and suspends an ambiguous target 
  const target={sigla:'BOO',numero:52,variante:'normale'}
  assert.equal(resolvePublication(e,c,[],[target]).row.sigla,'BOO')
  assert.equal(resolvePublication(e,c,[],[]).reason,'manual_identity_requires_explicit_mapping')
+})
+
+test('confirming existing values locks only selected fields and records human changes without logging worker noise',async()=>{
+ const pg=await fixture({history:true});try{
+  const c=await row(pg,'cards','id=1')
+  await pg.exec('set role anon')
+  const r=await pg.query('select catalog_protect_card_fields($1,$2,$3) r',[1,['nome','codice'],JSON.stringify(protectionExpectedValues(c,['nome','codice']))])
+  assert.deepEqual(r.rows[0].r.protected_fields,['codice','nome'])
+  await assert.rejects(pg.exec('select * from catalog_manual_history'),/permission denied/)
+  await assert.rejects(pg.exec("insert into catalog_manual_history(table_name) values('fake')"),/permission denied/)
+  await pg.exec(`set role service_role;update cards set nome='Nome automatico',codice='TEST 001',notes='Nota automatica' where id=1`)
+  const saved=await row(pg,'cards','id=1');assert.equal(saved.nome,'Pikachu');assert.equal(saved.codice,'PAL 052');assert.equal(saved.notes,'Nota automatica')
+  let log=(await pg.query('select * from catalog_manual_history order by id')).rows
+  assert.equal(log.length,1);assert.equal(log[0].actor_role,'anon');assert.equal(log[0].reason,'confirm_existing_card_fields');assert.deepEqual(log[0].changed_fields,['codice','nome'])
+  await assert.rejects(pg.exec('delete from catalog_manual_history'),/permission denied/)
+  await pg.exec(`set role anon;update cards set nome='Correzione successiva' where id=1;set role service_role`)
+  log=(await pg.query('select * from catalog_manual_history order by id')).rows
+  assert.equal(log.length,2);assert.equal(log[1].before_values.nome,'Pikachu');assert.equal(log[1].after_values.nome,'Correzione successiva')
+ }finally{await pg.close()}
+})
+
+test('protection rejects stale selections and forbidden fields and preserves a deliberate empty photo',async()=>{
+ const pg=await fixture({history:true});try{
+  const old=await row(pg,'cards','id=1')
+  await pg.exec(`set role service_role;update cards set nome='Fonte aggiornata',image_url=null where id=1;set role anon;`)
+  await assert.rejects(pg.query('select catalog_protect_card_fields($1,$2,$3)',[1,['nome'],JSON.stringify(protectionExpectedValues(old,['nome']))]),/cambiato/)
+  assert.equal((await row(pg,'cards','id=1')).nome,'Fonte aggiornata')
+  await assert.rejects(pg.query('select catalog_protect_card_fields($1,$2,$3)',[1,['source_uid'],'{}']),/Campo non modificabile/)
+  const current=await row(pg,'cards','id=1')
+  const result=await pg.query('select catalog_protect_card_fields($1,$2,$3) r',[1,['image_url'],JSON.stringify(protectionExpectedValues(current,['image_url']))])
+  assert.deepEqual(result.rows[0].r.protected_fields,selectedManualFields(['image_url']))
+  await pg.exec(`set role service_role;update cards set image_url='https://source.test/new.png',image_status='found',notes='new' where id=1`)
+  assert.equal((await row(pg,'cards','id=1')).image_url,null);assert.equal((await row(pg,'cards','id=1')).notes,'new')
+  assert.equal((await pg.query('select count(*)::int n from catalog_manual_history')).rows[0].n,1)
+ }finally{await pg.close()}
+})
+
+test('historical verified code reviews are protected with recorded evidence, without claiming an inferred human origin',async()=>{
+ const pg=await fixture({history:true,review:true});try{
+  const log=(await pg.query('select * from catalog_manual_history order by id')).rows
+  assert.equal(log.length,2);assert.ok(log.every(r=>r.reason==='existing_verified_code_review'))
+  await pg.exec(`set role service_role;update catalog_code_reviews set status='pending',proposed_code=null;update set_carte set codice='TEST 001' where sigla='PAL';`)
+  assert.equal((await row(pg,'catalog_code_reviews')).status,'verified');assert.equal((await row(pg,'set_carte',"sigla='PAL'")).codice,'PAL 052')
+ }finally{await pg.close()}
 })
