@@ -1,7 +1,9 @@
 import {test} from 'node:test'
+import {PGlite} from '@electric-sql/pglite'
+import {postgresClient} from './helpers/postgres-client.mjs'
 import assert from 'node:assert/strict'
 import {enrichCatalog} from '../scripts/enrich-catalog.mjs'
-import {cardMetadataEntry,rarityTags} from '../scripts/card-metadata.mjs'
+import {cardMetadataEntry,rarityTags,reportedMetadataCards} from '../scripts/card-metadata.mjs'
 
 function database(pages){
  const queries=[]
@@ -98,4 +100,40 @@ test('card rarity is indexed even without variants, retaining local tags and add
  assert.equal(g.source_payload.variant,undefined);assert.equal(g.source_payload.reference_image_only,true)
  assert.deepEqual(rarityTags(null,'ja'),[],'missing Japanese rarity is never borrowed from an English counterpart')
  assert.ok(!cardMetadataEntry(card,{id:'sv02-269',rarity:'Rara'}).tags.includes('finish:holo'))
+ assert.equal(cardMetadataEntry(card,{id:'x',localId:'TG01',rarity:'Rare'}).collector_number,'tg01')
+})
+
+test('metadata priority revisits previously checked Italian cards but respects documented and manually protected payloads',async()=>{
+ const checked={id:1,source_local_id:'269',traits_checked_at:'2026-11-15T00:00:00Z'}
+ const snapshots=[
+  [{id:2,source_local_id:'232'},{id:4,source_local_id:'012'}],
+  [checked,{id:3,source_local_id:'245'}],
+  [{card_id:1,source_payload:{},manual_overrides:{}},
+   {card_id:2,source_payload:{rarity:'Special illustration rare'},manual_overrides:{}},
+   {card_id:3,source_payload:{},manual_overrides:{source_payload:{}}},
+   {card_id:4,source_payload:{},manual_overrides:{}}]
+ ]
+ const db={from(){const q={then(resolve){return resolve({data:snapshots.shift(),error:null})}};for(const m of ['select','like','order','limit','in','eq'])q[m]=()=>q;return q}}
+ const selected=await reportedMetadataCards(db)
+ assert.deepEqual(selected.map(c=>c.id),[1,4]);assert.equal(selected[0].traits_checked_at,checked.traits_checked_at)
+})
+
+test('mixed printing and generic metadata batches satisfy real PostgreSQL non-null constraints',async()=>{
+ const pg=new PGlite();try{
+  await pg.exec(`create table cards(id bigint primary key,traits_checked_at timestamptz,traits_next_attempt_at timestamptz,traits_last_error text);
+   insert into cards(id)values(9);
+   create table catalog_terms(code text primary key,label text,kind text,aliases text[],parents text[]);
+   create table catalog_search_entries(entry_key text primary key,card_id bigint not null,collector_number text,denominator text,
+    release_year integer,deck_code text,deck_number integer,name text not null,set_code text not null,language text not null,
+    tags text[] not null,facts jsonb not null default '{}',source_url text,source_payload jsonb not null,verification text not null,
+    label text not null default 'Unknown printing',updated_at timestamptz,search_text text not null default '');`)
+  const card={id:9,nome:'Kissara',sigla:'SV02@IT',lingua:'IT',source_card_id:'sv02-269',source_uid:'tcgdex:it:sv02-269',source_language:'it'}
+  const stats=await enrichCatalog({db:postgresClient(pg),cardRows:[card],log:async()=>{},fetchDetail:async()=>({id:'sv02-269',localId:'269',rarity:'Rara illustrazione speciale',variants_detailed:[{type:'normal'}]})})
+  assert.equal(stats.checked,1)
+  const entries=(await pg.query('select * from catalog_search_entries order by entry_key')).rows
+  assert.equal(entries.length,2);assert.equal(entries[0].entry_key,'card:9')
+  assert.equal(entries[0].facts.asian_script,false);assert.equal(entries[0].source_payload.variant,undefined)
+  assert.ok(entries[0].tags.includes('rarity:special-illustration-rare'))
+  assert.ok(entries.every(e=>e.label&&e.search_text))
+ }finally{await pg.close()}
 })

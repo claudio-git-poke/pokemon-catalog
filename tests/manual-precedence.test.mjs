@@ -165,7 +165,8 @@ test('documented generic rarity survives reindexing, honors manual empties and r
   generic=await row(pg,'catalog_search_entries',"entry_key='card:1'");assert.deepEqual(generic.tags,[]);assert.equal(generic.name,'Correzione assoluta')
   await pg.exec(`reset role;update catalog_search_entries set manual_overrides='{}' where entry_key='card:1';set role service_role;
    update catalog_search_entries set source_payload='{"id":"different-card","source_language":"it","rarity":"Common"}' where entry_key='source:1';`)
-  assert.equal((await pg.query('select catalog_backfill_generic_rarity() r')).rows[0].r.updated,0)
+  const skipped=(await pg.query('select catalog_backfill_generic_rarity() r')).rows[0].r
+  assert.equal(skipped.updated,0);assert.equal(skipped.next_id,1,'bounded cursor advances even when evidence is rejected')
   await pg.exec('reset role;set role anon');await assert.rejects(pg.exec('select catalog_backfill_generic_rarity()'),/permission denied/)
  }finally{await pg.close()}
 })

@@ -90,7 +90,7 @@ export async function enrichCatalog({db,log=console.log,budgetMs=60000,limit=100
    if(detail.id!==card.source_card_id)throw Error('Identità della fonte non corrispondente: nessun tag assegnato.')
    entries=detailEntries(card,detail)
    await quarantineVariantCollisions(db,entries)
-   const indexed=[...entries,cardMetadataEntry(card,detail)]
+   const indexed=[...entries,cardMetadataEntry(card,detail,baseFacts(card))]
    const terms=termsForEntries(indexed);if(terms.length)await check(db.from('catalog_terms').upsert(terms,{onConflict:'code',ignoreDuplicates:true}))
    await check(db.from('catalog_search_entries').upsert(indexed,{onConflict:'entry_key'}))
    await check(db.from('cards').update({traits_checked_at:now(),traits_next_attempt_at:new Date(Date.now()+14*86400000).toISOString(),traits_last_error:null}).eq('id',card.id))

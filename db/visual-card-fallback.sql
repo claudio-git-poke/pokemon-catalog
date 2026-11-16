@@ -34,17 +34,25 @@ language plpgsql security invoker set search_path='' set statement_timeout='20s'
 declare answer jsonb;
 begin
  if batch_size is null or batch_size<1 or batch_size>500 then raise exception 'Limite non valido';end if;
- with evidence as materialized(
-  select distinct on(s.card_id) s.card_id,s.source_payload,s.source_url
-  from public.catalog_search_entries s join public.cards c on c.id=s.card_id
-  join public.catalog_search_entries g on g.entry_key='card:'||s.card_id
+ with source_cards as materialized(
+  -- Bound the indexed card-id scan BEFORE loading JSON, joining or checking prior repairs.
+  select distinct s.card_id from public.catalog_search_entries s
   where s.card_id>after_id and s.verification<>'catalog' and s.source_payload->>'rarity' is not null
-   and s.source_payload->>'id'=c.source_card_id and s.source_payload->>'source_language'=c.source_language
-   and not coalesce((s.source_payload->>'identity_review_required')::boolean,false)
-   and g.verification='catalog' and not(g.manual_overrides ? 'source_payload')
+  order by s.card_id limit batch_size
+ ), evidence as materialized(
+  select p.card_id,s.source_payload,s.source_url
+  from source_cards p join public.cards c on c.id=p.card_id
+  join public.catalog_search_entries g on g.entry_key='card:'||p.card_id
+  cross join lateral(
+   select e.source_payload,e.source_url from public.catalog_search_entries e
+   where e.card_id=p.card_id and e.verification<>'catalog' and e.source_payload->>'rarity' is not null
+    and e.source_payload->>'id'=c.source_card_id and e.source_payload->>'source_language'=c.source_language
+    and not coalesce((e.source_payload->>'identity_review_required')::boolean,false)
+   order by e.updated_at desc,e.entry_key limit 1
+  ) s
+  where g.verification='catalog' and not(g.manual_overrides ? 'source_payload')
    and(g.source_payload->>'rarity' is distinct from s.source_payload->>'rarity'
     or not(g.manual_overrides ? 'tags') and not(g.tags @> public.catalog_rarity_tags(s.source_payload->>'rarity',c.source_language)))
-  order by s.card_id,s.updated_at desc,s.entry_key limit batch_size
  ), updated as(
   update public.catalog_search_entries g set
    tags=array(select distinct t from unnest(g.tags||public.catalog_rarity_tags(e.source_payload->>'rarity',e.source_payload->>'source_language'))t order by t),
@@ -52,7 +60,8 @@ begin
     'source_language',e.source_payload->>'source_language','metadata_scope','card-metadata-only','reference_image_only',true),
    source_url=e.source_url,updated_at=clock_timestamp()
   from evidence e where g.entry_key='card:'||e.card_id returning g.card_id
- ) select jsonb_build_object('updated',(select count(*) from updated),'next_id',(select max(card_id) from evidence)) into answer;
+ ) select jsonb_build_object('updated',(select count(*) from updated),'scanned',(select count(*) from source_cards),
+  'next_id',(select max(card_id) from source_cards)) into answer;
  return answer;
 end $fn$;
 revoke all on function public.catalog_backfill_generic_rarity(bigint,integer) from public,anon,authenticated;
