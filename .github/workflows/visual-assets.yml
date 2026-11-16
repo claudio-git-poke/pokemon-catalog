@@ -2,7 +2,7 @@ name: Registro simboli visivi
 on:
   push:
     branches: [main]
-    paths: ['data/visual-archive/**','scripts/import-visual-assets.mjs','.github/workflows/visual-assets.yml']
+    paths: ['data/visual-archive/**','scripts/import-visual-assets.mjs','scripts/visual-asset-import.mjs','.github/workflows/visual-assets.yml']
   workflow_dispatch:
 permissions:
   contents: read

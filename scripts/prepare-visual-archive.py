@@ -31,12 +31,13 @@ with zipfile.ZipFile(archive) as z:
    suffix='.png' if mime=='image/png' else '.webp';target=root/'public/visual-symbols'/(sha+suffix);target.write_bytes(data)
    image='https://pokemon-catalog-zeta.vercel.app/visual-symbols/'+target.name
    matcher='tag';tag='stamp:'+row['id']
-  elif scope=='physical' and valid and kind=='set_symbol' and row['fonte']=='TCGdex' and row.get('fonte_immagine_effettiva')=='TCGdex' and image and '/univ/' in image and mime=='image/png' and row['id']!='base1':matcher='tcgdex-set'
+  elif scope=='physical' and valid and kind=='set_symbol' and row['fonte']=='TCGdex' and row.get('fonte_immagine_effettiva')=='TCGdex' and image and '/univ/' in image and mime=='image/png' and row['id']!='base1':
+   image=image.replace('/univ/','/en/');matcher='tcgdex-set'
   if not valid:image=None;matcher=None
   status='available' if valid and image else 'local-only' if valid else 'missing'
   identity=[row['fonte'],kind,row['id'],lang,local]
   key=hashlib.sha256(json.dumps(identity,ensure_ascii=False,separators=(',',':')).encode()).hexdigest()[:32]
-  records.append(dict(asset_key=key,kind=kind,source_code=row['id'],source_language=lang,name=row.get('nome') or row['id'],scope=scope,image_url=image,source_url=source,image_sha256=sha if valid else None,mime_type=mime if valid else None,availability=status,match_mode=matcher,tag_code=tag,original_path=local,source_pack=pack,provenance={'source':row['fonte'],'effective_source':row.get('fonte_immagine_effettiva'),'reported_status':row.get('stato'),'note':row.get('nota','')}))
+  records.append(dict(asset_key=key,kind=kind,source_code=row['id'],source_language=lang,name=row.get('nome') or row['id'],scope=scope,image_url=image,source_url=source,image_sha256=sha if valid else None,mime_type=mime if valid else None,availability=status,match_mode=matcher,tag_code=tag,tag_codes=[tag] if tag else [],match_code=row['id'] if matcher=='tcgdex-set' else None,original_path=local,source_pack=pack,provenance={'source':row['fonte'],'effective_source':row.get('fonte_immagine_effettiva'),'reported_status':row.get('stato'),'note':row.get('nota','')}))
   stats[status]+=1
  stats['local_files']=sum(bool(x[0] and x[1]) for x in cache.values());stats['unique_image_hashes']=len(set(x[0] for x in cache.values() if x[0] and x[1]));stats['rules']=sum(bool(r['match_mode']) for r in records)
  folder=root/'data/visual-archive'
