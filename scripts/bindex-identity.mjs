@@ -25,7 +25,7 @@ export function variantKey(variant,hasNormal){
 }
 export const equivalentVariant=(a,b)=>{const parts=x=>x.replace(/^normale(?=-|$)/,'normal').split('-').sort().join('-');return parts(a)===parts(b)}
 const firstNames=new Map([['Pozione','Potion'],['Scambio','Switch'],['Energia base Fuoco','Fire Energy'],['Energia base Erba','Grass Energy'],['Energia base Lampo','Lightning Energy'],['Energia base Acqua','Water Energy']].map(([a,b])=>[normalizeSearch(a),normalizeSearch(b)]))
-const mfbName=x=>firstNames.get(normalizeSearch(x))||normalizeSearch(x)
+const mfbName=x=>normalizeSearch(firstNames.get(normalizeSearch(x))||x)
 export function resolvePublication(entry,card,sets,reference){
  // A human identity correction must never be reinterpreted from upstream metadata.
  const own=(r,k)=>Object.hasOwn(r?.manual_overrides||{},k)

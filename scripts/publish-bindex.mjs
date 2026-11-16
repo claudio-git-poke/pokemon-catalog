@@ -10,11 +10,11 @@ async function references(db){
  for(let offset=0;;offset+=1000){const page=await check(db.from('set_carte').select('*').order('sigla').order('numero').order('variante').range(offset,offset+999));rows.push(...page);if(page.length<1000)break}
  cache={sets,rows};return cache
 }
-export async function publishBindex({db,log=console.log,limit=200}){
+export async function publishBindex({db,log=console.log,limit=200,entryBatch}){
  const states=await check(db.from('catalog_export_state').select('*').eq('id','bindex').limit(1)),state=states[0]
  if(!state?.ready){await log('Esportazione Bindex: bootstrap non completato, nessuna pubblicazione automatica.');return {published:0,pending:0}}
  const {sets,rows}=await references(db)
- const queue=await check(db.rpc('catalog_export_queue',{after_time:state.cursor_time||'1970-01-01T00:00:00Z',after_key:state.cursor_key||'',batch_size:limit}))
+ const queue=entryBatch?entryBatch.slice(0,limit):await check(db.rpc('catalog_export_queue',{after_time:state.cursor_time||'1970-01-01T00:00:00Z',after_key:state.cursor_key||'',batch_size:limit}))
  if(!queue.length)return {published:0,pending:0}
  const ids=[...new Set(queue.map(e=>e.card_id))],cards=await check(db.from('cards').select('id,nome,sigla,numero,variante,lingua,source_language,manual_overrides').in('id',ids)),byId=new Map(cards.map(c=>[c.id,c]))
  const links=await check(db.from('catalog_export_links').select('*').in('entry_key',queue.map(e=>e.entry_key))),byEntry=new Map(links.map(l=>[l.entry_key,l]))
@@ -49,7 +49,7 @@ export async function publishBindex({db,log=console.log,limit=200}){
   }
   const t=timestampMicros(entry.updated_at),previous=timestampMicros(cursor[0]);if(t>previous||t===previous&&entry.entry_key>cursor[1])cursor=[entry.updated_at,entry.entry_key]
  }
- await check(db.rpc('catalog_export_progress',{cursor_time_new:cursor[0],cursor_key_new:cursor[1],counts:{published,pending,examined:queue.length}}))
+ if(!entryBatch)await check(db.rpc('catalog_export_progress',{cursor_time_new:cursor[0],cursor_key_new:cursor[1],counts:{published,pending,examined:queue.length}}))
  await log(`Allineamento Bindex: ${published} stampe collegate/pubblicate, ${pending} sospese per identità non certa.`)
  return {published,pending}
 }

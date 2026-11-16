@@ -72,4 +72,8 @@ test('publisher validates first and sends language photos through the protected 
  const photo=rpcs.find(r=>r.name==='bindex_publish_photo').args
  assert.equal(photo.image_language,'EN');assert.equal(photo.image_verified,false)
  assert.equal(writes.some(w=>w.table==='set_carte_immagini'),false)
+ rpcs.length=0
+ const targeted=await publishBindex({db,entryBatch:[entry],log:()=>{}})
+ assert.equal(targeted.published,1)
+ assert.ok(!rpcs.some(r=>['catalog_export_queue','catalog_export_progress'].includes(r.name)),'targeted release publication must never move or skip the worldwide export cursor')
 })
