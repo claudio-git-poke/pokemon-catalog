@@ -1,0 +1,34 @@
+name: Ripristino rarità delle carte
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/repair-card-metadata.mjs','scripts/card-metadata.mjs','data/catalog-rarity-aliases.json','db/visual-card-fallback.sql','.github/workflows/card-metadata-repair.yml']
+  schedule:
+    - cron: '43 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: card-metadata-repair
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node --experimental-strip-types scripts/repair-card-metadata.mjs
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - run: node scripts/check-visual-links.mjs
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}

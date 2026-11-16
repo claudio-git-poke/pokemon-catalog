@@ -1,5 +1,6 @@
 import {TAXONOMY} from '../src/lib/catalog-taxonomy.ts'
 import {expandTags,normalizeSearch,printingFacts} from '../src/lib/catalog-identification.ts'
+import {rarityTags} from './card-metadata.mjs'
 const deckPokemon=new Set(['pikachu','bulbasaur','charmander','squirtle'])
 // Names used as printed player-signature stamps by the upstream database.
 export const SIGNATURES=new Set(['chris-fulop','tsuguyoshi-yamato','reed-weichler','kevin-nguyen','takashi-yoneda','michael-gonzalez','curran-hill','jeremy-maron','jimmy-ballard','miska-saari','hiroki-yano','jason-klaczynski','liao-fu-guan','jeremy-scharff-kim','akira-miyazaki','tom-roos','jun-hasebe','dylan-lefavour','tristan-robinson','paul-atanassov','david-cohen','tsubasa-nakamura','michael-pramawat','mychael-bryan','stephen-silvestro','yuka-furusawa','jason-martinez','yuta-komatsuda','ross-cawthorn','gustavo-wada','christopher-kan','igor-costa','zachary-bokhari','shuto-itagaki','chase-moloney','jesse-parker','gabriel-fernandez','sakuya-ota','shao-tong-yen','jose-cruz-galindo-resendiz'])
@@ -29,7 +30,7 @@ export function mapVariant(card,detail,v){
  if(detail.level!==undefined){facts.name_has_lv=true;tags.push('category:'+(String(detail.level).toUpperCase()==='X'?'lv-x':'lv'))}
  if(['VMAX','VSTAR','BREAK','V-UNION'].includes(detail.stage))tags.push('category:'+detail.stage.toLowerCase())
  // A rarity is searchable metadata; it does not establish texture, foil coverage or an exact scan.
- if(detail.rarity)tags.push('rarity:'+normalizeSearch(detail.rarity).replaceAll(' ','-'))
+ tags.push(...rarityTags(detail.rarity,card.source_language))
  return {tags:expandTags(tags),facts,attributes}
 }
 export function termsForEntries(entries){

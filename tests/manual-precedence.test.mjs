@@ -147,3 +147,25 @@ test('historical verified code reviews are protected with recorded evidence, wit
   assert.equal((await row(pg,'catalog_code_reviews')).status,'verified');assert.equal((await row(pg,'set_carte',"sigla='PAL'")).codice,'PAL 052')
  }finally{await pg.close()}
 })
+
+test('documented generic rarity survives reindexing, honors manual empties and rejects another source identity',async()=>{
+ const pg=await fixture();try{
+  const migration=await sql('visual-card-fallback');await pg.exec(migration);await pg.exec(migration)
+  await pg.exec(`set role service_role;update cards set source_card_id='sv02-269',source_language='it' where id=1;
+   update catalog_search_entries set source_payload='{"id":"sv02-269","source_language":"it","rarity":"Rara illustrazione speciale","variant":{"type":"holo"}}',source_url='https://api.tcgdex.net/v2/it/cards/sv02-269' where entry_key='source:1';`)
+  assert.equal((await pg.query('select catalog_backfill_generic_rarity() r')).rows[0].r.updated,1)
+  let generic=await row(pg,'catalog_search_entries',"entry_key='card:1'")
+  assert.ok(generic.tags.includes('rarity:special-illustration-rare'));assert.equal(generic.source_payload.variant,undefined);assert.equal(generic.verification,'catalog')
+  assert.equal((await pg.query('select catalog_backfill_generic_rarity() r')).rows[0].r.updated,0,'a completed backfill is repeatable')
+  await pg.exec("reset role;update cards set nome='Correzione assoluta' where id=1;")
+  generic=await row(pg,'catalog_search_entries',"entry_key='card:1'");assert.ok(generic.tags.includes('rarity:special-illustration-rare'))
+  await pg.exec("update catalog_search_entries set tags='{}',source_payload='{}' where entry_key='card:1';set role service_role;")
+  assert.equal((await pg.query('select catalog_backfill_generic_rarity() r')).rows[0].r.updated,0)
+  await pg.exec("update cards set nome='Fonte' where id=1;")
+  generic=await row(pg,'catalog_search_entries',"entry_key='card:1'");assert.deepEqual(generic.tags,[]);assert.equal(generic.name,'Correzione assoluta')
+  await pg.exec(`reset role;update catalog_search_entries set manual_overrides='{}' where entry_key='card:1';set role service_role;
+   update catalog_search_entries set source_payload='{"id":"different-card","source_language":"it","rarity":"Common"}' where entry_key='source:1';`)
+  assert.equal((await pg.query('select catalog_backfill_generic_rarity() r')).rows[0].r.updated,0)
+  await pg.exec('reset role;set role anon');await assert.rejects(pg.exec('select catalog_backfill_generic_rarity()'),/permission denied/)
+ }finally{await pg.close()}
+})

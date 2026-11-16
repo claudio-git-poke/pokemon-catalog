@@ -1,6 +1,7 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {enrichCatalog} from '../scripts/enrich-catalog.mjs'
+import {cardMetadataEntry,rarityTags} from '../scripts/card-metadata.mjs'
 
 function database(pages){
  const queries=[]
@@ -74,9 +75,9 @@ test('partial persistence replays the same printing keys and only completes afte
  for(const m of ['select','upsert','update'])q[m]=p=>{mode=m;payload=p;return q}
  return q}}
  const options={db,concurrency:1,onlyUnchecked:true,log:async()=>{},fetchDetail:async()=>({id:'a',localId:'1',variants_detailed:[{type:'holo'}]})}
- assert.equal((await enrichCatalog(options)).databaseUnavailable,true);assert.equal(checked,false);assert.equal(rows.size,1)
+ assert.equal((await enrichCatalog(options)).databaseUnavailable,true);assert.equal(checked,false);assert.equal(rows.size,2)
  failCheckpoint=false
- assert.equal((await enrichCatalog(options)).checked,1);assert.equal(checked,true);assert.equal(rows.size,1)
+ assert.equal((await enrichCatalog(options)).checked,1);assert.equal(checked,true);assert.equal(rows.size,2)
 })
 
 test('completed checkpoints publish progress before the next card can fail',async()=>{
@@ -84,4 +85,17 @@ test('completed checkpoints publish progress before the next card can fail',asyn
  const db=database([cards]),progress=[]
  const stats=await enrichCatalog({db,concurrency:1,onlyUnchecked:true,log:async()=>{},onProgress:p=>progress.push(p),fetchDetail:async c=>{if(c.id===2){assert.equal(progress[0].checked,1);throw Error('TCGdex metadati HTTP 503')}return {id:c.source_card_id,variants_detailed:[{type:'holo'}]}}})
  assert.equal(stats.checked,1);assert.equal(stats.errors,1);assert.equal(progress.at(-1).checked,1);assert.equal(progress.at(-1).errors,1)
+})
+
+test('card rarity is indexed even without variants, retaining local tags and adding a documented canonical alias',async()=>{
+ const card={id:9,nome:'Kissara',sigla:'SV02@IT',lingua:'IT',source_uid:'tcgdex:it:sv02-269',source_card_id:'sv02-269',source_language:'it'}
+ const db=database([[card]])
+ const stats=await enrichCatalog({db,log:async()=>{},fetchDetail:async()=>({id:'sv02-269',localId:'269',rarity:'Rara illustrazione speciale'})})
+ assert.equal(stats.checked,1);assert.equal(stats.indexed,0)
+ const g=db.queries.find(q=>q.table==='catalog_search_entries').calls.find(c=>c[0]==='upsert')[1][0]
+ assert.equal(g.entry_key,'card:9');assert.equal(g.verification,'catalog')
+ assert.ok(g.tags.includes('rarity:special-illustration-rare'));assert.ok(g.tags.includes('rarity:rara-illustrazione-speciale'))
+ assert.equal(g.source_payload.variant,undefined);assert.equal(g.source_payload.reference_image_only,true)
+ assert.deepEqual(rarityTags(null,'ja'),[],'missing Japanese rarity is never borrowed from an English counterpart')
+ assert.ok(!cardMetadataEntry(card,{id:'sv02-269',rarity:'Rara'}).tags.includes('finish:holo'))
 })

@@ -55,11 +55,11 @@ begin
   where r.match_mode='tcgdex-set' and r.scope='physical' and r.availability='available' and lower(r.effective_code)<>'base1'
  ), candidates as(
   select e.entry_key,r.asset_key from refs r join public.catalog_search_entries e on e.tags && r.effective_tags
-  where r.match_mode='tag' and r.scope='physical' and r.availability='available' and e.verification<>'catalog' and e.entry_key>after_key
+  where r.match_mode='tag' and r.scope='physical' and r.availability='available'
   union all
   select e.entry_key,p.asset_key from prefixes p join public.cards c on
    (c.source_uid collate "C")>=p.prefix||'-' and (c.source_uid collate "C")<p.prefix||'.' and starts_with(c.source_uid,p.prefix||'-')
-  join public.catalog_search_entries e on e.card_id=c.id where e.verification<>'catalog' and e.entry_key>after_key
+  join public.catalog_search_entries e on e.card_id=c.id
  ), automatic as(
   select e.entry_key,case when r.match_mode='tag' then 'source' else 'candidate' end status,'candidate'::text image_match_status,null::text position,
    e.source_url evidence_url,'automatic'::text method,r.asset_key reference_asset_key
@@ -68,14 +68,21 @@ begin
    (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(r.source_language)
  ), manual as(
   select l.entry_key,l.status,l.image_match_status,l.position,l.evidence_url,'reviewed-link'::text method,l.asset_key reference_asset_key
-  from public.catalog_visual_links l join refs r using(asset_key) where r.scope='physical' and l.entry_key>after_key and l.status<>'rejected'
- ), selected as(select * from automatic union all select * from manual), deduplicated as(
+  from public.catalog_visual_links l join refs r using(asset_key) where r.scope='physical' and l.status<>'rejected'
+ ), selected as materialized(select * from automatic union all select * from manual), variant_cards as materialized(
+  -- Decide fallback before pagination. Explicit rejections must never revive a generic row.
+  select distinct e.card_id from selected s join public.catalog_search_entries e using(entry_key) join public.cards c on c.id=e.card_id
+  where e.verification<>'catalog' and(filter_language is null or public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
+   (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(filter_language))
+  union select e.card_id from blocked b join public.catalog_search_entries e using(entry_key) where e.verification<>'catalog'
+ ), deduplicated as(
   select distinct on(s.entry_key) s.* from selected s join public.catalog_search_entries e using(entry_key) join public.cards c on c.id=e.card_id
   where not exists(select 1 from blocked b where b.entry_key=s.entry_key)
+   and(e.verification<>'catalog' or not exists(select 1 from variant_cards v where v.card_id=e.card_id))
    and(filter_language is null or public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
     (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(filter_language))
   order by s.entry_key,(s.method='reviewed-link') desc,(s.status='verified') desc,(s.image_match_status='verified') desc,s.reference_asset_key
- ), page as(select * from deduplicated order by entry_key limit page_size+1), body as(
+ ), page as(select * from deduplicated where entry_key>after_key order by entry_key limit page_size+1), body as(
   select p.*,e.name,e.collector_number,e.set_code,e.language,e.tags,e.release_year,e.release_code,c.id card_id,c.image_url reference_image_url,
    public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
     (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua')) actual_language,
