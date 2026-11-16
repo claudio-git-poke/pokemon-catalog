@@ -1,4 +1,6 @@
 import {test} from 'node:test'
+import {PGlite} from '@electric-sql/pglite'
+import {postgresClient} from './helpers/postgres-client.mjs'
 import assert from 'node:assert/strict'
 import {enrichCatalog} from '../scripts/enrich-catalog.mjs'
 import {cardMetadataEntry,rarityTags,reportedMetadataCards} from '../scripts/card-metadata.mjs'
@@ -114,4 +116,24 @@ test('metadata priority revisits previously checked Italian cards but respects d
  const db={from(){const q={then(resolve){return resolve({data:snapshots.shift(),error:null})}};for(const m of ['select','like','order','limit','in','eq'])q[m]=()=>q;return q}}
  const selected=await reportedMetadataCards(db)
  assert.deepEqual(selected.map(c=>c.id),[1,4]);assert.equal(selected[0].traits_checked_at,checked.traits_checked_at)
+})
+
+test('mixed printing and generic metadata batches satisfy real PostgreSQL non-null constraints',async()=>{
+ const pg=new PGlite();try{
+  await pg.exec(`create table cards(id bigint primary key,traits_checked_at timestamptz,traits_next_attempt_at timestamptz,traits_last_error text);
+   insert into cards(id)values(9);
+   create table catalog_terms(code text primary key,label text,kind text,aliases text[],parents text[]);
+   create table catalog_search_entries(entry_key text primary key,card_id bigint not null,collector_number text,denominator text,
+    release_year integer,deck_code text,deck_number integer,name text not null,set_code text not null,language text not null,
+    tags text[] not null,facts jsonb not null default '{}',source_url text,source_payload jsonb not null,verification text not null,
+    label text not null default 'Unknown printing',updated_at timestamptz,search_text text not null default '');`)
+  const card={id:9,nome:'Kissara',sigla:'SV02@IT',lingua:'IT',source_card_id:'sv02-269',source_uid:'tcgdex:it:sv02-269',source_language:'it'}
+  const stats=await enrichCatalog({db:postgresClient(pg),cardRows:[card],log:async()=>{},fetchDetail:async()=>({id:'sv02-269',localId:'269',rarity:'Rara illustrazione speciale',variants_detailed:[{type:'normal'}]})})
+  assert.equal(stats.checked,1)
+  const entries=(await pg.query('select * from catalog_search_entries order by entry_key')).rows
+  assert.equal(entries.length,2);assert.equal(entries[0].entry_key,'card:9')
+  assert.equal(entries[0].facts.asian_script,false);assert.equal(entries[0].source_payload.variant,undefined)
+  assert.ok(entries[0].tags.includes('rarity:special-illustration-rare'))
+  assert.ok(entries.every(e=>e.label&&e.search_text))
+ }finally{await pg.close()}
 })
