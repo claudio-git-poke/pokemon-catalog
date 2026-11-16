@@ -68,7 +68,7 @@ test('bounded coverage scan resumes without double counts, separates generic ima
  assert.ok(r.groups.some(g=>g.origin_language==='und'),'legacy INT is not guessed to be English')
  const quality=(await pg.query("select report from catalog_quality_cache where scope='catalog'")).rows[0].report
  assert.equal(quality.warnings.total,1);assert.equal(quality.warnings.by_reason.finish_conflict,1);assert.equal(quality.published.total,2);assert.equal(quality.warnings.shared_verified_images,1)
- assert.equal((await pg.query("select count(*)::int n from catalog_coverage_snapshots where scope='checkpoint'")).rows[0].n,0)
+ assert.equal((await pg.query("select report->>'phase' phase from catalog_coverage_snapshots where scope='checkpoint'")).rows[0].phase,'complete')
  assert.equal((await runCoverageAudit({db,log:()=>{}})).skipped,true)
  }finally{await pg.close()}
 })

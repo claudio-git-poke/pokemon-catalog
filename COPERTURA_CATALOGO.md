@@ -20,7 +20,7 @@ Le query leggono al massimo 500 carte o 2.000 voci di inventario per lotto, usan
 
 Il worker conserva un limite superiore delle chiavi all'avvio: nuove importazioni non rendono infinita la rilevazione. I dati letti durante la scansione possono cambiare, quindi vengono mostrate sia la data iniziale sia quella finale: non è una fotografia transazionale istantanea.
 
-Un checkpoint periodico permette la ripresa dopo timeout o termine del budget, senza ricontare i lotti già salvati. Le scansioni troppo vecchie ripartono; una rilevazione recente evita lavoro ripetuto. Le due copie pubbliche (nuovo riepilogo e statistiche dettagliate precedenti) vengono pubblicate insieme, solo alla fine. Un errore mantiene l'ultima rilevazione completata.
+Un checkpoint periodico permette la ripresa dopo timeout o termine del budget, senza ricontare i lotti già salvati. Alla fine viene marcato come completato e conservato, senza cancellarlo, per le verifiche amministrative. Le scansioni troppo vecchie ripartono; una rilevazione recente evita lavoro ripetuto. Le due copie pubbliche (nuovo riepilogo e statistiche dettagliate precedenti) vengono pubblicate insieme, solo alla fine. Un errore mantiene l'ultima rilevazione completata.
 
 I processi di importazione chiamano ancora `catalog_refresh_quality_cache`, ma questa funzione ora registra una richiesta leggera; il calcolo avviene nel workflow dedicato. Il vecchio aggregato monolitico non viene più eseguito a fine ciclo di importazione.
 

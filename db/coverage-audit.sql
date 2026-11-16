@@ -107,7 +107,7 @@ begin
  if quality->>'generated_at' is distinct from snapshot->>'generated_at' then raise exception 'Rilevazioni non coerenti';end if;
  insert into public.catalog_coverage_snapshots(scope,report) values('latest',snapshot) on conflict(scope) do update set report=excluded.report,updated_at=clock_timestamp();
  insert into public.catalog_quality_cache(scope,report) values('catalog',quality) on conflict(scope) do update set report=excluded.report,updated_at=clock_timestamp();
- delete from public.catalog_coverage_snapshots where scope='checkpoint';
+ update public.catalog_coverage_snapshots set report=jsonb_set(report,'{phase}','"complete"'::jsonb),updated_at=clock_timestamp() where scope='checkpoint';
 end $$;
 -- Existing importer callers now request a background scan; they no longer execute the costly aggregate.
 create or replace function public.catalog_refresh_quality_cache() returns void language sql security invoker set search_path='' as $$

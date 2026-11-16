@@ -42,7 +42,7 @@ export async function runCoverageAudit({db,log=console.log,budgetMs=7*60000,cloc
  const records=await check(db.from('catalog_coverage_snapshots').select('*').in('scope',['latest','checkpoint']))
  let state=records.find(r=>r.scope==='checkpoint')?.report
  const latest=records.find(r=>r.scope==='latest')
- if(state?.version!==1||!state.started_at||Date.parse(state.started_at)<Date.now()-6*3600000)state=null
+ if(state?.version!==1||state.phase==='complete'||!state.started_at||Date.parse(state.started_at)<Date.now()-6*3600000)state=null
  if(!state&&latest&&Date.now()-Date.parse(latest.updated_at)<minAgeMs){await log('Copertura: ultima rilevazione ancora recente; nessuna nuova scansione.');return {skipped:true}}
  if(!state){const bounds=await check(db.rpc('catalog_coverage_scan_bounds'));state={version:1,...bounds,phase:'cards',card_cursor:0,inventory_cursor:'',card_scanned:0,inventory_scanned:0,quality:{},groups:{},languages:{},warnings:{by_reason:{},samples:[]}}}
  const save=()=>check(db.from('catalog_coverage_snapshots').upsert({scope:'checkpoint',report:state,updated_at:new Date().toISOString()},{onConflict:'scope'}))
