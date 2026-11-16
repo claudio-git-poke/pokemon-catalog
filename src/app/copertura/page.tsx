@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import CrossSourceComparisons from '@/components/cross-source-comparisons'
 import CoverageRegister from '@/components/coverage-register'
+import CoverageAudit from '@/components/coverage-audit'
 import {useState} from 'react'
 import {useLiveCatalog} from '@/lib/use-live-catalog'
 import {supabase} from '@/lib/supabase'
@@ -15,6 +16,7 @@ const reasons:Record<string,string>={finish_conflict:'Finiture incompatibili nel
 export default function CoveragePage(){
  const [report,setReport]=useState<Report|null>(null),[error,setError]=useState(''),[loading,setLoading]=useState(true)
  const [provider,setProvider]=useState(''),[query,setQuery]=useState(''),[language,setLanguage]=useState(''),[page,setPage]=useState(0)
+ const [showRegister,setShowRegister]=useState(false),[showComparisons,setShowComparisons]=useState(false)
  const live=useLiveCatalog(async signal=>{setLoading(true);try{const {data,error}=await supabase.from('catalog_quality_cache').select('report,updated_at').eq('scope','catalog').abortSignal(signal).single();if(signal.aborted)return;if(error)throw error;setReport(data.report);setError('')}catch(e){if(!signal.aborted)setError(e instanceof Error?e.message:String((e as {message?:string}).message||e))}finally{if(!signal.aborted)setLoading(false)}},true,'coverage',15000)
  const groups=(report?.groups||[]).filter(g=>(!provider||g.provider===provider)&&(!language||g.lingua===language)&&g.sigla?.toLowerCase().includes(query.trim().toLowerCase()))
  const totals=groups.reduce((a,g)=>{for(const k of Object.keys(a) as (keyof Counts)[])a[k]+=Number(g[k])||0;return a},{total:0,tagged:0,missing_image:0,placeholder:0,pending:0,retry:0,insufficient:0,unsupported:0,printings:0})
@@ -22,9 +24,10 @@ export default function CoveragePage(){
  return <div className="space-y-6">
   <div className="flex flex-wrap justify-between gap-3"><div><h1 className="text-3xl font-bold">Copertura e qualità</h1><p className="text-gray-600 mt-2">Quanto conosciamo delle carte importate e quali dati richiedono un controllo. Il riepilogo generale è salvato dal worker; la data indica la sua ultima rilevazione.</p></div><button className="border rounded-lg px-4 py-2" onClick={()=>void live.refresh()} disabled={loading}>{loading?'Lettura riepilogo…':'Rileggi riepilogo'}</button></div>
   {error&&<p role="alert" className="p-4 bg-red-50 text-red-800 rounded">Impossibile leggere la copertura: {error}. I dati precedenti, se presenti, restano visibili.</p>}
-  <p className="text-sm text-gray-600" role="status">{live.status==='live'?'● Collegato · riepilogo salvato dopo ogni ciclo di importazione':'Riconnessione in corso · aggiornamento periodico di riserva attivo'}</p>
-  <CoverageRegister/>
-  <CrossSourceComparisons/>
+  <p className="text-sm text-gray-600" role="status">{live.status==='live'?'● Collegato · risultati aggiornati quando termina una rilevazione in background':'Riconnessione in corso · aggiornamento periodico di riserva attivo'}</p>
+  <CoverageAudit/>
+  <details onToggle={e=>setShowRegister(e.currentTarget.open)}><summary className="font-semibold cursor-pointer">Registro completo delle fonti</summary><div className="mt-3">{showRegister&&<CoverageRegister/>}</div></details>
+  <details onToggle={e=>setShowComparisons(e.currentTarget.open)}><summary className="font-semibold cursor-pointer">Confronti dettagliati fra fonti</summary><div className="mt-3">{showComparisons&&<CrossSourceComparisons/>}</div></details>
   {report&&<>
    <p className="text-sm text-gray-600">Rilevazione: {new Date(report.generated_at).toLocaleString('it-IT')} · <Link className="underline" href="/automazione">Segui il lavoro automatico</Link></p>
    <section className="bg-white rounded-xl p-4 shadow space-y-3"><h2 className="font-bold text-lg">Esplora per fonte ed espansione</h2><div className="flex flex-wrap gap-3">

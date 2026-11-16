@@ -13,6 +13,8 @@ on:
       - 'scripts/bindex-contract.mjs'
       - 'scripts/bindex-identity.mjs'
       - 'scripts/printing-inventory.mjs'
+      - 'scripts/catalog-manifest.mjs'
+      - 'scripts/refresh-quality-cache.mjs'
   workflow_dispatch:
     inputs:
       duration_minutes:
