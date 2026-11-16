@@ -6,6 +6,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export type Card = {
+  manual_overrides?: Record<string, unknown>
   source_local_id?: string | null
   source_uid?: string | null
   source_card_id?: string | null

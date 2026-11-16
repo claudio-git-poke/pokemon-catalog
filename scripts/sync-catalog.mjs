@@ -144,6 +144,11 @@ export async function syncCatalog({ db, enrich = false, search = aggressiveSearc
     await log(`Ricerca immagini: ${queue.length} carte selezionate; lavoro fino al limite di tempo.`, true)
     for (const card of queue) {
       if (Date.now() > deadline - 40000) break
+      if (['image_url','image_status','image_source'].some(k=>Object.hasOwn(card.manual_overrides||{},k))) {
+        await check(db.from('cards').update({image_next_attempt_at:later(168)}).eq('id',card.id))
+        await log(`Carta #${card.id}: scelta manuale della foto protetta; ricerca automatica ignorata.`,true)
+        continue
+      }
       await log(`Cerco immagine: #${card.id} ${card.nome || card.name || card.file_name} · ${card.sigla}/${card.numero} · ${card.lingua}.`, true)
       const attempts = card.image_attempts + 1
       let patch
@@ -164,10 +169,11 @@ export async function syncCatalog({ db, enrich = false, search = aggressiveSearc
         patch = { image_attempts:attempts,image_next_attempt_at:retryAt(attempts,true),image_last_error:String(error) }
       }
       // Do not overwrite a manual image saved while the worker was searching.
-      const saved = await check(db.from('cards').update(patch).eq('id',card.id).in('image_status',['missing','placeholder']).select('id'))
-    if (saved.length && patch.image_status === 'found') summary.found++
-    if (saved.length && patch.image_status === 'placeholder') summary.missing++
-      await log(`Carta #${card.id}: ${!saved.length ? 'aggiornamento ignorato: modificata nel frattempo' : patch.image_status === 'found' ? 'immagine trovata · '+patch.image_source : patch.image_last_error ? 'errore · '+patch.image_last_error : 'immagine non trovata'}. Prossimo tentativo: ${patch.image_next_attempt_at}.`, true)
+      const saved = await check(db.from('cards').update(patch).eq('id',card.id).in('image_status',['missing','placeholder']).select('id,manual_overrides'))
+      const protectedPhoto=saved.some(c=>['image_url','image_status','image_source'].some(k=>Object.hasOwn(c.manual_overrides||{},k)))
+      if (saved.length && !protectedPhoto && patch.image_status === 'found') summary.found++
+      if (saved.length && !protectedPhoto && patch.image_status === 'placeholder') summary.missing++
+      await log(`Carta #${card.id}: ${!saved.length||protectedPhoto ? 'aggiornamento ignorato: modificata nel frattempo' : patch.image_status === 'found' ? 'immagine trovata · '+patch.image_source : patch.image_last_error ? 'errore · '+patch.image_last_error : 'immagine non trovata'}. Prossimo tentativo: ${patch.image_next_attempt_at}.`, true)
     }
     await log('Esecuzione conclusa. Il lavoro restante riprenderà al prossimo avvio.', true)
     await check(db.from('catalog_sync_runs').update({ finished_at:now(),status:summary.errors ? 'partial' : 'success',summary:{...summary,log_version:2,current:'Esecuzione conclusa',updated_at:now()} }).eq('id',run.id))
