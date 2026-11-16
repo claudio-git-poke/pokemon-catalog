@@ -102,3 +102,22 @@ test('group pagination and reviewed rejections remain consistent, including anon
   await assert.rejects(pg.exec('delete from catalog_visual_assets'),/permission denied/)
  }finally{await pg.close()}
 })
+
+test('generic fallback is scoped to matching printings, stable across pages and never bypasses a rejection',async()=>{
+ const pg=await fixture();try{
+  await pg.exec(`insert into cards values(4,'tcgdex:en:base3-4','en',null);
+   insert into catalog_search_entries(entry_key,card_id,name,language,tags,source_payload,verification) values
+   ('card:4',4,'Generic only','INT','{}','{}','catalog'),
+   ('a:it',4,'Italian printing','IT','{}','{"printing_language":"it"}','source');`)
+  const key=(await groups(pg)).results.find(r=>r.reference_count===3).group_key
+  const single=async(after='')=>(await pg.query("select catalog_visual_cards(repeat('1',32),$1,100) r",[after])).rows[0].r.results
+  assert.ok((await single()).some(r=>r.entry_key==='card:4'),'a different printing language does not suppress the fallback')
+  assert.ok((await cards(pg,key,'',100,'en')).results.some(r=>r.entry_key==='card:4'))
+  await pg.exec("insert into catalog_search_entries(entry_key,card_id,name,language,tags,source_payload,verification) values('a:en',4,'English printing','INT','{}','{}','source');")
+  assert.ok(!(await single()).some(r=>r.entry_key==='card:4'))
+  assert.ok(!(await single('c')).some(r=>r.entry_key==='card:4'),'a printing on an earlier page still suppresses the generic row')
+  await pg.exec("insert into catalog_visual_links(asset_key,entry_key,status,evidence_url) values(repeat('1',32),'a:en','rejected','https://example.com/review');")
+  assert.ok(!(await single()).some(r=>r.card_id===4),'rejecting a known printing does not revive its generic fallback')
+  assert.ok(!(await cards(pg,key,'',100,'en')).results.some(r=>r.card_id===4))
+ }finally{await pg.close()}
+})
