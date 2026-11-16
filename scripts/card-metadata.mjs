@@ -14,3 +14,14 @@ export function cardMetadataEntry(card,detail){
   source_url:`https://api.tcgdex.net/v2/${card.source_language}/cards/${encodeURIComponent(detail.id)}`,
   source_payload:{id:detail.id,rarity:detail.rarity??null,set:detail.set,source_language:card.source_language,metadata_scope:'card-metadata-only',reference_image_only:true},verification:'catalog',updated_at:new Date().toISOString()}
 }
+
+export async function reportedMetadataCards(db){
+ const check=async q=>{const{data,error}=await q;if(error)throw Error(error.message);return data}
+ const source=[]
+ for(const language of ['en','it'])source.push(...await check(db.from('cards').select('*').like('source_uid',`tcgdex:${language}:sv02-%`).order('id').limit(300)))
+ const entries=[]
+ for(let n=0;n<source.length;n+=200)entries.push(...await check(db.from('catalog_search_entries').select('card_id,source_payload,manual_overrides').in('card_id',source.slice(n,n+200).map(c=>c.id)).eq('verification','catalog')))
+ const byId=new Map(entries.map(e=>[e.card_id,e])),reported=new Set(['232','245','254','262','269'])
+ return source.filter(c=>{const e=byId.get(c.id);return !e?.source_payload?.rarity&&!Object.hasOwn(e?.manual_overrides||{},'source_payload')})
+  .sort((a,b)=>Number(reported.has(b.source_local_id))-Number(reported.has(a.source_local_id)))
+}

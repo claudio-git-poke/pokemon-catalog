@@ -1,7 +1,7 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {enrichCatalog} from '../scripts/enrich-catalog.mjs'
-import {cardMetadataEntry,rarityTags} from '../scripts/card-metadata.mjs'
+import {cardMetadataEntry,rarityTags,reportedMetadataCards} from '../scripts/card-metadata.mjs'
 
 function database(pages){
  const queries=[]
@@ -98,4 +98,19 @@ test('card rarity is indexed even without variants, retaining local tags and add
  assert.equal(g.source_payload.variant,undefined);assert.equal(g.source_payload.reference_image_only,true)
  assert.deepEqual(rarityTags(null,'ja'),[],'missing Japanese rarity is never borrowed from an English counterpart')
  assert.ok(!cardMetadataEntry(card,{id:'sv02-269',rarity:'Rara'}).tags.includes('finish:holo'))
+})
+
+test('metadata priority revisits previously checked Italian cards but respects documented and manually protected payloads',async()=>{
+ const checked={id:1,source_local_id:'269',traits_checked_at:'2026-11-15T00:00:00Z'}
+ const snapshots=[
+  [{id:2,source_local_id:'232'},{id:4,source_local_id:'012'}],
+  [checked,{id:3,source_local_id:'245'}],
+  [{card_id:1,source_payload:{},manual_overrides:{}},
+   {card_id:2,source_payload:{rarity:'Special illustration rare'},manual_overrides:{}},
+   {card_id:3,source_payload:{},manual_overrides:{source_payload:{}}},
+   {card_id:4,source_payload:{},manual_overrides:{}}]
+ ]
+ const db={from(){const q={then(resolve){return resolve({data:snapshots.shift(),error:null})}};for(const m of ['select','like','order','limit','in','eq'])q[m]=()=>q;return q}}
+ const selected=await reportedMetadataCards(db)
+ assert.deepEqual(selected.map(c=>c.id),[1,4]);assert.equal(selected[0].traits_checked_at,checked.traits_checked_at)
 })
