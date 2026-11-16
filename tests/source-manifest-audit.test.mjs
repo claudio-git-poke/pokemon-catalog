@@ -121,6 +121,11 @@ test('archive manifests use original IDs, never printed numbers or translated eq
   const dir=path.join(root,'data_en','Gym','G1');await mkdir(dir,{recursive:true})
   await writeFile(path.join(dir,'one.json'),JSON.stringify({url:'https://pkmncards.com/card/test/',name:'Test',set_name:'G1',number:'1',img:'https://pkmncards.com/wp-content/uploads/test.jpg'}))
   const english=await sourceList({provider:'supplement-en',set_id:'["Gym","G1"]'},{root});assert.deepEqual(english.ids,['pkmncards:Gym:G1:one.json'])
+  const namedDir=path.join(root,'data_en','Black & White','Black & White Energy (2011 Unnumbered)');await mkdir(namedDir,{recursive:true})
+  await writeFile(path.join(namedDir,'one.json'),JSON.stringify({url:'https://pkmncards.com/card/test/',name:'Test',set_name:'Black & White Energy (2011 Unnumbered)',img:'https://pkmncards.com/wp-content/uploads/test.jpg'}))
+  const named=await sourceList({provider:'supplement-en',set_id:'["Black & White","Black & White Energy (2011 Unnumbered)"]'},{root})
+  assert.deepEqual(named.ids,['pkmncards:Black & White:Black & White Energy (2011 Unnumbered):one.json'])
+  await assert.rejects(sourceList({provider:'supplement-en',set_id:'["..","G1"]'},{root}),/percorso non valido/)
   await writeFile(path.join(dir,'bad.json'),'{}');await assert.rejects(sourceList({provider:'supplement-en',set_id:'["Gym","G1"]'},{root}),/non validata/)
  }finally{await rm(root,{recursive:true,force:true})}
 })
