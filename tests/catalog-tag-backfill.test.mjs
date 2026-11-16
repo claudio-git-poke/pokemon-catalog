@@ -98,6 +98,7 @@ test('card rarity is indexed even without variants, retaining local tags and add
  assert.equal(g.source_payload.variant,undefined);assert.equal(g.source_payload.reference_image_only,true)
  assert.deepEqual(rarityTags(null,'ja'),[],'missing Japanese rarity is never borrowed from an English counterpart')
  assert.ok(!cardMetadataEntry(card,{id:'sv02-269',rarity:'Rara'}).tags.includes('finish:holo'))
+ assert.equal(cardMetadataEntry(card,{id:'x',localId:'TG01',rarity:'Rare'}).collector_number,'tg01')
 })
 
 test('metadata priority revisits previously checked Italian cards but respects documented and manually protected payloads',async()=>{
