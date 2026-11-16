@@ -1,3 +1,4 @@
+create index if not exists cards_visual_uid_c on public.cards((source_uid collate "C"));
 create table public.catalog_visual_assets(
  asset_key text primary key check(asset_key ~ '^[a-f0-9]{32}$'),kind text not null,source_code text not null,source_language text not null,name text not null,
  scope text not null check(scope in ('physical','digital','reference')),image_url text,source_url text,image_sha256 text,mime_type text,
@@ -37,8 +38,8 @@ begin
   where a.match_mode='tag' and e.verification<>'catalog' and e.tags @> array[a.tag_code] and e.entry_key>after_key
   union all
   select e.entry_key from public.cards c join public.catalog_search_entries e on e.card_id=c.id
-  where a.match_mode='tcgdex-set' and c.source_uid>='tcgdex:'||a.source_language||':'||a.source_code||'-'
-   and c.source_uid<'tcgdex:'||a.source_language||':'||a.source_code||'-~'
+  where a.match_mode='tcgdex-set' and (c.source_uid collate "C")>='tcgdex:'||a.source_language||':'||a.source_code||'-'
+   and (c.source_uid collate "C")<'tcgdex:'||a.source_language||':'||a.source_code||'.'
    and starts_with(c.source_uid,'tcgdex:'||a.source_language||':'||a.source_code||'-') and e.entry_key>after_key
  ), automatic as (
   select e.entry_key,case when a.match_mode='tag' then 'source' else 'candidate' end status,'candidate'::text image_match_status,null::text position,
