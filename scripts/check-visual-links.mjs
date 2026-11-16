@@ -8,7 +8,7 @@ const request=async(url,options={})=>{
 let key=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 if(!key){
  // Reuse the existing public browser configuration without storing or logging a key.
- const html=await(await request(site+'/simboli')).text()
+ const html=await(await request(site+'/copertura')).text()
  const urls=[...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(x=>new URL(x[1],site)).filter(u=>u.origin===site&&u.pathname.endsWith('.js')).slice(0,24)
  const chunks=await Promise.allSettled(urls.map(async u=>(await request(u)).text()))
  for(const chunk of chunks){
