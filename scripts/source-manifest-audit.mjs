@@ -10,6 +10,7 @@ import {databaseError} from './database-errors.mjs'
 export const MANIFEST_PROVIDERS=['tcgdex','atlas','supplement-en','supplement-th','supplement-id','research-pokumon','research-limitless']
 const check=async operation=>{try{const {data,error}=await operation;if(error)throw error;return data}catch(error){throw databaseError(error)}}
 const validPath=v=>typeof v==='string'&&v!=='.'&&v!=='..'&&/^[-A-Za-z0-9_.]+$/.test(v)
+const validArchivePart=v=>typeof v==='string'&&v.length>0&&v!=='.'&&v!=='..'&&!/[\\/\0]/.test(v)
 
 // One source-list request per job. Never fetch card images or individual detail pages.
 export function manifestFetcher({fetchImpl=fetch,clock=Date.now,wait=ms=>new Promise(r=>setTimeout(r,ms))}={}){
@@ -42,7 +43,7 @@ export async function sourceList(job,{root,request=manifestFetcher(),loadAtlas=a
  }
  if(provider==='supplement-en'){
   const [series,code]=JSON.parse(set)
-  if(!root||![series,code].every(validPath))throw Error('Archivio inglese non disponibile o percorso non valido')
+  if(!root||![series,code].every(validArchivePart))throw Error('Archivio inglese non disponibile o percorso non valido')
   const dir=path.join(root,'data_en',series,code),files=(await readdir(dir)).filter(f=>f.endsWith('.json')).sort(),records=[]
   for(const file of files){
    const record=englishRecord(JSON.parse(await readFile(path.join(dir,file),'utf8')),series,code,file)
