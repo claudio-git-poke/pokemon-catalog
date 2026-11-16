@@ -1,0 +1,30 @@
+name: Verifica e collegamento uscite speciali
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/special-release-audit.mjs','scripts/run-special-release-audit.mjs','scripts/release-card-links.mjs','scripts/deck-mappings.mjs','scripts/enrich-catalog.mjs','data/catalog-releases.json','data/catalog-decks.json','data/catalog-world-decks.json','.github/workflows/special-release-audit.yml']
+  schedule:
+    - cron: '19 */6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: special-release-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node --experimental-strip-types scripts/run-special-release-audit.mjs
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

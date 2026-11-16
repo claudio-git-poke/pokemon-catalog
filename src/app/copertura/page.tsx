@@ -3,6 +3,7 @@ import Link from 'next/link'
 import CrossSourceComparisons from '@/components/cross-source-comparisons'
 import CoverageRegister from '@/components/coverage-register'
 import CoverageAudit from '@/components/coverage-audit'
+import SpecialReleaseAudit from '@/components/special-release-audit'
 import {useState} from 'react'
 import {useLiveCatalog} from '@/lib/use-live-catalog'
 import {supabase} from '@/lib/supabase'
@@ -26,6 +27,7 @@ export default function CoveragePage(){
   {error&&<p role="alert" className="p-4 bg-red-50 text-red-800 rounded">Impossibile leggere la copertura: {error}. I dati precedenti, se presenti, restano visibili.</p>}
   <p className="text-sm text-gray-600" role="status">{live.status==='live'?'● Collegato · risultati aggiornati quando termina una rilevazione in background':'Riconnessione in corso · aggiornamento periodico di riserva attivo'}</p>
   <CoverageAudit/>
+  <SpecialReleaseAudit/>
   <details onToggle={e=>setShowRegister(e.currentTarget.open)}><summary className="font-semibold cursor-pointer">Registro completo delle fonti</summary><div className="mt-3">{showRegister&&<CoverageRegister/>}</div></details>
   <details onToggle={e=>setShowComparisons(e.currentTarget.open)}><summary className="font-semibold cursor-pointer">Confronti dettagliati fra fonti</summary><div className="mt-3">{showComparisons&&<CrossSourceComparisons/>}</div></details>
   {report&&<>

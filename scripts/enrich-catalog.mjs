@@ -2,6 +2,7 @@ import {databaseError,isTransientDatabaseError} from './database-errors.mjs'
 import {mapVariant,termsForEntries} from './variant-mappings.mjs'
 import {createHash} from 'node:crypto'
 import {readFile} from 'node:fs/promises'
+import {releaseCardIndex,resolveReleaseCard} from './release-card-links.mjs'
 import {sourcePrinting,expandTags,printingFacts,normalizeSearch} from '../src/lib/catalog-identification.ts'
 const now=()=>new Date().toISOString()
 const normNumber=value=>String(value||'').split('/')[0].replace(/^0+(?=\d)/,'').toLowerCase()
@@ -57,16 +58,16 @@ export function detailEntries(card,detail){
 export function curatedEntry(card,row){
  const family=row.family||'trick-or-trade',stamp=row.stamp||'trick-or-trade'
  const tags=expandTags(['family:'+family,'stamp:'+stamp,row.holo?'finish:holo':'finish:normal'])
- return {entry_key:`${row.release_code||'trick-or-trade-'+row.year}:${card.id}:${row.holo?'holo':'normal'}`,card_id:card.id,release_code:row.release_code||`trick-or-trade-${row.year}`,release_year:row.year,collector_number:normNumber(row.local_id.replace(/^[A-Za-z]+/,'')),denominator:row.printed_number.split('/')[1]||null,name:card.nome,set_code:card.sigla,language:card.lingua,tags,facts:{...baseFacts(card),...printingFacts(tags,{stamp:[stamp]})},source_url:row.source,source_payload:{...row,reference_image_only:true},verification:'source',label:`${row.release_name||'Trick or Trade '+row.year} · ${row.holo?'Holo':'Non-Holo'} · ${stamp==='trick-or-trade'?'Timbro zucca Pikachu':'Logo Play! Pokémon'}`,search_text:normalizeSearch(`${card.nome} ${card.sigla} ${row.release_name||'Trick or Trade'} ${row.year}`),updated_at:now()}
+ return {entry_key:`${row.release_code||'trick-or-trade-'+row.year}:${card.id}:${row.holo?'holo':'normal'}`,card_id:card.id,release_code:row.release_code||`trick-or-trade-${row.year}`,release_year:row.year,collector_number:normNumber(row.local_id.replace(/^[A-Za-z]+/,'')),denominator:row.printed_number.split('/')[1]||null,name:card.nome,set_code:card.sigla,language:card.lingua,tags,facts:{...baseFacts(card),...printingFacts(tags,{stamp:[stamp]})},source_url:row.source,source_payload:{...row,printing_language:'en',reference_image_only:true},verification:'source',label:`${row.release_name||'Trick or Trade '+row.year} · ${row.holo?'Holo':'Non-Holo'} · ${stamp==='trick-or-trade'?'Timbro zucca Pikachu':'Logo Play! Pokémon'}`,search_text:normalizeSearch(`${card.nome} ${card.sigla} ${row.release_name||'Trick or Trade'} ${row.year}`),updated_at:now()}
 }
-export async function enrichCatalog({db,log=console.log,budgetMs=60000,limit=100,fetchDetail,clock=Date.now,onlyUnchecked=false,concurrency=3,onProgress=()=>{}}){
+export async function enrichCatalog({db,log=console.log,budgetMs=60000,limit=100,fetchDetail,clock=Date.now,onlyUnchecked=false,concurrency=3,onProgress=()=>{},cardRows}){
  const deadline=clock()+budgetMs
  const select=()=>db.from('cards').select('*').like('source_uid','tcgdex:%').not('source_card_id','is',null).lte('traits_next_attempt_at',now())
  const stats={attempted:0,checked:0,indexed:0,errors:0}
  let cards
  try{
-  cards=await check(select().is('traits_checked_at',null).order('traits_next_attempt_at').order('id').limit(limit))
-  if(!cards.length&&!onlyUnchecked)cards=await check(select().not('traits_checked_at','is',null).order('traits_next_attempt_at').order('id').limit(limit))
+  cards=cardRows?cardRows.slice(0,limit):await check(select().is('traits_checked_at',null).order('traits_next_attempt_at').order('id').limit(limit))
+  if(!cardRows&&!cards.length&&!onlyUnchecked)cards=await check(select().not('traits_checked_at','is',null).order('traits_next_attempt_at').order('id').limit(limit))
  }catch(error){
   if(!isTransientDatabaseError(error))throw error
   await log(`Recupero tag rinviato prima della selezione: ${String(error)}. Nessuna carta segnata come controllata.`,true)
@@ -121,15 +122,13 @@ export async function enrichCatalog({db,log=console.log,budgetMs=60000,limit=100
 export async function syncCuratedReleases({db,log=console.log}){
  const rows=JSON.parse(await readFile(new URL('../data/catalog-releases.json',import.meta.url),'utf8'))
  let indexed=0,unresolved=0
- const cache=new Map(),entries=[]
+ const cards=await releaseCardIndex(db,rows),entries=[],issues=[]
  for(const row of rows){
-  if(!cache.has(row.set_id))cache.set(row.set_id,await check(db.from('cards').select('*').eq('lingua','INT').in('sigla',[row.set_id,row.set_id.toUpperCase(),row.set_id.toUpperCase()+'@INT']).limit(1000)))
-  const candidates=cache.get(row.set_id)
-  const matches=candidates.filter(c=>normalizeSearch(c.nome)===normalizeSearch(row.name)&&normNumber(c.source_local_id||c.numero)===normNumber(row.local_id.replace(/^[A-Za-z]+/,''))).sort((a,b)=>Number(!!b.source_uid)-Number(!!a.source_uid)||a.id-b.id)
-  if(!matches.length){unresolved++;continue}
-  entries.push(curatedEntry(matches[0],row));indexed++
+  const result=resolveReleaseCard(row,cards)
+  if(!result.card){unresolved++;issues.push({release_code:row.release_code,name:row.name,set_id:row.set_id,local_id:row.local_id,reason:result.reason});continue}
+  entries.push(curatedEntry(result.card,row));indexed++
  }
  for(let i=0;i<entries.length;i+=100)await check(db.from('catalog_search_entries').upsert(entries.slice(i,i+100),{onConflict:'entry_key'}))
  await log(`Emissioni verificate: ${indexed}/${rows.length} stampe promozionali collegate; ${unresolved} in attesa della carta originale.`)
- return {indexed,unresolved}
+ return {indexed,unresolved,issues}
 }
