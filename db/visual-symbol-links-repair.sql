@@ -1,6 +1,8 @@
 -- Additive and repeatable. Existing identifiers, tag_code and anonymous reads stay valid.
 alter table public.catalog_visual_assets add column if not exists match_code text;
 alter table public.catalog_visual_assets add column if not exists tag_codes text[] not null default '{}';
+alter table public.cards add column if not exists manual_overrides jsonb not null default '{}';
+alter table public.catalog_search_entries add column if not exists manual_overrides jsonb not null default '{}';
 create index if not exists cards_visual_uid_c on public.cards((source_uid collate "C"));
 revoke all on public.catalog_visual_assets,public.catalog_visual_links from anon,authenticated;
 grant select on public.catalog_visual_assets,public.catalog_visual_links to anon,authenticated;
@@ -63,7 +65,7 @@ begin
    e.source_url evidence_url,'automatic'::text method,r.asset_key reference_asset_key
   from candidates k join refs r using(asset_key) join public.catalog_search_entries e using(entry_key) join public.cards c on c.id=e.card_id
   where include_review or r.source_language='und' or public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
-   (coalesce(to_jsonb(e)->'manual_overrides','{}') ? 'language') or (coalesce(to_jsonb(c)->'manual_overrides','{}') ? 'lingua'))=public.catalog_visual_language(r.source_language)
+   (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(r.source_language)
  ), manual as(
   select l.entry_key,l.status,l.image_match_status,l.position,l.evidence_url,'reviewed-link'::text method,l.asset_key reference_asset_key
   from public.catalog_visual_links l join refs r using(asset_key) where r.scope='physical' and l.entry_key>after_key and l.status<>'rejected'
@@ -71,12 +73,12 @@ begin
   select distinct on(s.entry_key) s.* from selected s join public.catalog_search_entries e using(entry_key) join public.cards c on c.id=e.card_id
   where not exists(select 1 from blocked b where b.entry_key=s.entry_key)
    and(filter_language is null or public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
-    (coalesce(to_jsonb(e)->'manual_overrides','{}') ? 'language') or (coalesce(to_jsonb(c)->'manual_overrides','{}') ? 'lingua'))=public.catalog_visual_language(filter_language))
+    (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(filter_language))
   order by s.entry_key,(s.method='reviewed-link') desc,(s.status='verified') desc,(s.image_match_status='verified') desc,s.reference_asset_key
  ), page as(select * from deduplicated order by entry_key limit page_size+1), body as(
   select p.*,e.name,e.collector_number,e.set_code,e.language,e.tags,e.release_year,e.release_code,c.id card_id,c.image_url reference_image_url,
    public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
-    (coalesce(to_jsonb(e)->'manual_overrides','{}') ? 'language') or (coalesce(to_jsonb(c)->'manual_overrides','{}') ? 'lingua')) actual_language,
+    (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua')) actual_language,
    i.canonical_sigla,i.canonical_numero,i.canonical_variante,i.canonical_mapping_status
   from page p join public.catalog_search_entries e using(entry_key) join public.cards c on c.id=e.card_id
   left join public.catalog_printing_inventory i on i.record_key=e.entry_key and not i.deleted order by p.entry_key limit page_size

@@ -82,7 +82,7 @@ test('mapped neutral sets search indexed source prefixes across languages and om
 })
 test('manual languages and legacy manual tag_code corrections win over automatic aliases',async()=>{
  const pg=await fixture();try{
-  await pg.exec(`alter table catalog_search_entries add column manual_overrides jsonb default '{}';alter table cards add column manual_overrides jsonb default '{}';alter table catalog_visual_assets add column manual_overrides jsonb default '{}';
+  await pg.exec(`alter table catalog_search_entries add column if not exists manual_overrides jsonb default '{}';alter table cards add column if not exists manual_overrides jsonb default '{}';alter table catalog_visual_assets add column manual_overrides jsonb default '{}';
    update catalog_visual_assets set kind='rarity',source_code='common',match_mode='tag',tag_code='rarity:uncommon',tag_codes=array['rarity:common'],manual_overrides='{\"tag_code\":\"rarity:uncommon\"}' where asset_key=repeat('1',32);
    update catalog_search_entries set tags=array['rarity:common'],language='IT',manual_overrides='{\"language\":\"IT\"}' where entry_key='a';`)
   assert.equal((await pg.query('select catalog_visual_cards(repeat(\'1\',32)) r')).rows[0].r.results.length,0)
