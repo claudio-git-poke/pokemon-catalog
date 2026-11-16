@@ -52,9 +52,11 @@ export async function auditSpecialReleases({db,log=console.log,publish=true,enri
  for(let n=0;n<entries.length;n+=200)finalLinks.push(...await check(db.from('catalog_export_links').select('*').in('entry_key',entries.slice(n,n+200).map(e=>e.entry_key))))
  const releases=summarizeReleases(manifest,cards,entries,finalLinks,sets,reference)
  const sourceIds=new Set(supportedMfb.map(c=>c.source_card_id))
+ const mfbPending={}
+ for(const e of mfbEntries.filter(e=>!finalLinks.some(l=>l.entry_key===e.entry_key))){const result=resolvePublication(e,cards.find(c=>c.id===e.card_id),sets,reference);const reason=result.reason||'ready_to_publish';mfbPending[reason]=(mfbPending[reason]||0)+1}
  releases.push({code:'my-first-battle-2023',name:'My First Battle',canonical_set:'MFB',documented:mfb.length,unique:mfb.length,source_identified:mfb.length,
   source_unlinked:mfb.filter(r=>!sourceIds.has(r.id)).length,indexed:mfbEntries.length,published:mfbEntries.filter(e=>finalLinks.some(l=>l.entry_key===e.entry_key)).length,
-  reference_entries:reference.filter(r=>r.sigla==='MFB').length,issues:mfb.filter(r=>!sourceIds.has(r.id)).map(r=>({name:r.name,reason:'source_card_not_linked'}))})
+  publication_pending:mfbPending,reference_entries:reference.filter(r=>r.sigla==='MFB').length,issues:mfb.filter(r=>!sourceIds.has(r.id)).map(r=>({name:r.name,reason:'source_card_not_linked'}))})
  const report={contract:'special-release-audit-v1',started_at:started,generated_at:new Date().toISOString(),language_scope:'English source checklists; other languages not inferred',
   scope:'Documented source entries, not a worldwide card count. Repeated deck copies are consolidated. Unknown Energy printings and missing source checklists remain unknown.',
   import_curated:importCurated,import_decks:importDecks,mfb_enrichment:enriched,published_now:published,releases}

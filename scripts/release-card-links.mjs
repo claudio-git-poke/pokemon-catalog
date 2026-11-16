@@ -3,8 +3,14 @@ const check=async q=>{const {data,error}=await q;if(error)throw Error(error.mess
 export const printedNumber=x=>String(x??'').replace(/^0+(?=\d)/,'').toLowerCase()
 export function sourceIdentities(row){
  if(!row.set_id||!row.local_id)return []
- const raw=String(row.local_id),n=printedNumber(raw),ids=[raw,n,raw.toUpperCase(),raw.toLowerCase()]
- if(/^\d+$/.test(n))ids.push(n.padStart(3,'0'))
+ const ids=[]
+ for(const raw of [...new Set([String(row.local_id),row.printed_number?.split('/')[0]].filter(Boolean))]){
+  const n=printedNumber(raw),forms=[raw,n]
+  if(/^\d+$/.test(n))forms.push(n.padStart(3,'0'))
+  const promo=raw.match(/^([a-z]+)(\d+)$/i)
+  if(promo){const digits=printedNumber(promo[2]);forms.push(...[digits,digits.padStart(2,'0'),digits.padStart(3,'0')].map(x=>promo[1]+x))}
+  for(const form of forms)ids.push(form,form.toUpperCase(),form.toLowerCase())
+ }
  return [...new Set(ids)].map(id=>`tcgdex:en:${row.set_id}-${id}`)
 }
 export async function releaseCardIndex(db,rows){

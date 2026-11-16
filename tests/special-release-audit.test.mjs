@@ -21,6 +21,9 @@ test('source identity survives manual set/name changes and legacy ambiguities ne
   assert.equal(resolveReleaseCard(row,[legacy,{...legacy,id:4}]).reason,'ambiguous_legacy_identity')
   assert.equal(resolveReleaseCard({...row,set_id:null},index).reason,'printing_identity_undocumented')
   assert.ok(sourceIdentities({set_id:'swshp',local_id:'SWSH111'}).includes('tcgdex:en:swshp-SWSH111'))
+  assert.equal(resolveReleaseCard({set_id:'swshp',local_id:'SWSH65',printed_number:'SWSH065'},[{id:65,source_uid:'tcgdex:en:swshp-SWSH065'}]).card.id,65)
+  assert.equal(resolveReleaseCard({set_id:'dpp',local_id:'DP3'},[{id:3,source_uid:'tcgdex:en:dpp-DP03'}]).card.id,3)
+  assert.equal(resolveReleaseCard({set_id:'dpp',local_id:'DP3'},[{id:3,source_uid:'tcgdex:en:dpp-DP03'},{id:4,source_uid:'tcgdex:en:dpp-DP3'}]).reason,'ambiguous_source_identity')
  }finally{await pg.close()}
 })
 test('release report separates duplicate copies, unknown Energy printings and missing source manifests',()=>{
