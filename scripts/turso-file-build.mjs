@@ -2,11 +2,13 @@ import {initializeSnapshot,copyTable,verifyTable,snapshotReport} from './turso-s
 import {prepareCatalogSchema} from '../src/server/turso-schema.mjs'
 // Offline build of the complete Turso catalog into a local SQLite client:
 // verified copy of every table, then indexes, search, tags and manual guards.
+const HEAVY=new Set(['cards','catalog_search_entries','catalog_printing_inventory','catalog_external_cards','catalog_visual_assets','catalog_packaging_candidates'])
 export async function buildCatalogFile({client,source,schema,sourceId,deadline=Infinity,log=()=>{},clock=Date.now}){
  const started=clock()
  if((await initializeSnapshot(client,schema.tables,sourceId)).complete)throw Error('File di destinazione non vuoto.')
  for(const table of schema.tables){
-  const pageSize=table.table_name==='catalog_sync_runs'?20:1000
+  // Heavy JSON tables use the page sizes already proven by the first copy.
+  const pageSize=table.table_name==='catalog_sync_runs'?20:HEAVY.has(table.table_name)?400:1000
   const copied=await copyTable({client,source,table,batchRows:1000,pageSize,deadline,log:value=>{if(value.complete||value.rows%50000===0)log(value)}})
   if(copied.state!=='copied'&&copied.state!=='verified')throw Error('Tempo esaurito durante la copia di '+table.table_name)
   const verified=await verifyTable({client,source,table,pageSize:5000,deadline,log})

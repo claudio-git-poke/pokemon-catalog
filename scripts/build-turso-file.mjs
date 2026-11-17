@@ -28,7 +28,7 @@ try{
   if((await platform.databases()).some(d=>d.Name===target))throw Error('Il database '+target+' esiste già: nessuna sostituzione automatica.')
   log({phase:'usage-before',...await platform.usage()})
  }
- const source=createSourceReader({url:sourceUrl,key:sourceKey}),sourceId=hash(new URL(sourceUrl).origin+'|'+canonicalJson(schema))
+ const source=createSourceReader({url:sourceUrl,key:sourceKey,attempts:8}),sourceId=hash(new URL(sourceUrl).origin+'|'+canonicalJson(schema))
  if(await source.count(schema.tables.find(t=>t.table_name==='catalog_manual_history'))<146)throw Error('La cronologia manuale di origine non coincide con il controllo iniziale: costruzione sospesa.')
  await cleanup()
  client=sqliteFileClient(file,{fast:true})

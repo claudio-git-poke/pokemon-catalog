@@ -65,3 +65,12 @@ test('freezing source writers leaves CI and migration workflows alone, waits for
  assert.ok(mutations.every(p=>!p.includes('ci.yml')&&!p.includes('turso-')))
  assert.ok(!JSON.stringify(result).includes(token))
 })
+test('source reader retries transient HTTP errors with growing waits',async()=>{
+ const {createSourceReader}=await import('../scripts/turso-source-reader.mjs')
+ let calls=0;const waits=[]
+ const reader=createSourceReader({url:'https://source.supabase.co',key:'k',attempts:5,wait:async a=>waits.push(a),fetcher:async()=>++calls<4?new Response('{}',{status:500}):new Response('[{"id":1}]')})
+ assert.deepEqual(await reader.page({table_name:'cards',primary_key:['id']},null,10),[{id:1}])
+ assert.deepEqual(waits,[0,1,2])
+ const failing=createSourceReader({url:'https://source.supabase.co',key:'k',attempts:2,wait:async()=>{},fetcher:async()=>new Response('{}',{status:503})})
+ await assert.rejects(failing.page({table_name:'cards',primary_key:['id']},null,10),/HTTP 503/)
+})
