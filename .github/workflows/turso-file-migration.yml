@@ -1,0 +1,39 @@
+name: Migrazione Turso tramite file
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Caricare il file in un NUOVO database Turso (false = solo costruzione e verifica)'
+        type: boolean
+        default: false
+      database:
+        description: 'Nome del nuovo database'
+        type: string
+        default: 'pokemon-catalog'
+permissions:
+  contents: read
+concurrency:
+  group: turso-file-migration
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Costruisce il catalogo come file SQLite e lo carica se richiesto
+        run: node scripts/build-turso-file.mjs
+        env:
+          UPLOAD: ${{ inputs.upload }}
+          TURSO_TARGET_DATABASE: ${{ inputs.database }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+          TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
