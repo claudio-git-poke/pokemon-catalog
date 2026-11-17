@@ -143,5 +143,8 @@ begin
 end $$;
 revoke all on function public.catalog_preserve_metadata_for_legacy_writer() from public,anon,authenticated;
 grant execute on function public.catalog_preserve_metadata_for_legacy_writer() to service_role;
-drop trigger if exists aab_catalog_preserve_metadata on public.catalog_search_entries;
-create trigger aab_catalog_preserve_metadata before update on public.catalog_search_entries for each row execute function public.catalog_preserve_metadata_for_legacy_writer();
+do $$begin
+ if not exists(select 1 from pg_trigger where tgrelid='public.catalog_search_entries'::regclass and tgname='aab_catalog_preserve_metadata') then
+  create trigger aab_catalog_preserve_metadata before update on public.catalog_search_entries for each row execute function public.catalog_preserve_metadata_for_legacy_writer();
+ end if;
+end $$;
