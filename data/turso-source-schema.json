@@ -1,0 +1,2546 @@
+{
+  "version": 1,
+  "captured_at": "2026-11-17",
+  "source": "public PostgreSQL schema; data and credentials excluded",
+  "tables": [
+    {
+      "table_name": "cards",
+      "anon_read": true,
+      "primary_key": [
+        "id"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "file_name",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "sigla",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "lingua",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "numero",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "variante",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "codice",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "link_cardmarket",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "image_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "image_status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "image_source",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "source_uid",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "source_local_id",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "source_card_id",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "source_language",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "image_attempts",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "image_next_attempt_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "image_last_error",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "traits_checked_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "traits_next_attempt_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "traits_last_error",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_code_reviews",
+      "anon_read": true,
+      "primary_key": [
+        "sigla",
+        "numero",
+        "variante"
+      ],
+      "columns": [
+        {
+          "name": "sigla",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "numero",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "variante",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "cardmarket_id",
+          "type": "bigint",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "proposed_code",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "source_urls",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "method",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "note",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "cardmarket_access",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "aggiornato_il",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "set_carte",
+          "columns": [
+            "sigla",
+            "numero",
+            "variante"
+          ],
+          "target_columns": [
+            "sigla",
+            "numero",
+            "variante"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_coverage_snapshots",
+      "anon_read": true,
+      "primary_key": [
+        "scope"
+      ],
+      "columns": [
+        {
+          "name": "scope",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "report",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_export_links",
+      "anon_read": false,
+      "primary_key": [
+        "entry_key"
+      ],
+      "columns": [
+        {
+          "name": "entry_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "sigla",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "numero",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "variante",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "method",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "evidence",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "linked_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "catalog_search_entries",
+          "columns": [
+            "entry_key"
+          ],
+          "target_columns": [
+            "entry_key"
+          ]
+        },
+        {
+          "target": "set_carte",
+          "columns": [
+            "sigla",
+            "numero",
+            "variante"
+          ],
+          "target_columns": [
+            "sigla",
+            "numero",
+            "variante"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_export_pending",
+      "anon_read": false,
+      "primary_key": [
+        "entry_key"
+      ],
+      "columns": [
+        {
+          "name": "entry_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "detail",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "next_attempt_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "catalog_search_entries",
+          "columns": [
+            "entry_key"
+          ],
+          "target_columns": [
+            "entry_key"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_export_state",
+      "anon_read": true,
+      "primary_key": [
+        "id"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "ready",
+          "type": "boolean",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "reference_cards",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "reference_sets",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "bootstrapped_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "cursor_time",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "cursor_key",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "refreshed_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "statistics",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_external_cards",
+      "anon_read": true,
+      "primary_key": [
+        "source_uid"
+      ],
+      "columns": [
+        {
+          "name": "source_uid",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "provider",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "language",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "set_code",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "local_id",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "image_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "page_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_inventory_dirty",
+      "anon_read": false,
+      "primary_key": [
+        "entry_key"
+      ],
+      "columns": [
+        {
+          "name": "entry_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "requested_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "catalog_search_entries",
+          "columns": [
+            "entry_key"
+          ],
+          "target_columns": [
+            "entry_key"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_inventory_state",
+      "anon_read": false,
+      "primary_key": [
+        "id"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "seed_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "seed_complete",
+          "type": "boolean",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_language_sources",
+      "anon_read": true,
+      "primary_key": [
+        "source_language"
+      ],
+      "columns": [
+        {
+          "name": "source_language",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "local_code",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "label",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "region",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_url",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "probe_status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "listed_sets",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "last_probe_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "last_error",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_live_updates",
+      "anon_read": true,
+      "primary_key": [
+        "scope"
+      ],
+      "columns": [
+        {
+          "name": "scope",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "revision",
+          "type": "bigint",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_manual_history",
+      "anon_read": false,
+      "primary_key": [
+        "id"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "table_name",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "record_key",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "changed_fields",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "before_values",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "after_values",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "previous_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "new_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "actor_role",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "actor_subject",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_metadata_backfill_state",
+      "anon_read": true,
+      "primary_key": [
+        "source_language"
+      ],
+      "columns": [
+        {
+          "name": "source_language",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "next_page",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "mapping_version",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "after_card_id",
+          "type": "bigint",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_packaging_candidates",
+      "anon_read": true,
+      "primary_key": [
+        "candidate_key"
+      ],
+      "columns": [
+        {
+          "name": "candidate_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "document_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_row_number",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_row",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "group_name",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "raw_language",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "language",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "language_status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "card_number",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "origin",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "packaging_types",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "packaging_description",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "claimed_evidence_level",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_refs",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "uncertainties",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "review_status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "review_note",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "reviewed_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "review_source_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "wrapper_front_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "wrapper_back_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "search_text",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "search_vector",
+          "type": "tsvector",
+          "nullable": true,
+          "generated": true
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "catalog_packaging_documents",
+          "columns": [
+            "document_key"
+          ],
+          "target_columns": [
+            "document_key"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_packaging_documents",
+      "anon_read": true,
+      "primary_key": [
+        "document_key"
+      ],
+      "columns": [
+        {
+          "name": "document_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "document_date",
+          "type": "date",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "sha256",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "archive_path",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_manifest",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "limitations",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_packaging_links",
+      "anon_read": true,
+      "primary_key": [
+        "candidate_key",
+        "card_id"
+      ],
+      "columns": [
+        {
+          "name": "candidate_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "card_id",
+          "type": "bigint",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "entry_key",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "source_uid_snapshot",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "method",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "evidence_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "note",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "catalog_packaging_candidates",
+          "columns": [
+            "candidate_key"
+          ],
+          "target_columns": [
+            "candidate_key"
+          ]
+        },
+        {
+          "target": "cards",
+          "columns": [
+            "card_id"
+          ],
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "target": "catalog_search_entries",
+          "columns": [
+            "entry_key"
+          ],
+          "target_columns": [
+            "entry_key"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_printing_inventory",
+      "anon_read": true,
+      "primary_key": [
+        "record_key"
+      ],
+      "columns": [
+        {
+          "name": "record_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_entry_key",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "card_id",
+          "type": "bigint",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "scope",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "language",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "language_status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_set_code",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "collector_number",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "denominator",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "release_code",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "release_year",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "deck_code",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "deck_number",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "attributes",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "tags",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "facts",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "verification",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "canonical_sigla",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "canonical_numero",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "canonical_variante",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "canonical_mapping_status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "mapping_reason",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "image_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "image_hd",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "image_source_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "image_status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "image_evidence",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "reference_image_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "reference_source_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "source_updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "deleted",
+          "type": "boolean",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "set_carte",
+          "columns": [
+            "canonical_sigla",
+            "canonical_numero",
+            "canonical_variante"
+          ],
+          "target_columns": [
+            "sigla",
+            "numero",
+            "variante"
+          ]
+        },
+        {
+          "target": "cards",
+          "columns": [
+            "card_id"
+          ],
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "target": "catalog_search_entries",
+          "columns": [
+            "source_entry_key"
+          ],
+          "target_columns": [
+            "entry_key"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_quality_cache",
+      "anon_read": true,
+      "primary_key": [
+        "scope"
+      ],
+      "columns": [
+        {
+          "name": "scope",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "report",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_releases",
+      "anon_read": true,
+      "primary_key": [
+        "code"
+      ],
+      "columns": [
+        {
+          "name": "code",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "family_code",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "release_year",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "source_url",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "catalog_terms",
+          "columns": [
+            "family_code"
+          ],
+          "target_columns": [
+            "code"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_search_entries",
+      "anon_read": true,
+      "primary_key": [
+        "entry_key"
+      ],
+      "columns": [
+        {
+          "name": "entry_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "card_id",
+          "type": "bigint",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "release_code",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "release_year",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "collector_number",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "denominator",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "set_code",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "language",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "tags",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "facts",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "source_payload",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "verification",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "image_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "label",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "search_text",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "search_vector",
+          "type": "tsvector",
+          "nullable": true,
+          "generated": true
+        },
+        {
+          "name": "deck_code",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "deck_number",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "cardmarket_id",
+          "type": "bigint",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "cardmarket_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "cardmarket_method",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "cardmarket_status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "cards",
+          "columns": [
+            "card_id"
+          ],
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "target": "catalog_releases",
+          "columns": [
+            "release_code"
+          ],
+          "target_columns": [
+            "code"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_source_comparisons",
+      "anon_read": true,
+      "primary_key": [
+        "pair_key"
+      ],
+      "columns": [
+        {
+          "name": "pair_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "primary_uid",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "secondary_uid",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "checked_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "next_check_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "last_success_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "result",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "last_error",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "catalog_sync_sets",
+          "columns": [
+            "primary_uid"
+          ],
+          "target_columns": [
+            "source_uid"
+          ]
+        },
+        {
+          "target": "catalog_sync_sets",
+          "columns": [
+            "secondary_uid"
+          ],
+          "target_columns": [
+            "source_uid"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_special_release_audit",
+      "anon_read": true,
+      "primary_key": [
+        "id"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "report",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_sync_events",
+      "anon_read": true,
+      "primary_key": [
+        "id"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "run_id",
+          "type": "bigint",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "message",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "event_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "catalog_sync_runs",
+          "columns": [
+            "run_id"
+          ],
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "catalog_sync_runs",
+      "anon_read": true,
+      "primary_key": [
+        "id"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "finished_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "summary",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_sync_sets",
+      "anon_read": true,
+      "primary_key": [
+        "source_uid"
+      ],
+      "columns": [
+        {
+          "name": "source_uid",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_language",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "set_id",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "provider",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "next_sync_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "last_sync_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "last_error",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "card_count",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "reported_count",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "sync_failures",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manifest_count",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "resolved_count",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "manifest_digest",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "resolved_digest",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "coverage_checked_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "coverage_scope",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "coverage_detail",
+          "type": "jsonb",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "manifest_next_check_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manifest_last_attempt_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "manifest_last_error",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_terms",
+      "anon_read": true,
+      "primary_key": [
+        "code"
+      ],
+      "columns": [
+        {
+          "name": "code",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "label",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "kind",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "aliases",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "parents",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_visual_assets",
+      "anon_read": true,
+      "primary_key": [
+        "asset_key"
+      ],
+      "columns": [
+        {
+          "name": "asset_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "kind",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_code",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_language",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "scope",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "image_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "source_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "image_sha256",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "mime_type",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "availability",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "match_mode",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "tag_code",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "original_path",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "source_pack",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "provenance",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "match_code",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "tag_codes",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    },
+    {
+      "table_name": "catalog_visual_links",
+      "anon_read": true,
+      "primary_key": [
+        "asset_key",
+        "entry_key"
+      ],
+      "columns": [
+        {
+          "name": "asset_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "entry_key",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "image_match_status",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "position",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "evidence_url",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "catalog_visual_assets",
+          "columns": [
+            "asset_key"
+          ],
+          "target_columns": [
+            "asset_key"
+          ]
+        },
+        {
+          "target": "catalog_search_entries",
+          "columns": [
+            "entry_key"
+          ],
+          "target_columns": [
+            "entry_key"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "set_carte",
+      "anon_read": true,
+      "primary_key": [
+        "sigla",
+        "numero",
+        "variante"
+      ],
+      "columns": [
+        {
+          "name": "sigla",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "numero",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "variante",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "rarita",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "codice",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "cardmarket_id",
+          "type": "bigint",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "cardmarket_url",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "immagine",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "immagine_hd",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "tag",
+          "type": "text[]",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "immagine_verificata",
+          "type": "boolean",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "aggiornato_il",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "eliminata",
+          "type": "boolean",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "set_espansioni",
+          "columns": [
+            "sigla"
+          ],
+          "target_columns": [
+            "sigla"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "set_carte_immagini",
+      "anon_read": true,
+      "primary_key": [
+        "sigla",
+        "numero",
+        "variante",
+        "lingua"
+      ],
+      "columns": [
+        {
+          "name": "sigla",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "numero",
+          "type": "integer",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "variante",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "lingua",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "immagine",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "immagine_hd",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "fonte",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "verificata",
+          "type": "boolean",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "aggiornato_il",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": [
+        {
+          "target": "set_carte",
+          "columns": [
+            "sigla",
+            "numero",
+            "variante"
+          ],
+          "target_columns": [
+            "sigla",
+            "numero",
+            "variante"
+          ]
+        }
+      ]
+    },
+    {
+      "table_name": "set_espansioni",
+      "anon_read": true,
+      "primary_key": [
+        "sigla"
+      ],
+      "columns": [
+        {
+          "name": "sigla",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "tcgdex_id",
+          "type": "text",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "carte_base",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "carte_totali",
+          "type": "integer",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "data_uscita",
+          "type": "date",
+          "nullable": true,
+          "generated": false
+        },
+        {
+          "name": "lingua",
+          "type": "text",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "aggiornato_il",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "generated": false
+        },
+        {
+          "name": "manual_overrides",
+          "type": "jsonb",
+          "nullable": false,
+          "generated": false
+        }
+      ],
+      "foreign_keys": null
+    }
+  ]
+}
