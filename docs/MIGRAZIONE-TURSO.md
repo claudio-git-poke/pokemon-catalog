@@ -103,3 +103,17 @@ Segreti necessari per il freno:
 - `TURSO_API_TOKEN`: token della Platform API, creato dalla dashboard Turso o con `turso auth api-tokens mint`;
 - `TURSO_ORGANIZATION`: slug dell'organizzazione o dell'account;
 - facoltativo `TURSO_RESET_DAY`: giorno di rinnovo della quota, predefinito 1.
+
+## Migrazione tramite file (account del collaboratore)
+
+La nuova migrazione non scrive righe su Turso con istruzioni SQL. Il workflow **Migrazione Turso tramite file** (solo avvio manuale) procede così:
+
+1. Legge Supabase solo con GET e HEAD.
+2. Costruisce in locale, su GitHub Actions, un file SQLite completo: copia verificata con le catene SHA-256, indici, ricerca a testo, tag, gruppi di simboli e protezioni manuali. Il codice di copia e preparazione è lo stesso già verificato, eseguito su `scripts/sqlite-file-client.mjs`.
+3. Esegue un controllo di integrità del file e ne unisce il WAL.
+4. Con `upload=true` crea un NUOVO database tramite la Platform API (seed `database_upload`) e carica il file. Se il database esiste già, il workflow si ferma.
+5. Verifica il database caricato leggendo solo gli stati della copia e `max(_position)` di ogni tabella, cioè poche centinaia di righe.
+
+Il registro tecnico è vuoto all'origine e resta vuoto. Il file temporaneo viene cancellato a fine esecuzione e non viene pubblicato come artifact.
+
+Prova del 18 novembre 2026 (`Prova caricamento file su Turso`): un file di 50.000 righe è stato caricato e letto correttamente. Il contatore ufficiale dei consumi non si era ancora aggiornato dopo sei minuti; il workflow orario **Consumi Turso** stabilisce se il caricamento conta tra le righe scritte. Il catalogo si carica solo dopo questa conferma.
