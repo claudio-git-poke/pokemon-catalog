@@ -50,3 +50,15 @@ Il salvataggio di una carta legge e aggiorna il documento nella stessa transazio
 Ogni modifica manuale aggiunge una versione alla coda privata `_catalog_manual_outbox`; gli aggiornamenti automatici non la svuotano. Il worker di pubblicazione dovrà rielaborare queste versioni e confermarle soltanto se non sono cambiate durante il lavoro. La presenza della coda non indica che il worker sia già stato adattato.
 
 Prima dell'attivazione: completare la copia e gli indici, verificare il nuovo endpoint con le richieste reali, configurare i segreti in Vercel e adattare gli importatori. I workflow Supabase restano sospesi. La modifica della base URL di ricercaDB va fatta dopo questo confronto, conservando colonne, tag e chiavi esistenti.
+
+## Preparazione degli importatori
+
+`data/turso-worker-pg-schema.json` contiene soltanto il codice e la struttura del database originale: 31 tabelle, 4 viste, 71 funzioni, 82 trigger, 141 vincoli e relativi permessi. Non contiene righe, token o credenziali. Le impostazioni delle sequenze a 64 bit sono stringhe, per conservarle esattamente.
+
+Un worker temporaneo può ricreare questo schema in PostgreSQL e caricare i dati di Turso, mantenendo le regole di importazione esistenti. La disattivazione dei trigger riguarda soltanto il caricamento nel database temporaneo e viene ripristinata prima del lavoro. I vecchi eventi tecnici restano su Turso; nel worker basta riservare identificativi superiori a quelli esistenti. La cronologia manuale viene invece caricata integralmente.
+
+I trigger privati del worker registrano la prima versione letta e l'ultima scritta di ciascuna chiave. La funzione di confronto applica soltanto campi cambiati dal worker e ancora uguali al valore iniziale: modifiche umane intervenute nel frattempo, valori vuoti protetti e righe cancellate prevalgono. Collisioni fra nuove identità diverse sono errori espliciti.
+
+Gli archivi delle differenze sono compressi e cifrati con AES-256-GCM, con autenticazione e limiti di dimensione. Prima di pubblicare una differenza occorrerà salvarne l'archivio cifrato e la chiave esclusivamente nel registro privato della destinazione, quindi poter riprendere una pubblicazione interrotta. Nessun archivio con dati in chiaro deve essere allegato a un workflow pubblico.
+
+Questi moduli preparano il motore del worker e sono verificati con PostgreSQL reale via PGlite. Non avviano ancora importazioni né pubblicazioni di dati: mancano l'esecutore temporaneo, il ripristino degli archivi pendenti e il publisher transazionale. La pianificazione resta sospesa fino al completamento di questi componenti.
