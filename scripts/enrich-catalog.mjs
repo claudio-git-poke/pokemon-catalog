@@ -4,6 +4,8 @@ import {createHash} from 'node:crypto'
 import {readFile} from 'node:fs/promises'
 import {releaseCardIndex,resolveReleaseCard} from './release-card-links.mjs'
 import {cardMetadataEntry} from './card-metadata.mjs'
+import {metadataPayload,searchableMetadataTags} from './card-metadata-tags.mjs'
+import {rarityTags} from './card-metadata.mjs'
 import {sourcePrinting,expandTags,printingFacts,normalizeSearch} from '../src/lib/catalog-identification.ts'
 const now=()=>new Date().toISOString()
 const normNumber=value=>String(value||'').split('/')[0].replace(/^0+(?=\d)/,'').toLowerCase()
@@ -52,8 +54,8 @@ export function detailEntries(card,detail){
   const key=collision?`${base}:source:${fingerprint}`:base
   return {entry_key:`tcgdex:${card.id}:${key}`,card_id:card.id,collector_number:tags.includes('family:my-first-battle')?null:normNumber(detail.localId),denominator:tags.includes('family:my-first-battle')?null:detail.set?.cardCount?.official?String(detail.set.cardCount.official):null,release_year:attributes.release_year||null,deck_code:attributes.deck||null,deck_number:null,
    name:card.nome,set_code:card.sigla,language:card.lingua,tags:expandTags(tags),facts:{...baseFacts(card),...facts},
-   source_url:`https://api.tcgdex.net/v2/${lang}/cards/${encodeURIComponent(detail.id)}`,source_payload:{id:detail.id,localId:detail.localId,set:detail.set,rarity:detail.rarity,source_name:detail.name,source_language:lang,product_variant_count:clean.thirdParty?.cardmarket?variants.filter(x=>x.clean.thirdParty?.cardmarket===clean.thirdParty.cardmarket).length:0,has_normal_variant:variants.some(x=>['normal','normale'].includes(String(x.clean.type).toLowerCase())),variant:clean,source_variant_values:{type:original.type,size:original.size},...(collision?{identity_review_required:true,identity_conflict:'reused_source_variant_id',ambiguous_legacy_entry_key:`tcgdex:${card.id}:${base}`}:{ }),attributes},verification:'source',
-   label:[clean.type,clean.foil,clean.subtype,...(clean.stamp||[])].filter(Boolean).join(' · ')||'Stampa dichiarata dalla fonte',updated_at:now(),search_text:normalizeSearch(`${card.nome} ${card.sigla} ${detail.set?.name||''} ${card.codice||''}`)}
+   source_url:`https://api.tcgdex.net/v2/${lang}/cards/${encodeURIComponent(detail.id)}`,source_payload:{...metadataPayload(detail,lang),metadata_tags:[...rarityTags(detail.rarity,lang),...searchableMetadataTags(detail,lang)].sort(),product_variant_count:clean.thirdParty?.cardmarket?variants.filter(x=>x.clean.thirdParty?.cardmarket===clean.thirdParty.cardmarket).length:0,has_normal_variant:variants.some(x=>['normal','normale'].includes(String(x.clean.type).toLowerCase())),variant:clean,source_variant_values:{type:original.type,size:original.size},...(collision?{identity_review_required:true,identity_conflict:'reused_source_variant_id',ambiguous_legacy_entry_key:`tcgdex:${card.id}:${base}`}:{ }),attributes},verification:'source',
+   label:[clean.type,clean.foil,clean.subtype,...(clean.stamp||[])].filter(Boolean).join(' · ')||'Stampa dichiarata dalla fonte',updated_at:now(),search_text:normalizeSearch(`${card.nome} ${card.sigla} ${detail.set?.name||''} ${card.codice||''} ${tags.join(' ')}`)}
  })
 }
 export function curatedEntry(card,row){

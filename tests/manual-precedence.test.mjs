@@ -37,6 +37,31 @@ async function fixture({legacy=false,history=false,review=false}={}){
 }
 const row=async(pg,table,where='true')=>(await pg.query(`select * from ${table} where ${where}`)).rows[0]
 
+test('full card metadata repairs generic and variant rows, preserves set facts and survives live authorized reindexing',async()=>{
+ const pg=await fixture({history:true});try{
+  await pg.exec(await sql('visual-card-fallback'))
+  const migration=await sql('catalog-metadata-fields');await pg.exec(migration);await pg.exec(migration)
+  await pg.exec(`set role service_role;update cards set source_uid='tcgdex:it:sv02-269',source_card_id='sv02-269',source_language='it' where id=1;
+   update catalog_search_entries set source_payload='{"id":"sv02-269","source_language":"it","variant":{"type":"holo"},"set":{"id":"sv02","cardCount":{"official":193}}}' where entry_key='source:1';`)
+  const item={source_uid:'tcgdex:it:sv02-269',source_card_id:'sv02-269',source_language:'it',metadata:{id:'sv02-269',source_language:'it',rarity:'Rara illustrazione speciale',hp:90,types:['Fuoco'],stage:'Fase 1',illustrator:'Mitsuhiro Arita',regulationMark:'G',set:{id:'sv02',name:'Evoluzioni a Paldea'}},tags:['rarity:special-illustration-rare','hp:90','type:fire','stage:stage-1','regulation:g','illustrator:mitsuhiro-arita','stamp:invented'],evidence:{method:'tcgdex-graphql',endpoint:'https://api.tcgdex.net/v2/graphql',language:'it',page:1}}
+  const call=async items=>(await pg.query('select catalog_apply_card_metadata($1)r',[JSON.stringify(items)])).rows[0].r
+  assert.equal((await call([{...item,source_language:'de'}])).updated,0)
+  assert.equal((await call([item])).updated,2)
+  assert.equal((await call([item])).updated,0)
+  let e=await row(pg,'catalog_search_entries',"entry_key='source:1'")
+  assert.equal(e.source_payload.variant.type,'holo');assert.equal(e.source_payload.set.cardCount.official,193);assert.equal(e.source_payload.hp,90)
+  assert.ok(!e.tags.includes('stamp:invented'));assert.ok(e.tags.includes('finish:holo'))
+  await pg.exec(`update catalog_search_entries set tags=array['finish:holo'],source_payload='{"id":"sv02-269","source_language":"it","variant":{"type":"holo"}}' where entry_key='source:1';`)
+  e=await row(pg,'catalog_search_entries',"entry_key='source:1'");assert.equal(e.source_payload.hp,90);assert.ok(e.tags.includes('type:fire'),'a still-running old worker cannot erase newly published metadata')
+  await pg.exec(`reset role;update cards set nome='Nome manuale assoluto' where id=1;set role service_role;update cards set nome='Fonte' where id=1;`)
+  e=await row(pg,'catalog_search_entries',"entry_key='card:1'");assert.ok(e.tags.includes('type:fire'));assert.ok(e.tags.includes('hp:90'));assert.equal(e.name,'Nome manuale assoluto')
+  await pg.exec(`reset role;update catalog_search_entries set tags='{}',source_payload='{}' where entry_key='card:1';set role service_role;`)
+  await call([item]);e=await row(pg,'catalog_search_entries',"entry_key='card:1'");assert.deepEqual(e.tags,[]);assert.deepEqual(e.source_payload,{})
+  await pg.exec('set role anon');await assert.rejects(call([item]),/permission denied/)
+  await assert.rejects(pg.exec('update catalog_metadata_backfill_state set next_page=100'),/permission denied/)
+ }finally{await pg.close()}
+})
+
 test('rarity repairs are repeatable, preserve manual empties and use only the exact source identity',async()=>{
  const pg=await fixture();try{
   await pg.exec(await sql('visual-card-fallback'))

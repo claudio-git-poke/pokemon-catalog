@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import {verifyCardMetadata} from './check-card-metadata.mjs'
 const site='https://pokemon-catalog-zeta.vercel.app',api=process.env.NEXT_PUBLIC_SUPABASE_URL
 const request=async(url,options={})=>{
  const r=await fetch(url,{...options,signal:AbortSignal.timeout(20000)})
@@ -63,3 +64,4 @@ console.log(JSON.stringify({check:'shiny-ultra-rare-en',results:shiny.length}))
 const trick=await pages('catalog_visual_group_cards',{symbol_group:'38c3e9d561c7b766d3ece9a05e50d763',include_review:false})
 for(const year of [2022,2023,2024])assert.ok(trick.some(x=>x.release_year===year&&x.actual_language==='en'))
 console.log(JSON.stringify({check:'trick-or-trade',results:trick.length}))
+await verifyCardMetadata(get)

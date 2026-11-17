@@ -21,7 +21,8 @@ test('uploaded archive references retain hash provenance and distinguish actual 
  assert.ok(rows.some(a=>a.kind==='rarity'&&a.source_code==='special-illustration-rare'&&a.tag_codes.includes('rarity:sar')))
  for(const a of rows.filter(a=>a.source_code==='shiny-ultra-rare'&&a.match_mode==='tag'))assert.ok(a.tag_codes.includes('rarity:ssr')&&a.tag_codes.includes('rarity:shiny-ultra-rare'))
  assert.ok(rows.some(a=>a.kind==='energy'&&a.source_code==='tcg-fire'&&a.tag_code==='type:fire'))
- for(const a of rows.filter(r=>['rarity','energy'].includes(r.kind)&&['ace-spec-rare','black-white-rare','move-special','move-physical','move-status','mega-evolution'].includes(r.source_code)))assert.equal(a.match_mode,null)
+ for(const a of rows.filter(r=>['rarity','energy'].includes(r.kind)&&['move-special','move-physical','move-status','mega-evolution'].includes(r.source_code)))assert.equal(a.match_mode,null)
+ for(const a of rows.filter(r=>r.kind==='rarity'&&['ace-spec-rare','black-white-rare'].includes(r.source_code))){assert.equal(a.match_mode,'tag');assert.ok(a.tag_codes.includes('rarity:'+a.source_code))}
  assert.ok(rows.some(a=>a.source_code==='w-promo'&&a.availability==='missing'))
 })
 test('live relationships respect language, variants, manual rejection, pagination and read-only public access',async()=>{
