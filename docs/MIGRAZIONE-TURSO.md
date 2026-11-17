@@ -62,3 +62,13 @@ I trigger privati del worker registrano la prima versione letta e l'ultima scrit
 Gli archivi delle differenze sono compressi e cifrati con AES-256-GCM, con autenticazione e limiti di dimensione. Prima di pubblicare una differenza occorrerà salvarne l'archivio cifrato e la chiave esclusivamente nel registro privato della destinazione, quindi poter riprendere una pubblicazione interrotta. Nessun archivio con dati in chiaro deve essere allegato a un workflow pubblico.
 
 Questi moduli preparano il motore del worker e sono verificati con PostgreSQL reale via PGlite. Non avviano ancora importazioni né pubblicazioni di dati: mancano l'esecutore temporaneo, il ripristino degli archivi pendenti e il publisher transazionale. La pianificazione resta sospesa fino al completamento di questi componenti.
+
+## Pubblicazione ripetibile
+
+`scripts/turso-worker-publish.mjs` prepara un archivio privato cifrato nella destinazione prima di modificare il catalogo. I blocchi incompleti hanno stato `staging` e non possono pubblicare righe. Dopo l'autenticazione dell'archivio, ogni lotto salva dati e cursore nella stessa transazione; un nuovo avvio riprende dalla prima differenza non confermata.
+
+I genitori vengono inseriti prima dei figli e le cancellazioni seguono l'ordine inverso. Nuove stampe tengono conto anche delle correzioni del genitore arrivate dopo l'avvio del worker; ricerca e indici riflettono il valore effettivo. Le modifiche sono raggruppate per tabella e dimensione del messaggio, evitando una richiesta di rete per ogni riga.
+
+Le date dei feed vengono assegnate al momento della pubblicazione. La coda manuale viene confermata soltanto alla fine e soltanto per la versione effettivamente elaborata: una correzione successiva rimane in attesa. La chiave e i blocchi cifrati vengono eliminati dopo la pubblicazione completa; restano il digest e i metadati dell'esecuzione. Un'identità nuova già occupata sospende il lotto conservando l'archivio.
+
+Il registro è privato e non richiede artifact pubblici con dati del catalogo. Restano da collegare questi moduli all'esecutore temporaneo e alla ripartenza dei worker; questo codice da solo non riattiva nessun importatore.

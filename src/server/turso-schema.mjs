@@ -18,6 +18,7 @@ export async function prepareCatalogSchema(client,schema,{log=()=>{}}={}){
   'CREATE TABLE IF NOT EXISTS _catalog_entry_tags(tag TEXT NOT NULL,entry_rowid INTEGER NOT NULL,PRIMARY KEY(tag,entry_rowid)) WITHOUT ROWID',
   'CREATE INDEX IF NOT EXISTS _catalog_entry_tags_row ON _catalog_entry_tags(entry_rowid)'
  ],'write')
+ await client.execute("CREATE UNIQUE INDEX IF NOT EXISTS _catalog_cards_file_unique ON _copy_cards(json_extract(_row,'$.file_name'))")
  if(Number((await client.execute('SELECT ready FROM _catalog_api_state WHERE id=1')).rows[0].ready)){
   await client.execute('UPDATE _catalog_api_state SET ready=0 WHERE id=1')
   await installManualGuards(client,schema)
