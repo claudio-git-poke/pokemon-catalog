@@ -34,19 +34,28 @@ function projectedChildren(parent,oldParent){
  let row='e._row'
  for(const [child,field]of [['name','nome'],['set_code','sigla'],['language','lingua']]){
   const value=`CASE WHEN json_type(e._row,'$.manual_overrides.${child}') IS NOT NULL THEN json_extract(e._row,'$.manual_overrides.${child}') WHEN json_type(${parent},'$.manual_overrides.${field}') IS NOT NULL OR json_extract(e._row,'$.verification')='catalog' THEN json_extract(${parent},'$.${field}') ELSE json_extract(e._row,'$.${child}') END`
-  row=`json_set(${row},'$.${child}',${value})`
+  row=`json_set(${row},'$.${child}',${child==='name'?`coalesce(${value},'')`:value})`
  }
  const affected=`json_extract(e._row,'$.card_id')=json_extract(${parent},'$.id') AND (${['nome','sigla','lingua'].map(k=>`json_extract(${oldParent},'$.${k}') IS NOT json_extract(${parent},'$.${k}') OR json_extract(${oldParent},'$.manual_overrides.${k}') IS NOT json_extract(${parent},'$.manual_overrides.${k}')`).join(' OR ')})`
  const plain=affected.replaceAll('e._row','_row'),projected=row.replaceAll('e._row','_row')
  return `INSERT INTO _catalog_entry_fts(_catalog_entry_fts,rowid,search_text) SELECT 'delete',e.rowid,coalesce(json_extract(e._row,'$.search_text'),'') FROM _copy_catalog_search_entries e WHERE ${affected};
- UPDATE _copy_catalog_search_entries SET _row=${projected},_hash='pending' WHERE ${plain};
+ UPDATE _copy_catalog_search_entries SET _row=json_set(${projected},'$.updated_at',strftime('%Y-%m-%dT%H:%M:%fZ','now')),_hash='pending' WHERE ${plain};
  UPDATE _copy_catalog_search_entries SET _row=json_set(_row,'$.search_text',${searchText('_row')}) WHERE ${plain};
  INSERT INTO _catalog_entry_fts(rowid,search_text) SELECT e.rowid,coalesce(json_extract(e._row,'$.search_text'),'') FROM _copy_catalog_search_entries e WHERE ${affected};`
 }
 export async function installManualGuards(client,schema){
+ await client.execute('CREATE TABLE IF NOT EXISTS _catalog_guard_version(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL)')
+ const version=Number((await client.execute('SELECT version FROM _catalog_guard_version WHERE id=1')).rows[0]?.version||0)
+ if(version>=2)return
+ // Installing a new version is resumable: the ready flag is cleared by the
+ // caller, and the version is committed only after every trigger exists.
+ for(const table of schema.tables.filter(t=>t.columns.some(c=>c.name==='manual_overrides'))){
+  for(const op of ['insert','update'])await client.execute(`DROP TRIGGER IF EXISTS ${qid('_catalog_manual_'+table.table_name+'_'+op)}`)
+ }
  await client.batch([
   "CREATE TABLE IF NOT EXISTS _catalog_write_context(id INTEGER PRIMARY KEY CHECK(id=1),mode TEXT NOT NULL DEFAULT 'manual',depth INTEGER NOT NULL DEFAULT 0,reason TEXT)",
   "INSERT INTO _catalog_write_context(id) VALUES(1) ON CONFLICT(id) DO NOTHING",
+  "CREATE TABLE IF NOT EXISTS _catalog_manual_outbox(table_name TEXT NOT NULL,record_key TEXT NOT NULL,version INTEGER NOT NULL,updated_at TEXT NOT NULL,PRIMARY KEY(table_name,record_key)) WITHOUT ROWID",
   "CREATE TRIGGER IF NOT EXISTS _catalog_history_immutable BEFORE UPDATE OF _row ON _copy_catalog_manual_history BEGIN SELECT raise(ABORT,'La cronologia manuale è append-only'); END",
   "CREATE TRIGGER IF NOT EXISTS _catalog_history_no_delete BEFORE DELETE ON _copy_catalog_manual_history BEGIN SELECT raise(ABORT,'La cronologia manuale è append-only'); END"
  ],'write')
@@ -64,6 +73,10 @@ export async function installManualGuards(client,schema){
     ${name==='catalog_search_entries'?`UPDATE ${storage} SET _row=json_set(_row,'$.search_text',${searchText('_row')}) WHERE _key=new._key AND json_extract(_row,'$.manual_overrides')<>'{}';`:''}
     ${required?`SELECT CASE WHEN ${required} THEN raise(ABORT,'Campo obbligatorio mancante') END;`:''}
     ${historyInsert(table,oldRow,finalRow)};
+    INSERT INTO _catalog_manual_outbox(table_name,record_key,version,updated_at)
+    SELECT '${name}',new._key,1,strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE (SELECT mode FROM _catalog_write_context WHERE id=1)<>'automatic'
+    ON CONFLICT(table_name,record_key) DO UPDATE SET version=version+1,updated_at=excluded.updated_at;
+    UPDATE _copy_catalog_live_updates SET _row=json_set(_row,'$.revision',coalesce(json_extract(_row,'$.revision'),0)+1,'$.updated_at',strftime('%Y-%m-%dT%H:%M:%fZ','now')),_hash='pending' WHERE json_extract(_row,'$.scope')='catalog';
     ${name==='cards'?projectedChildren(finalRow,oldRow):''}
     ${name==='catalog_search_entries'?`INSERT INTO _catalog_entry_fts(rowid,search_text) SELECT rowid,coalesce(json_extract(_row,'$.search_text'),'') FROM ${storage} WHERE _key=new._key; DELETE FROM _catalog_entry_tags WHERE entry_rowid=new.rowid; INSERT OR IGNORE INTO _catalog_entry_tags(tag,entry_rowid) SELECT j.value,new.rowid FROM ${storage} e,json_each(e._row,'$.tags')j WHERE e._key=new._key AND typeof(j.value)='text';`:''}
     UPDATE _catalog_write_context SET depth=0 WHERE id=1;
@@ -79,4 +92,5 @@ export async function installManualGuards(client,schema){
   }).join(',')
   await client.execute(`CREATE TRIGGER IF NOT EXISTS ${qid('_catalog_edit_'+name)} INSTEAD OF UPDATE ON ${qid(name)} BEGIN UPDATE ${storage} SET _row=json_object(${fields}) WHERE _key=old._key; END`)
  }
+ await client.execute('INSERT INTO _catalog_guard_version(id,version) VALUES(1,2) ON CONFLICT(id) DO UPDATE SET version=excluded.version')
 }

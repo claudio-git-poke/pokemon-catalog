@@ -36,3 +36,17 @@ Le modifiche SQL sulle viste del catalogo vengono acquisite come manuali. I work
 Gli hash `_hash` certificano la copia iniziale. Una modifica successiva viene marcata `pending` finché il writer non aggiorna il digest: quel marcatore non viene presentato come un hash verificato del contenuto corrente. I campi interni non fanno parte dell'API pubblica.
 
 La preparazione degli indici non effettua il cambio del sito e non riattiva gli importatori Supabase.
+
+## API del sito e di ricercaDB
+
+Il percorso `/api/catalog-db/rest/v1/<tabella>` conserva il protocollo di lettura usato dal client Supabase: filtri, campi JSON, relazioni, conteggio, paginazione e risposte singole. Le funzioni di identificazione, copertura, simboli e feed Bindex passano dallo stesso adattatore. Non è un'implementazione completa di PostgREST: operatori e funzioni non supportati restituiscono un errore esplicito. Tabelle private e RPC degli importatori non sono esposte.
+
+La scelta del backend è esplicita e resta disattivata per impostazione predefinita. In Vercel servono `TURSO_DATABASE_URL` e `TURSO_AUTH_TOKEN` come segreti del server. `CATALOG_TURSO_PREVIEW=1` abilita soltanto le letture del nuovo endpoint, utili al confronto prima del passaggio. Per il passaggio effettivo occorrono entrambi `CATALOG_DATABASE=turso` e `NEXT_PUBLIC_CATALOG_DATABASE=turso`, con un nuovo build. Le credenziali Turso non devono mai avere il prefisso `NEXT_PUBLIC_`.
+
+Il client del sito mantiene le sue richieste attuali e usa la nuova base REST. Le route server usano lo stesso adattatore direttamente, senza richieste HTTP del server a se stesso. Gli aggiornamenti della pagina leggono il piccolo contatore di revisione, senza aprire websocket Supabase quando il backend è Turso.
+
+Il salvataggio di una carta legge e aggiorna il documento nella stessa transazione. Le protezioni inviate da un modulo vecchio non sovrascrivono quelle aggiunte nel frattempo. La conferma dei campi esistenti controlla i valori attesi e rifiuta una schermata non aggiornata. L'intestazione pubblica `x-catalog-write-mode` non può autorizzare una modifica automatica: soltanto le route server scelgono quella modalità.
+
+Ogni modifica manuale aggiunge una versione alla coda privata `_catalog_manual_outbox`; gli aggiornamenti automatici non la svuotano. Il worker di pubblicazione dovrà rielaborare queste versioni e confermarle soltanto se non sono cambiate durante il lavoro. La presenza della coda non indica che il worker sia già stato adattato.
+
+Prima dell'attivazione: completare la copia e gli indici, verificare il nuovo endpoint con le richieste reali, configurare i segreti in Vercel e adattare gli importatori. I workflow Supabase restano sospesi. La modifica della base URL di ricercaDB va fatta dopo questo confronto, conservando colonne, tag e chiavi esistenti.

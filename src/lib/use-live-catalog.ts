@@ -1,6 +1,6 @@
 'use client'
 import {useEffect,useRef,useState} from 'react'
-import {supabase} from './supabase'
+import {supabase,catalogUsesTurso} from './supabase'
 import {createLiveInvalidator} from './live-invalidation'
 export function useLiveCatalog(load:(signal:AbortSignal)=>Promise<void>,enabled=true,scope='global',minInterval=0){
  const latest=useRef(load);latest.current=load
@@ -19,7 +19,8 @@ export function useLiveCatalog(load:(signal:AbortSignal)=>Promise<void>,enabled=
   const checkSignal=async()=>{if(checking||!visible()||controller.signal.aborted)return;checking=true;try{const {data,error}=await supabase.from('catalog_live_updates').select('revision').eq('scope','catalog').abortSignal(controller.signal).single();if(!error&&!controller.signal.aborted)signal(data?.revision)}catch{/* Reconnection and the next heartbeat retry transient transport failures. */}finally{checking=false}}
   refreshRef.current=()=>invalidator.refresh()
   void invalidator.refresh()
-  const channel=supabase.channel(`catalog-counters-${crypto.randomUUID()}`).on('postgres_changes',{event:'UPDATE',schema:'public',table:'catalog_live_updates'},payload=>signal(payload.new.revision)).subscribe(state=>{
+  if(catalogUsesTurso){connected=true;setStatus('live');void checkSignal()}
+  const channel=catalogUsesTurso?null:supabase.channel(`catalog-counters-${crypto.randomUUID()}`).on('postgres_changes',{event:'UPDATE',schema:'public',table:'catalog_live_updates'},payload=>signal(payload.new.revision)).subscribe(state=>{
    if(!active)return;connected=state==='SUBSCRIBED';setStatus(connected?'live':'reconnecting');if(connected){invalidator.invalidate();void checkSignal()}
   })
   const wake=()=>{if(visible())invalidator.invalidate()}
@@ -27,7 +28,7 @@ export function useLiveCatalog(load:(signal:AbortSignal)=>Promise<void>,enabled=
   // Degraded mode only: keep useful data while the websocket reconnects.
   const fallback=setInterval(()=>{if(!connected&&visible())invalidator.invalidate()},30000)
   const heartbeat=setInterval(()=>{void checkSignal()},10000)
-  return()=>{active=false;controller.abort();invalidator.stop();refreshRef.current=async()=>{};clearInterval(fallback);clearInterval(heartbeat);document.removeEventListener('visibilitychange',wake);window.removeEventListener('focus',wake);void supabase.removeChannel(channel)}
+  return()=>{active=false;controller.abort();invalidator.stop();refreshRef.current=async()=>{};clearInterval(fallback);clearInterval(heartbeat);document.removeEventListener('visibilitychange',wake);window.removeEventListener('focus',wake);if(channel)void supabase.removeChannel(channel)}
  },[enabled,scope,minInterval])
  return {status,refresh:()=>refreshRef.current()}
 }

@@ -171,8 +171,9 @@ export class ReadCompiler{
 export async function readCatalogRows(client,schema,name,params=new URLSearchParams(),options={}){
  const table=tableSchema(schema,name,options.privileged),compiler=new ReadCompiler(schema,table,options.privileged)
  const where=compiler.where(params),projection=compiler.projection(params.get('select')||'*'),order=compiler.order(params.get('order'))
- const limit=Number(params.get('limit')??1000),offset=Number(params.get('offset')??0)
- if(!Number.isSafeInteger(limit)||limit<0||limit>1000||!Number.isSafeInteger(offset)||offset<0||offset>2000000)throw new CatalogRestError('Paginazione non valida.')
+ const requested=Number(params.get('limit')??1000),offset=Number(params.get('offset')??0)
+ if(!Number.isSafeInteger(requested)||requested<0||!Number.isSafeInteger(offset)||offset<0||offset>2000000)throw new CatalogRestError('Paginazione non valida.')
+ const limit=Math.min(requested,1000)
  const count=options.count?Number((await client.execute({sql:`SELECT count(*) n FROM ${sourceTable(name)} e WHERE ${where}`,args:compiler.args})).rows[0].n):null
  const rows=options.head?[]:(await client.execute({sql:`SELECT ${projection} AS document FROM ${sourceTable(name)} e WHERE ${where} ORDER BY ${order} LIMIT ? OFFSET ?`,args:[...compiler.args,limit,offset]})).rows.map(r=>JSON.parse(r.document))
  return {rows,count,offset,limit}
