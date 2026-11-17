@@ -38,8 +38,8 @@ create or replace function public.catalog_visual_entry_languages(payload jsonb,e
 language sql immutable security invoker set search_path='' as $fn$
  select array_remove(array[
   public.catalog_visual_language(entry_language),
-  public.catalog_visual_language(payload->>'printing_language'),
-  public.catalog_visual_language(payload->>'source_language'),
+  case when nullif(payload->>'printing_language','') is not null then public.catalog_visual_language(payload->>'printing_language') end,
+  case when nullif(payload->>'source_language','') is not null then public.catalog_visual_language(payload->>'source_language') end,
   case when(entry_release is null or payload ? 'variant') and nullif(payload->>'printing_language','') is null
    and nullif(payload->>'source_language','') is null then 'und' end
  ],null)
