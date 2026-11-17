@@ -1,0 +1,633 @@
+CATALOGO POKEMON SEALED - ELENCO CARTE E FONTI
+Data compilazione: 17 novembre 2026 | formato TXT UTF-8
+ATTENZIONE: censimento delle voci citate nella ricerca precedente; NON prova di esaustivita mondiale.
+
+CRITERI
+S1 = carta singola in cellophane/involucro originale; S2 = piu carte in unico involucro; S3 = mini-pack ufficiale con carta casuale o predeterminata; S4 = promo in mazzo prerelease sigillato.
+Non contiamo una normale carta in un box/blister ancora sigillato come S1.
+Livello A = fonte consultata che documenta esplicitamente il confezionamento sealed per la voce/famiglia; B = evidenza a livello di famiglia/asta/negozio, sigillo e variante specifica da controllare; C = esistenza della carta/prodotto documentata, ma sigillo individuale o lingua non ancora provati.
+La parola SEALED usata da un venditore non prova automaticamente il carattere originale della bustina: verificare foto fronte/retro, giunture e distribuzione.
+Fonte Fxx nelle righe = URL reale elencato in fondo. Non tutte le fonti sono schede della singola carta: le fonti di famiglia hanno questo limite evidenziato con B/C.
+NON estrapolare versioni sealed in altre lingue da una sola versione confermata. In lingua "Internazionale" si intende involucro regionale, non necessariamente lingua diversa della carta.
+
+NOTA CORREZIONI: Arceus V nella coppia Arceus VSTAR Premium Collection indicato SWSH306 (non SWSH204); e le tre promo inglesi Illustration Contest sono SVP213-215, mentre le tre giapponesi sono 241-243/SV-P.
+
+FORMATO RIGA: progressivo | GRUPPO | LINGUA | CARTA | NUMERO | SIGILLO | VERIFICA | ORIGINE/NOTE | FONTI
+
+0001 | WOTC film | EN | Electabuzz | WOTC 2 | S1 | A | The First Movie | F01, F44
+0002 | WOTC film | EN | Mewtwo | WOTC 3 | S1 | A | The First Movie | F01, F44
+0003 | WOTC film | EN | Pikachu | WOTC 4 | S1 | A | The First Movie | F01, F44
+0004 | WOTC film | EN | Dragonite | WOTC 5 | S1 | A | The First Movie | F01, F44
+0005 | WOTC film | Internazionale | Ancient Mew | senza numero | S2 | A | The Power of One, involucro con inserto | F02, F03
+0006 | WOTC film | EN | Moltres | WOTC 21 | S1/S2 | B | The Power of One | F44
+0007 | WOTC film | EN | Articuno | WOTC 22 | S1/S2 | B | The Power of One | F44
+0008 | WOTC film | EN | Zapdos | WOTC 23 | S1/S2 | B | The Power of One | F44
+0009 | WOTC film | EN | Entei | WOTC 34 | S1/S2 | B | Pokémon 3 | F44
+0010 | WOTC film | EN | Marill | WOTC 29 | S1/S2 | B | Promo vintage | F44
+0011 | Giappone PLAY | JP | Plusle | 004/PLAY | S1 | B | Premio EXP | F04, F05
+0012 | Giappone PLAY | JP | Minun | 005/PLAY | S1 | B | Premio EXP | F04, F05
+0013 | Giappone PLAY | JP | Celebi ex | 006/PLAY | S1 | B | Premio EXP | F04, F05
+0014 | Giappone PLAY | JP | Mew ex | 007/PLAY | S1 | B | Premio EXP | F04, F05
+0015 | Giappone PLAY | JP | Vaporeon Gold Star | 022/PLAY | S1 | B | Premio EXP | F04, F05
+0016 | Giappone PLAY | JP | Jolteon Gold Star | 023/PLAY | S1 | B | Premio EXP | F04, F05
+0017 | Giappone PLAY | JP | Flareon Gold Star | 024/PLAY | S1 | B | Premio EXP | F04, F05
+0018 | Giappone PLAY | JP | Espeon Gold Star | 025/PLAY | S1 | B | Premio EXP | F04, F05
+0019 | Giappone PLAY | JP | Umbreon Gold Star | 026/PLAY | S1 | B | Premio EXP | F04, F05
+0020 | Giappone PLAY | JP | Moltres ex | 009/PLAY | S2 | B | Renewal pack | F04, F05
+0021 | Giappone PLAY | JP | Articuno ex | 010/PLAY | S2 | B | Renewal pack | F04, F05
+0022 | Giappone PLAY | JP | Zapdos ex | 011/PLAY | S2 | B | Renewal pack | F04, F05
+0023 | Giappone PLAY | JP | _____s Celebi | 012/PLAY | S2 | B | Renewal pack | F04, F05
+0024 | Giappone PLAY | JP | _____s Mew | 013/PLAY | S2 | B | Renewal pack | F04, F05
+0025 | Giappone PLAY | JP | _____s Jirachi | 014/PLAY | S2 | B | Renewal pack | F04, F05
+0026 | Giappone PLAY | JP | Cyclone Energy | 015/PLAY | S2 | B | Renewal pack | F04, F05
+0027 | Giappone PLAY | JP | Boost Energy | 016/PLAY | S2 | B | Renewal pack | F04, F05
+0028 | Giappone PLAY | JP | Warp Energy | 017/PLAY | S2 | B | Renewal pack | F04, F05
+0029 | Giappone PLAY | JP | _____s Kyogre | 019/PLAY | S2 | B | Renewal pack | F04, F05
+0030 | Giappone PLAY | JP | _____s Groudon | 020/PLAY | S2 | B | Renewal pack | F04, F05
+0031 | Giappone PLAY | JP | _____s Rayquaza | 021/PLAY | S2 | B | Renewal pack | F04, F05
+0032 | Giappone PLAY | JP | Ho-Oh ex | 030/PLAY | S2 | B | Renewal pack | F04, F05
+0033 | Giappone PLAY | JP | Lugia ex | 031/PLAY | S2 | B | Renewal pack | F04, F05
+0034 | Giappone PLAY | JP | Jirachi ex | 032/PLAY | S2 | B | Renewal pack | F04, F05
+0035 | Giappone PPP | JP | Turtwig | 001/PPP | S2 | B | Players Club trio | F06, F48
+0036 | Giappone PPP | JP | Chimchar | 002/PPP | S2 | B | Players Club trio | F06, F48
+0037 | Giappone PPP | JP | Piplup | 003/PPP | S2 | B | Players Club trio | F06, F48
+0038 | Giappone PPP | JP | Manaphy | 004/PPP | S1 | B | Players Club | F06, F48
+0039 | Giappone PPP | JP | Dialga | 005/PPP | S1 | B | Players Club | F06, F48
+0040 | Giappone PPP | JP | Palkia | 006/PPP | S1 | B | Players Club | F06, F48
+0041 | Giappone PPP | JP | Darkrai | 007/PPP | S1 | B | Players Club | F06, F48
+0042 | Giappone Meiji ADV-P | JP | Bulbasaur | 051/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0043 | Giappone Meiji ADV-P | JP | Charmander | 052/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0044 | Giappone Meiji ADV-P | JP | Charmeleon | 053/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0045 | Giappone Meiji ADV-P | JP | Charizard | 054/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0046 | Giappone Meiji ADV-P | JP | Squirtle | 055/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0047 | Giappone Meiji ADV-P | JP | Psyduck | 056/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0048 | Giappone Meiji ADV-P | JP | Pikachu | 057/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0049 | Giappone Meiji ADV-P | JP | Raichu | 058/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0050 | Giappone Meiji ADV-P | JP | Slowpoke | 059/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0051 | Giappone Meiji ADV-P | JP | Cubone | 060/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0052 | Giappone Meiji ADV-P | JP | Jigglypuff | 061/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0053 | Giappone Meiji ADV-P | JP | Meowth | 062/ADV-P | S1 | B | Meiji 2004 | F07, F11, F12
+0054 | Giappone Meiji PCG-P | JP | Beautifly | 005/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0055 | Giappone Meiji PCG-P | JP | Masquerain | 006/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0056 | Giappone Meiji PCG-P | JP | Blaziken | 007/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0057 | Giappone Meiji PCG-P | JP | Surskit | 008/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0058 | Giappone Meiji PCG-P | JP | Plusle | 009/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0059 | Giappone Meiji PCG-P | JP | Minun | 010/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0060 | Giappone Meiji PCG-P | JP | Deoxys | 011/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0061 | Giappone Meiji PCG-P | JP | Torkoal | 012/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0062 | Giappone Meiji PCG-P | JP | Swellow | 013/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0063 | Giappone Meiji PCG-P | JP | Rayquaza | 014/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0064 | Giappone Meiji PCG-P | JP | Murkrow | 015/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0065 | Giappone Meiji PCG-P | JP | Metagross | 016/PCG-P | S1 | B | Meiji 2004 | F07, F09, F12
+0066 | Giappone Meiji PCG-P | JP | Pikachu delta | 112/PCG-P | S1 | B | Meiji 2005 | F07, F09, F12
+0067 | Giappone Meiji DP-P | JP | Pachirisu | 011/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0068 | Giappone Meiji DP-P | JP | Starly | 013/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0069 | Giappone Meiji DP-P | JP | Chatot | 016/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0070 | Giappone Meiji DP-P | JP | Luxio | 040/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0071 | Giappone Meiji DP-P | JP | Yanmega | 082/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0072 | Giappone Meiji DP-P | JP | Phione | 085/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0073 | Giappone Meiji DP-P | JP | Chingling | 087/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0074 | Giappone Meiji DP-P | JP | Riolu | 088/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0075 | Giappone Meiji DP-P | JP | Stunky | 089/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0076 | Giappone Meiji DP-P | JP | Probopass | 090/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0077 | Giappone Meiji DP-P | JP | Munchlax | 091/DP-P | S1 | B | Meiji 2007-2008 | F08, F12
+0078 | Giappone altre promo | JP | Pokémon Center Tokyo Pikachu | 019/P | S1 | B | Pokémon Center 2002 con moneta | F05, F07, F23, F35
+0079 | Giappone altre promo | JP | Pokémon Center Osaka Meowth | 020/P | S1 | B | Pokémon Center 2002 con moneta | F05, F07, F23, F35
+0080 | Giappone altre promo | JP | Pichu Bros. | 028/P | S1 | B | Film 2002 | F05, F07, F23, F35
+0081 | Giappone altre promo | JP | Noivern | 009/XY-P | S1 | B | Promo XY | F05, F07, F23, F35
+0082 | Giappone altre promo | JP | Dedenne | 078/XY-P | S1 | B | Promo XY | F05, F07, F23, F35
+0083 | Giappone altre promo | JP | Rayquaza-EX | 122/XY-P | S1 | B | Promo XY | F05, F07, F23, F35
+0084 | Giappone altre promo | JP | Beartic | 053/BW-P | S1 | B | Lawson 2011 | F05, F07, F23, F35
+0085 | Giappone altre promo | JP | Zebstrika | 054/BW-P | S1 | B | 7-Eleven 2011 | F05, F07, F23, F35
+0086 | Giappone altre promo | JP | Gothitelle | 055/BW-P | S1 | B | Pokémon Center 2011 | F05, F07, F23, F35
+0087 | Giappone altre promo | JP | Piplup | 232/S-P | S1 | B | Pokémon Center Lawson 2021 | F05, F07, F23, F35
+0088 | Giappone altre promo | JP | Klinklang | 045/BW-P | S1 | B | Promo BW | F05, F07, F23, F35
+0089 | Giappone altre promo | JP | Golurk | 046/BW-P | S1 | B | Promo BW | F05, F07, F23, F35
+0090 | Giappone altre promo | JP | Reuniclus | 056/BW-P | S1 | B | Promo BW | F05, F07, F23, F35
+0091 | Giappone altre promo | JP | Lilligant | 117/BW-P | S1 | B | Promo BW | F05, F07, F23, F35
+0092 | Giappone altre promo | JP | Raihan | 228/S-P | S1 | B | Promo S-P | F05, F07, F23, F35
+0093 | Giappone altre promo | JP | Pikachu Osaka | 100/DP-P | S1 | B | Pokémon Center Osaka 2008 | F05, F07, F23, F35
+0094 | Giappone altre promo | JP | Serperior | 198/BW-P | S1 | B | Promo BW | F05, F07, F23, F35
+0095 | Giappone altre promo | JP | Pikachu YU NAGABA | 208/S-P | S1 | B | Promo artistica | F05, F07, F23, F35
+0096 | Contest giapponese 2024 | JP | Feraligatr | 241/SV-P | S2 | B | Illustration Contest 2024 | F23
+0097 | Contest giapponese 2024 | JP | Pikachu | 242/SV-P | S2 | B | Illustration Contest 2024 | F23
+0098 | Contest giapponese 2024 | JP | Toxtricity ex | 243/SV-P | S2 | B | Illustration Contest 2024 | F23
+0099 | Contest inglese 2024 | EN | Feraligatr | SVP213 | S2 | A | Illustration Contest 2024 | F21, F22
+0100 | Contest inglese 2024 | EN | Pikachu | SVP214 | S2 | A | Illustration Contest 2024 | F21, F22
+0101 | Contest inglese 2024 | EN | Toxtricity ex | SVP215 | S2 | A | Illustration Contest 2024 | F21, F22
+0102 | Pokemon Center special delivery | EN | Special Delivery Pikachu | SWSH074 | S1 | B | Pokemon Center | F35, F43, F54
+0103 | Pokemon Center special delivery | EN | Special Delivery Charizard | SWSH075 | S1 | B | Pokemon Center | F35, F43, F54
+0104 | Pokemon Center special delivery | EN | Special Delivery Bidoof | SWSH177 | S1 | B | Pokemon Center | F35, F43, F54
+0105 | Pokemon Center special delivery | EN | Pikachu with Grey Felt Hat | SVP085 | S1 | B | Van Gogh 2023 | F35, F43, F54
+0106 | ETB XY/SM/SWSH | EN | Shaymin-EX | XY148 | S1/S2 | B | Generations | F14, F15, F16
+0107 | ETB XY/SM/SWSH | EN | Shining Ho-Oh | SM70 | S1/S2 | B | Shining Legends | F14, F15, F16
+0108 | ETB XY/SM/SWSH | EN | Naganadel-GX | SM125 | S1/S2 | B | Dragon Majesty | F14, F15, F16
+0109 | ETB XY/SM/SWSH | EN | Moltres & Zapdos & Articuno-GX | SM210 | S1/S2 | B | Hidden Fates | F14, F15, F16
+0110 | ETB XY/SM/SWSH | EN | Charizard V | SWSH050 | S1/S2 | B | Champions Path | F14, F15, F16
+0111 | ETB XY/SM/SWSH | EN | Zacian V | SWSH076 | S1/S2 | B | Sword & Shield Plus | F14, F15, F16
+0112 | ETB XY/SM/SWSH | EN | Zamazenta V | SWSH077 | S1/S2 | B | Sword & Shield Plus | F14, F15, F16
+0113 | ETB XY/SM/SWSH | EN | Eevee VMAX | SWSH087 | S1/S2 | B | Shining Fates | F14, F15, F16
+0114 | ETB XY/SM/SWSH | EN | Greninja Gold Star | SWSH144 | S1/S2 | B | Celebrations | F14, F15, F16
+0115 | ETB XY/SM/SWSH | EN | Mewtwo V | SWSH229 | S1/S2 | B | Pokémon GO | F14, F15, F16
+0116 | ETB XY/SM/SWSH | EN | Lucario VSTAR | SWSH291 | S1/S2 | B | Crown Zenith | F14, F15, F16
+0117 | ETB Scarlet Violet | EN | Miraidon | SVP013 | S1/S2 | B | Scarlet & Violet | F14, F15, F16, F40
+0118 | ETB Scarlet Violet | EN | Koraidon | SVP014 | S1/S2 | B | Scarlet & Violet | F14, F15, F16, F40
+0119 | ETB Scarlet Violet | EN | Pikachu | SVP027 | S1/S2 | B | Paldea Evolved | F14, F15, F16, F40
+0120 | ETB Scarlet Violet | EN | Charmander | SVP044 | S1/S2 | B | Obsidian Flames | F14, F15, F16, F40
+0121 | ETB Scarlet Violet | EN | Snorlax | SVP051 | S1/S2 | B | 151 | F14, F15, F16, F40
+0122 | ETB Scarlet Violet | EN | Scream Tail | SVP065 | S1/S2 | B | Paradox Rift | F14, F15, F16, F40
+0123 | ETB Scarlet Violet | EN | Iron Bundle | SVP066 | S1/S2 | B | Paradox Rift | F14, F15, F16, F40
+0124 | ETB Scarlet Violet | EN | Mimikyu | SVP075 | S1/S2 | B | Paldean Fates | F14, F15, F16, F40
+0125 | ETB Scarlet Violet | EN | Flutter Mane | SVP097 | S1/S2 | B | Temporal Forces | F14, F15, F16, F40
+0126 | ETB Scarlet Violet | EN | Iron Thorns | SVP098 | S1/S2 | B | Temporal Forces | F14, F15, F16, F40
+0127 | ETB Scarlet Violet | EN | Teal Mask Ogerpon | SVP123 | S1/S2 | B | Twilight Masquerade | F14, F15, F16, F40
+0128 | ETB Scarlet Violet | EN | Pecharunt | SVP129 | S1/S2 | B | Shrouded Fable | F14, F15, F16, F40
+0129 | ETB Scarlet Violet | EN | Noctowl | SVP141 | S1/S2 | B | Stellar Crown | F14, F15, F16, F40
+0130 | ETB Scarlet Violet | EN | Magneton | SVP159 | S1/S2 | B | Surging Sparks | F14, F15, F16, F40
+0131 | ETB Scarlet Violet | EN | Eevee | SVP173 | S1/S2 | B | Prismatic Evolutions | F14, F15, F16, F40
+0132 | ETB Scarlet Violet | EN | Ns Zorua | SVP189 | S1/S2 | B | Journey Together | F14, F15, F16, F40
+0133 | ETB Scarlet Violet | EN | Team Rockets Wobbuffet | SVP203 | S1/S2 | B | Destined Rivals | F14, F15, F16, F40
+0134 | ETB Scarlet Violet | EN | Thundurus | SVP209 | S1/S2 | B | Black Bolt | F14, F15, F16, F40
+0135 | ETB Scarlet Violet | EN | Tornadus | SVP210 | S1/S2 | B | White Flare | F14, F15, F16, F40
+0136 | ETB Mega Evolution | EN | Alakazam | MEP009 | S2 | B | Mega Evolution | F14, F15, F16, F42
+0137 | ETB Mega Evolution | EN | Riolu | MEP010 | S2 | B | Mega Evolution | F14, F15, F16, F42
+0138 | ETB Mega Evolution | EN | Charcadet | MEP022 | S2 | B | Phantasmal Flames | F14, F15, F16, F42
+0139 | ETB Mega Evolution | EN | Ns Zekrom | MEP031 | S2 | B | Ascended Heroes | F14, F15, F16, F42
+0140 | ETB Mega Evolution | EN | Tyrunt | MEP070 | S2 | B | Perfect Order | F14, F15, F16, F42
+0141 | ETB Mega Evolution | EN | Fennekin | MEP080 | S2 | B | Chaos Rising | F14, F15, F16, F42
+0142 | ETB Mega Evolution | EN | Zarude | MEP088 | S2 | B | Pitch Black | F14, F15, F16, F42
+0143 | ETB Mega Evolution | EN | Nidorina | MEP101 | S2 | B | 30th Celebration | F14, F15, F16, F42
+0144 | ETB Mega Evolution | EN | Kyogre | MEP117 | S2 | B | Delta Reign | F14, F15, F16, F42
+0145 | UPC e collezioni | EN | Pikachu V Gold | SWSH145 | S2 da verificare | C | Celebrations UPC | F20, F37
+0146 | UPC e collezioni | EN | Poké Ball Gold | SWSH146 | S2 da verificare | C | Celebrations UPC | F20, F37
+0147 | UPC e collezioni | EN | Charizard V | SWSH260 | S2 da verificare | C | Charizard UPC | F20, F37
+0148 | UPC e collezioni | EN | Charizard VMAX | SWSH261 | S2 da verificare | C | Charizard UPC | F20, F37
+0149 | UPC e collezioni | EN | Charizard VSTAR | SWSH262 | S2 da verificare | C | Charizard UPC | F20, F37
+0150 | UPC e collezioni | EN | Mewtwo | SVP052 | S2 da verificare | C | 151 UPC | F20, F37
+0151 | UPC e collezioni | EN | Mew ex | SVP053 | S2 da verificare | C | 151 UPC | F20, F37
+0152 | UPC e collezioni | EN | Cinderace ex | SVP163 | S2 da verificare | C | Terapagos UPC | F20, F37
+0153 | UPC e collezioni | EN | Lapras ex | SVP164 | S2 da verificare | C | Terapagos UPC | F20, F37
+0154 | UPC e collezioni | EN | Terapagos ex | SVP165 | S2 da verificare | C | Terapagos UPC | F20, F37
+0155 | UPC e collezioni | EN | Arceus V | SWSH306 | S2 da verificare | C | Arceus VSTAR Premium Collection, corregge citazione precedente SWSH204 | F20, F37
+0156 | UPC e collezioni | EN | Arceus VSTAR | SWSH307 | S2 da verificare | C | Arceus VSTAR Premium Collection | F20, F37
+0157 | UPC e collezioni | EN | Lunala-GX | SM103a | S2 da verificare | C | Hidden Fates Premium | F20, F37
+0158 | UPC e collezioni | EN | Solgaleo-GX | SM104a | S2 da verificare | C | Hidden Fates Premium | F20, F37
+0159 | UPC e collezioni | EN | Rayquaza-GX | 177a/168 | S2 da verificare | C | Hidden Fates Premium, verificare numerazione e involucro | F20, F37
+0160 | Germania sealed | DE | Shining Ho-Oh | SM70 | S1/S2 | B | Promo | F13
+0161 | Germania sealed | DE | Ashs Pikachu | SM108 | S1/S2 | B | Promo | F13
+0162 | Germania sealed | DE | Moltres Zapdos Articuno GX | SM210 | S1/S2 | B | Promo | F13
+0163 | Germania sealed | DE | Charizard V | SWSH050 | S1/S2 | B | Promo | F13
+0164 | Germania sealed | DE | Eevee VMAX | SWSH087 | S1/S2 | B | Promo | F13
+0165 | Germania sealed | DE | Greninja Gold Star | SWSH144 | S1/S2 | B | Promo | F13
+0166 | Germania sealed | DE | Pikachu V Gold | SWSH145 | S1/S2 | B | Promo | F13
+0167 | Germania sealed | DE | Poké Ball Gold | SWSH146 | S1/S2 | B | Promo | F13
+0168 | Germania sealed | DE | Lucario VSTAR | SWSH291 | S1/S2 | B | Promo | F13
+0169 | Germania sealed | DE | Miraidon | SVP013 | S1/S2 | B | Promo | F13
+0170 | Germania sealed | DE | Koraidon | SVP014 | S1/S2 | B | Promo | F13
+0171 | Germania sealed | DE | Pikachu | SVP027 | S1/S2 | B | Promo | F13
+0172 | Germania sealed | DE | Charmander | SVP044 | S1/S2 | B | Promo | F13
+0173 | Germania sealed | DE | Snorlax | SVP051 | S1/S2 | B | Promo | F13
+0174 | Germania sealed | DE | Mewtwo | SVP052 | S1/S2 | B | Promo | F13
+0175 | Germania sealed | DE | Mew ex | SVP053 | S1/S2 | B | Promo | F13
+0176 | Germania sealed | DE | Scream Tail | SVP065 | S1/S2 | B | Promo | F13
+0177 | Germania sealed | DE | Iron Bundle | SVP066 | S1/S2 | B | Promo | F13
+0178 | Germania sealed | DE | Mimikyu | SVP075 | S1/S2 | B | Promo | F13
+0179 | Germania sealed | DE | Pikachu | SVP088 | S1/S2 | B | Promo | F13
+0180 | Germania sealed | DE | Flutter Mane | SVP097 | S1/S2 | B | Promo | F13
+0181 | Germania sealed | DE | Iron Thorns | SVP098 | S1/S2 | B | Promo | F13
+0182 | Germania sealed | DE | Pikachu | SVP101 | S1/S2 | B | Promo | F13
+0183 | Germania sealed | DE | Teal Mask Ogerpon | SVP123 | S1/S2 | B | Promo | F13
+0184 | Germania sealed | DE | Pecharunt | SVP129 | S1/S2 | B | Promo | F13
+0185 | Germania sealed | DE | Noctowl | SVP141 | S1/S2 | B | Promo | F13
+0186 | Germania sealed | DE | Magneton | SVP159 | S1/S2 | B | Promo | F13
+0187 | Germania sealed | DE | Cinderace ex Gold | SVP163 | S1/S2 | B | Promo | F13
+0188 | Germania sealed | DE | Lapras ex Gold | SVP164 | S1/S2 | B | Promo | F13
+0189 | Germania sealed | DE | Terapagos ex | SVP165 | S1/S2 | B | Promo | F13
+0190 | Germania sealed | DE | Eevee | SVP173 | S1/S2 | B | Promo | F13
+0191 | Germania sealed | DE | Ns Zorua | SVP189 | S1/S2 | B | Promo | F13
+0192 | Germania sealed | DE | Sprigatito | SVP191 | S1/S2 | B | Promo | F13
+0193 | Germania sealed | DE | Fuecoco | SVP192 | S1/S2 | B | Promo | F13
+0194 | Germania sealed | DE | Pikachu | 025/165 | S1/S2 | B | Stamped | F13
+0195 | Germania sealed | DE | Glaceon ex | 026/131 | S1/S2 | B | Stamped | F13
+0196 | Germania sealed | DE | Jolteon ex | 030/131 | S1/S2 | B | Stamped | F13
+0197 | Germania sealed | DE | Sylveon ex | 041/131 | S1/S2 | B | Stamped | F13
+0198 | Germania sealed | DE | Eevee ex | 075/131 | S1/S2 | B | Stamped | F13
+0199 | Toys R Us | EN | Pikachu | 26/83 | S1 (sottoinsieme accertato) | B | 20th Anniversary | F24, F25, F46
+0200 | Toys R Us | EN | Magikarp | 22/83 | S1 (sottoinsieme accertato) | B | 20th Anniversary | F24, F25, F46
+0201 | Toys R Us | EN | Geodude | 43/83 | S1 (sottoinsieme accertato) | B | 20th Anniversary | F24, F25, F46
+0202 | Toys R Us | EN | Clefairy | 50/83 | S1 (sottoinsieme accertato) | B | 20th Anniversary | F24, F25, F46
+0203 | Toys R Us | EN | Ponyta | 14/83 | S1 (sottoinsieme accertato) | B | 20th Anniversary | F24, F25, F46
+0204 | Toys R Us | EN | Meowth | 52/83 | S1 (sottoinsieme accertato) | B | 20th Anniversary | F24, F25, F46
+0205 | Toys R Us | EN | Slowpoke | 32/83 | S1 (sottoinsieme accertato) | B | 20th Anniversary | F24, F25, F46
+0206 | Toys R Us | EN | Charmander | 9/108 | S1 (sottoinsieme accertato) | B | Evolutions | F24, F25, F46
+0207 | Toys R Us | EN | Cosmog | 64/149 | S1 (sottoinsieme accertato) | B | Sun & Moon | F24, F25, F46
+0208 | Toys R Us | EN | Alolan Vulpix | 21/145 | S1 (sottoinsieme accertato) | B | Guardians Rising | F24, F25, F46
+0209 | Toys R Us | EN | Stufful | 110/147 | S1 (sottoinsieme accertato) | B | Burning Shadows | F24, F25, F46
+0210 | Toys R Us | EN | Jangmo-o | 75/111 | S1 (sottoinsieme accertato) | B | Crimson Invasion | F24, F25, F46
+0211 | Toys R Us | EN | Piplup | 32/156 | S1 (sottoinsieme accertato) | B | Ultra Prism | F24, F25, F46
+0212 | Promo inglesi varie | EN | Snorlax | SWSH068 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0213 | Promo inglesi varie | EN | Lugia | SWSH069 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0214 | Promo inglesi varie | EN | Houndoom | SWSH090 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0215 | Promo inglesi varie | EN | Bronzong | SWSH091 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0216 | Promo inglesi varie | EN | Galarian Articuno | SWSH123 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0217 | Promo inglesi varie | EN | Galarian Zapdos | SWSH124 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0218 | Promo inglesi varie | EN | Galarian Moltres | SWSH125 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0219 | Promo inglesi varie | EN | Deoxys | SWSH170 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0220 | Promo inglesi varie | EN | Latias | SWSH171 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0221 | Promo inglesi varie | EN | Moltres | SWSH185 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0222 | Promo inglesi varie | EN | Bibarel | SWSH188 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0223 | Promo inglesi varie | EN | Rapidash | SWSH270 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0224 | Promo inglesi varie | EN | Klara | SWSH302 | S1 sospetto | C | Promo | F35, F36, F41
+0225 | Promo inglesi varie | EN | Bulbasaur | SM198 | S1 sospetto | C | Film | F35, F36, F41
+0226 | Promo inglesi varie | EN | Psyduck | SM199 | S1 sospetto | C | Film | F35, F36, F41
+0227 | Promo inglesi varie | EN | Snubbull | SM200 | S1 sospetto | C | Film | F35, F36, F41
+0228 | Promo inglesi varie | EN | Tinkaton | SVP020 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0229 | Promo inglesi varie | EN | Xatu | SVP059 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0230 | Promo inglesi varie | EN | Aegislash | SVP060 | S1 sospetto | C | Prerelease; vedi appendice S4 | F35, F36, F41
+0231 | Promo inglesi varie | EN | Team Rockets Wobbuffet | SVP203 | S1 sospetto | C | ETB | F35, F36, F41
+0232 | Promo inglesi varie | EN | Reshiram | 017/094 | S1 sospetto | C | Timbro | F35, F36, F41
+0233 | Promo inglesi varie | EN | Suicune | 026/094 | S1 sospetto | C | EB Games | F35, F36, F41
+0234 | Promo inglesi varie | EN | Team Rockets Zapdos | 070/182 | S1 sospetto | C | Timbro | F35, F36, F41
+0235 | Promo inglesi varie | EN | Yveltal | 088/132 | S1 sospetto | C | EB Games | F35, F36, F41
+0236 | Italiano | IT | Detective Pikachu | SM190 | S1 | B | DVD distribuzione italiana | F32, F34
+0237 | Italiano | IT | Pikachu | 055/217 | S1 | B | Lucca C&G 60 2026 | F32, F34
+0238 | Italiano altre | IT | Pikachu V Gold | SWSH145 | S1 da verificare | C | Celebrations | F35, F36
+0239 | Italiano altre | IT | Mimikyu | SVP075 | S1 da verificare | C | Paldean Fates | F35, F36
+0240 | Italiano altre | IT | Groudon | ? | S1 da verificare | C | WYF 2026, verifica cellophane mancante | F35, F36
+0241 | Francese | FR | Meowth | 53/83 | S1 da verificare per esemplare | C | Generations 20th | F35, F36
+0242 | Francese | FR | Hop's Snorlax | 117/159 | S1 da verificare per esemplare | C | Journey Together, stamp | F35, F36
+0243 | Francese | FR | Zygarde | 72/131 | S1 da verificare per esemplare | C | Pokémon Légendaire | F35, F36
+0244 | Francese | FR | Shining Ho-Oh | SM70 | S1 da verificare per esemplare | C | Promo | F35, F36
+0245 | Francese | FR | Snorlax | SVP051 | S1 da verificare per esemplare | C | ETB | F35, F36
+0246 | Francese | FR | Pikachu | 025/165 | S1 da verificare per esemplare | C | Pokémon Together | F35, F36
+0247 | Francese | FR | Eevee | 133/165 | S1 da verificare per esemplare | C | Pokémon Together | F35, F36
+0248 | Francese | FR | Charmander | 004/165 | S1 da verificare per esemplare | C | GameStop | F35, F36
+0249 | Francese | FR | Tinkaton | 105/193 | S1 da verificare per esemplare | C | GameStop | F35, F36
+0250 | Francese | FR | Suicune | 026/094 | S1 da verificare per esemplare | C | EB Games | F35, F36
+0251 | Francese | FR | Gengar | 050/088 | S1 da verificare per esemplare | C | EB Games | F35, F36
+0252 | Francese | FR | Ho-Oh | 010/086 | S1 da verificare per esemplare | C | GameStop/EB Games | F35, F36
+0253 | Francese | FR | Zarude | 056/084 | S1 da verificare per esemplare | C | EB Games | F35, F36
+0254 | Spagnolo | ES | Umbreon | 130/197 | S1 da verificare per esemplare | C | Obsidian Flames, stamp | F35, F36
+0255 | Spagnolo | ES | Groudon | 081/168 | S1 da verificare per esemplare | C | GameStop | F35, F36
+0256 | Cinese tradizionale Pizza Hut | ZH-TW | Pikachu | 172/SV-P | S3 | A | Pizza Hut HK Macao 2024 | F26
+0257 | Cinese tradizionale Pizza Hut | ZH-TW | Chikorita | 051/M-P | S3 | A | Pizza Hut Hong Kong 2025 | F26
+0258 | Cinese tradizionale Pizza Hut | ZH-TW | Tepig | 052/M-P | S3 | A | Pizza Hut Hong Kong 2025 | F26
+0259 | Cinese tradizionale Pizza Hut | ZH-TW | Totodile | 053/M-P | S3 | A | Pizza Hut Hong Kong 2025 | F26
+0260 | Cinese tradizionale Pizza Hut | ZH-TW | Pikachu | 054/M-P | S3 | A | Pizza Hut Hong Kong 2025 | F26
+0261 | Cinese tradizionale Pizza Hut | ZH-TW | Chikorita | 109/M-P | S3 | A | Pizza Hut Taiwan 2026 | F26
+0262 | Cinese tradizionale Pizza Hut | ZH-TW | Tepig | 110/M-P | S3 | A | Pizza Hut Taiwan 2026 | F26
+0263 | Cinese tradizionale Pizza Hut | ZH-TW | Totodile | 111/M-P | S3 | A | Pizza Hut Taiwan 2026 | F26
+0264 | Cinese tradizionale Pizza Hut | ZH-TW | Pikachu | 112/M-P | S3 | A | Pizza Hut Taiwan 2026 | F26
+0265 | Cinese tradizionale altre | ZH-TW | Leafeon | 128/S-P | S1 da verificare | C | Promo | F23, F35
+0266 | Cinese tradizionale altre | ZH-TW | Glaceon V | 129/S-P | S1 da verificare | C | Promo | F23, F35
+0267 | Cinese tradizionale altre | ZH-TW | Pikachu Worlds | 040/SV-P | S1 da verificare | C | World Championships 2023 | F23, F35
+0268 | Cinese tradizionale altre | ZH-TW | Detective Pikachu | 050/SV-P | S1 da verificare | C | Film | F23, F35
+0269 | Cinese tradizionale altre | ZH-TW | Victini ex SR | 051/SV-P | S1 da verificare | C | Promo | F23, F35
+0270 | Cinese tradizionale altre | ZH-TW | Victini ex SAR | 052/SV-P | S1 da verificare | C | Promo | F23, F35
+0271 | Cinese tradizionale altre | ZH-TW | Taipei Pikachu | 057/SV-P | S1 da verificare | C | Pokémon Center Taipei | F23, F35
+0272 | Cinese tradizionale altre | ZH-TW | Pikachu 5th Anniversary | 153/SV-P | S1 da verificare | C | 5 anni GCC | F23, F35
+0273 | Cinese tradizionale altre | ZH-TW | Pikachu Lunar New Year | ? | S1 da verificare | C | Capodanno lunare | F23, F35
+0274 | Cinese tradizionale altre | ZH-TW | Snorlax Lantern Festival | ? | S1 da verificare | C | Evento | F23, F35
+0275 | Cinese tradizionale altre | ZH-TW | Pikachu Toys R Us | ? | S1 da verificare | C | Toys R Us Taiwan | F23, F35
+0276 | Cinese tradizionale altre | ZH-TW | Rowlet | 162/S-P | S1 da verificare | C | KFC Taiwan | F23, F35
+0277 | Cinese tradizionale altre | ZH-TW | Cyndaquil | 163/S-P | S1 da verificare | C | KFC Taiwan | F23, F35
+0278 | Cinese tradizionale altre | ZH-TW | Oshawott | 164/S-P | S1 da verificare | C | KFC Taiwan | F23, F35
+0279 | Cinese semplificato | ZH-CN | Pikachu | 004/SV-P | S1/S2 da verificare | C | Gem Pack | F35
+0280 | Cinese semplificato | ZH-CN | Charmander | SV-P-098 | S1/S2 da verificare | C | Promo | F35
+0281 | Cinese semplificato | ZH-CN | Arceus V | 125/S-P | S1/S2 da verificare | C | Promo | F35
+0282 | Cinese semplificato | ZH-CN | Pikachu Volkswagen | 028/S-P | S1/S2 da verificare | C | Volkswagen ID.3 | F35
+0283 | Cinese semplificato | ZH-CN | Pikachu Volkswagen | 066/S-P | S1/S2 da verificare | C | Volkswagen ID.3 | F35
+0284 | Cinese semplificato | ZH-CN | Pikachu Volkswagen | 037/SM-P | S1/S2 da verificare | C | Volkswagen ID.3 | F35
+0285 | Indonesiano | ID | Pikachu Berkemeja Batik verde | 101/SV-P | S1 | A | Jakarta Bali | F27, F28
+0286 | Indonesiano | ID | Pikachu Berkemeja Batik viola | 154/SV-P | S1 | A | Surabaya | F27, F28
+0287 | Indonesiano | ID | Pikachu Berkemeja Batik blu | 155/SV-P | S1 | A | Yogyakarta | F27, F28
+0288 | Indonesiano | ID | Pikachu Berkemeja Batik rosa | 190/SV-P | S1 | A | Jakarta | F27, F28
+0289 | Indonesiano | ID | Pikachu Berkemeja Batik mirror | 191/SV-P | S1 da verificare | C | Set con portachiavi | F28
+0290 | Coreano | KO | Magikarp | 040/M-P | S1/S3 | B | Mega Festa 2026 | F35
+0291 | Coreano | KO | Ancient Mew | film, variante coreana | S1/S3 | B | Promozione film, involucro da verificare | F35
+0292 | Thailandese | TH | Pikachu | 144/S-P | S1 da verificare | C | Promo | F35
+0293 | Thailandese | TH | Celebration Fanfare / Pikachu | 145/S-P | S1 da verificare | C | Promo | F35
+0294 | Thailandese | TH | Pikachu | 045/SV-P | S1 da verificare | C | Promo | F35
+0295 | Giappone Gym 2020 | JP | Hatterene V | 111/S-P | S3 | A | Gym Pack 4 2020 | F30, F31
+0296 | Giappone Gym 2020 | JP | Charmander | 112/S-P | S3 | A | Gym Pack 4 2020 | F30, F31
+0297 | Giappone Gym 2020 | JP | Arrokuda | 113/S-P | S3 | A | Gym Pack 4 2020 | F30, F31
+0298 | Giappone Gym 2020 | JP | Jolteon | 114/S-P | S3 | A | Gym Pack 4 2020 | F30, F31
+0299 | Giappone Gym 2020 | JP | Phanpy | 115/S-P | S3 | A | Gym Pack 4 2020 | F30, F31
+0300 | Giappone Gym 2020 | JP | Krokorok | 116/S-P | S3 | A | Gym Pack 4 2020 | F30, F31
+0301 | Giappone Gym 2020 | JP | Eevee | 117/S-P | S3 | A | Gym Pack 4 2020 | F30, F31
+0302 | Giappone Gym 2020 | JP | Sordward & Shielbert | 118/S-P | S3 | A | Gym Pack 4 2020 | F30, F31
+0303 | Giappone Gym 2022 | JP | Infernape V | 257/S-P | S3 | B | Gym Pack 9 2022 | F31, F39
+0304 | Giappone Gym 2022 | JP | Corphish | 258/S-P | S3 | B | Gym Pack 9 2022 | F31, F39
+0305 | Giappone Gym 2022 | JP | Dusclops | 259/S-P | S3 | B | Gym Pack 9 2022 | F31, F39
+0306 | Giappone Gym 2022 | JP | Riolu | 260/S-P | S3 | B | Gym Pack 9 2022 | F31, F39
+0307 | Giappone Gym 2022 | JP | Weavile | 261/S-P | S3 | B | Gym Pack 9 2022 | F31, F39
+0308 | Giappone Gym 2022 | JP | Starly | 262/S-P | S3 | B | Gym Pack 9 2022 | F31, F39
+0309 | Giappone Gym 2022 | JP | Riley | 263/S-P | S3 | B | Gym Pack 9 2022 | F31, F39
+0310 | Giappone Gym 2026 | JP | Golett | 166/M-P | S3 | A | Gym Pack 6 2026 | F29, F38, F52
+0311 | Giappone Gym 2026 | JP | Hariyama | 167/M-P | S3 | A | Gym Pack 6 2026 | F29, F38, F52
+0312 | Giappone Gym 2026 | JP | Gastly | 168/M-P | S3 | A | Gym Pack 6 2026 | F29, F38, F52
+0313 | Giappone Gym 2026 | JP | Mega Heatran ex | 169/M-P | S3 | A | Gym Pack 6 2026 | F29, F38, F52
+0314 | Giappone Gym 2026 | JP | Energy Recycler | 170/M-P | S3 | A | Gym Pack 6 2026 | F29, F38, F52
+0315 | Giappone Gym 2026 | JP | Lebanne | 171/M-P | S3 | A | Gym Pack 6 2026 | F29, F38, F52
+0316 | Giappone Gym 2026 | JP | Gwynn | 172/M-P | S3 | A | Gym Pack 6 2026 | F29, F38, F52
+0317 | Distributori negozi 2026 | EN/FR da verificare | Gengar | 050/088 | S1 da verificare | C | Perfect Order GameStop EB Games | F35, F49
+0318 | Distributori negozi 2026 | EN/FR da verificare | Ho-Oh | 010/086 | S1 da verificare | C | Chaos Rising GameStop EB Games | F35, F49
+0319 | Distributori negozi 2026 | EN/FR da verificare | Zarude | 056/084 | S1 da verificare | C | Pitch Black GameStop EB Games | F35, F49
+0320 | Distributori negozi 2026 | EN/FR da verificare | Kyogre | 026/103 | S1 da verificare | C | Delta Reign | F35, F49
+0321 | Distributori negozi 2026 | EN/FR da verificare | Groudon | 053/103 | S1 da verificare | C | Delta Reign GameStop EB Games | F35, F49
+0322 | Distributori negozi 2026 | EN/FR da verificare | Giratina | 045/103 | S1 da verificare | C | Delta Reign Best Buy | F35, F49
+0323 | APPENDICE Prerelease | EN | Moltres | XY127 | S4 | B | Fates Collide 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0324 | APPENDICE Prerelease | EN | White Kyurem | XY128 | S4 | B | Fates Collide 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0325 | APPENDICE Prerelease | EN | Zygarde | XY129 | S4 | B | Fates Collide 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0326 | APPENDICE Prerelease | EN | Tyranitar | XY130 | S4 | B | Fates Collide 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0327 | APPENDICE Prerelease | EN | Yanmega | XY144 | S4 | B | Steam Siege 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0328 | APPENDICE Prerelease | EN | Volcanion | XY145 | S4 | B | Steam Siege 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0329 | APPENDICE Prerelease | EN | Clawitzer | XY146 | S4 | B | Steam Siege 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0330 | APPENDICE Prerelease | EN | Hoopa | XY147 | S4 | B | Steam Siege 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0331 | APPENDICE Prerelease | EN | Charizard | 11/108 | S4 | B | Evolutions 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0332 | APPENDICE Prerelease | EN | Gyarados | 34/108 | S4 | B | Evolutions 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0333 | APPENDICE Prerelease | EN | Mewtwo | 51/108 | S4 | B | Evolutions 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0334 | APPENDICE Prerelease | EN | Machamp | 59/108 | S4 | B | Evolutions 2016 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0335 | APPENDICE Prerelease | EN | Shiinotic | SM10 | S4 | B | Sun & Moon 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0336 | APPENDICE Prerelease | EN | Bruxish | SM11 | S4 | B | Sun & Moon 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0337 | APPENDICE Prerelease | EN | Passimian | SM12 | S4 | B | Sun & Moon 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0338 | APPENDICE Prerelease | EN | Oranguru | SM13 | S4 | B | Sun & Moon 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0339 | APPENDICE Prerelease | EN | Alolan Sandslash | SM18 | S4 | B | Guardians Rising 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0340 | APPENDICE Prerelease | EN | Oricorio | SM19 | S4 | B | Guardians Rising 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0341 | APPENDICE Prerelease | EN | Mudsdale | SM20 | S4 | B | Guardians Rising 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0342 | APPENDICE Prerelease | EN | Drampa | SM21 | S4 | B | Guardians Rising 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0343 | APPENDICE Prerelease | EN | Seviper | SM46 | S4 | B | Burning Shadows 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0344 | APPENDICE Prerelease | EN | Crabominable | SM47 | S4 | B | Burning Shadows 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0345 | APPENDICE Prerelease | EN | Zygarde | SM48 | S4 | B | Burning Shadows 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0346 | APPENDICE Prerelease | EN | Bewear | SM49 | S4 | B | Burning Shadows 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0347 | APPENDICE Prerelease | EN | Alolan Raichu | SM72 | S4 | B | Crimson Invasion 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0348 | APPENDICE Prerelease | EN | Salazzle | SM73 | S4 | B | Crimson Invasion 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0349 | APPENDICE Prerelease | EN | Regirock | SM74 | S4 | B | Crimson Invasion 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0350 | APPENDICE Prerelease | EN | Registeel | SM75 | S4 | B | Crimson Invasion 2017 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0351 | APPENDICE Prerelease | EN | Wash Rotom | SM94 | S4 | B | Ultra Prism 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0352 | APPENDICE Prerelease | EN | Lucario | SM95 | S4 | B | Ultra Prism 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0353 | APPENDICE Prerelease | EN | Heatran | SM96 | S4 | B | Ultra Prism 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0354 | APPENDICE Prerelease | EN | Gumshoos | SM97 | S4 | B | Ultra Prism 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0355 | APPENDICE Prerelease | EN | Pheromosa | SM115 | S4 | B | Forbidden Light 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0356 | APPENDICE Prerelease | EN | Xurkitree | SM116 | S4 | B | Forbidden Light 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0357 | APPENDICE Prerelease | EN | Malamar | SM117 | S4 | B | Forbidden Light 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0358 | APPENDICE Prerelease | EN | Lycanroc | SM118 | S4 | B | Forbidden Light 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0359 | APPENDICE Prerelease | EN | Kyogre | SM129 | S4 | B | Celestial Storm 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0360 | APPENDICE Prerelease | EN | Manectric | SM130 | S4 | B | Celestial Storm 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0361 | APPENDICE Prerelease | EN | Celesteela | SM131 | S4 | B | Celestial Storm 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0362 | APPENDICE Prerelease | EN | Delcatty | SM132 | S4 | B | Celestial Storm 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0363 | APPENDICE Prerelease | EN | Suicune | SM149 | S4 | B | Lost Thunder 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0364 | APPENDICE Prerelease | EN | Raikou | SM150 | S4 | B | Lost Thunder 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0365 | APPENDICE Prerelease | EN | Giratina | SM151 | S4 | B | Lost Thunder 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0366 | APPENDICE Prerelease | EN | Tapu Lele | SM152 | S4 | B | Lost Thunder 2018 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0367 | APPENDICE Prerelease | EN | Charizard | SM158 | S4 | B | Team Up 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0368 | APPENDICE Prerelease | EN | Zapdos | SM159 | S4 | B | Team Up 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0369 | APPENDICE Prerelease | EN | Nidoqueen | SM160 | S4 | B | Team Up 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0370 | APPENDICE Prerelease | EN | Jirachi | SM161 | S4 | B | Team Up 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0371 | APPENDICE Prerelease | EN | Volcanion | SM179 | S4 | B | Unbroken Bonds 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0372 | APPENDICE Prerelease | EN | Stakataka | SM180 | S4 | B | Unbroken Bonds 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0373 | APPENDICE Prerelease | EN | Melmetal | SM181 | S4 | B | Unbroken Bonds 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0374 | APPENDICE Prerelease | EN | Persian | SM182 | S4 | B | Unbroken Bonds 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0375 | APPENDICE Prerelease | EN | Amoonguss | SM202 | S4 | B | Unified Minds 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0376 | APPENDICE Prerelease | EN | Tapu Fini | SM203 | S4 | B | Unified Minds 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0377 | APPENDICE Prerelease | EN | Necrozma | SM204 | S4 | B | Unified Minds 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0378 | APPENDICE Prerelease | EN | Terrakion | SM205 | S4 | B | Unified Minds 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0379 | APPENDICE Prerelease | EN | Buzzwole | SM218 | S4 | B | Cosmic Eclipse 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0380 | APPENDICE Prerelease | EN | Entei | SM219 | S4 | B | Cosmic Eclipse 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0381 | APPENDICE Prerelease | EN | Phione | SM220 | S4 | B | Cosmic Eclipse 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0382 | APPENDICE Prerelease | EN | Blacephalon | SM221 | S4 | B | Cosmic Eclipse 2019 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0383 | APPENDICE Prerelease | EN | Rillaboom | SWSH006 | S4 | B | Sword & Shield 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0384 | APPENDICE Prerelease | EN | Frosmoth | SWSH007 | S4 | B | Sword & Shield 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0385 | APPENDICE Prerelease | EN | Galarian Perrserker | SWSH008 | S4 | B | Sword & Shield 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0386 | APPENDICE Prerelease | EN | Cinccino | SWSH009 | S4 | B | Sword & Shield 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0387 | APPENDICE Prerelease | EN | Flapple | SWSH022 | S4 | B | Rebel Clash 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0388 | APPENDICE Prerelease | EN | Luxray | SWSH023 | S4 | B | Rebel Clash 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0389 | APPENDICE Prerelease | EN | Coalossal | SWSH024 | S4 | B | Rebel Clash 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0390 | APPENDICE Prerelease | EN | Garbodor | SWSH025 | S4 | B | Rebel Clash 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0391 | APPENDICE Prerelease | EN | Decidueye | SWSH035 | S4 | B | Darkness Ablaze 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0392 | APPENDICE Prerelease | EN | Arctozolt | SWSH036 | S4 | B | Darkness Ablaze 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0393 | APPENDICE Prerelease | EN | Hydreigon | SWSH037 | S4 | B | Darkness Ablaze 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0394 | APPENDICE Prerelease | EN | Kangaskhan | SWSH038 | S4 | B | Darkness Ablaze 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0395 | APPENDICE Prerelease | EN | Charizard | SWSH066 | S4 | B | Vivid Voltage 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0396 | APPENDICE Prerelease | EN | Donphan | SWSH067 | S4 | B | Vivid Voltage 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0397 | APPENDICE Prerelease | EN | Snorlax | SWSH068 | S4 | B | Vivid Voltage 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0398 | APPENDICE Prerelease | EN | Lugia | SWSH069 | S4 | B | Vivid Voltage 2020 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0399 | APPENDICE Prerelease | EN | Cherrim | SWSH088 | S4 | B | Battle Styles 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0400 | APPENDICE Prerelease | EN | Octillery | SWSH089 | S4 | B | Battle Styles 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0401 | APPENDICE Prerelease | EN | Houndoom | SWSH090 | S4 | B | Battle Styles 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0402 | APPENDICE Prerelease | EN | Bronzong | SWSH091 | S4 | B | Battle Styles 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0403 | APPENDICE Prerelease | EN | Cinderace | SWSH112 | S4 | B | Chilling Reign 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0404 | APPENDICE Prerelease | EN | Inteleon | SWSH113 | S4 | B | Chilling Reign 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0405 | APPENDICE Prerelease | EN | Cresselia | SWSH114 | S4 | B | Chilling Reign 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0406 | APPENDICE Prerelease | EN | Passimian | SWSH115 | S4 | B | Chilling Reign 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0407 | APPENDICE Prerelease | EN | Flaaffy | SWSH122 | S4 | B | Evolving Skies 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0408 | APPENDICE Prerelease | EN | Galarian Articuno | SWSH123 | S4 | B | Evolving Skies 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0409 | APPENDICE Prerelease | EN | Galarian Zapdos | SWSH124 | S4 | B | Evolving Skies 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0410 | APPENDICE Prerelease | EN | Galarian Moltres | SWSH125 | S4 | B | Evolving Skies 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0411 | APPENDICE Prerelease | EN | Oricorio | SWSH168 | S4 | B | Fusion Strike 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0412 | APPENDICE Prerelease | EN | Pyukumuku | SWSH169 | S4 | B | Fusion Strike 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0413 | APPENDICE Prerelease | EN | Deoxys | SWSH170 | S4 | B | Fusion Strike 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0414 | APPENDICE Prerelease | EN | Latias | SWSH171 | S4 | B | Fusion Strike 2021 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0415 | APPENDICE Prerelease | EN | Moltres | SWSH185 | S4 | B | Brilliant Stars 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0416 | APPENDICE Prerelease | EN | Lucario | SWSH186 | S4 | B | Brilliant Stars 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0417 | APPENDICE Prerelease | EN | Liepard | SWSH187 | S4 | B | Brilliant Stars 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0418 | APPENDICE Prerelease | EN | Bibarel | SWSH188 | S4 | B | Brilliant Stars 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0419 | APPENDICE Prerelease | EN | Hisuian Basculegion | SWSH205 | S4 | B | Astral Radiance 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0420 | APPENDICE Prerelease | EN | Wyrdeer | SWSH206 | S4 | B | Astral Radiance 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0421 | APPENDICE Prerelease | EN | Hisuian Samurott | SWSH207 | S4 | B | Astral Radiance 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0422 | APPENDICE Prerelease | EN | Magnezone | SWSH208 | S4 | B | Astral Radiance 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0423 | APPENDICE Prerelease | EN | Finneon | SWSH240 | S4 | B | Lost Origin 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0424 | APPENDICE Prerelease | EN | Gengar | SWSH241 | S4 | B | Lost Origin 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0425 | APPENDICE Prerelease | EN | Comfey | SWSH242 | S4 | B | Lost Origin 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0426 | APPENDICE Prerelease | EN | Machamp | SWSH243 | S4 | B | Lost Origin 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0427 | APPENDICE Prerelease | EN | Sunflora | SWSH269 | S4 | B | Silver Tempest 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0428 | APPENDICE Prerelease | EN | Rapidash | SWSH270 | S4 | B | Silver Tempest 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0429 | APPENDICE Prerelease | EN | Kirlia | SWSH271 | S4 | B | Silver Tempest 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0430 | APPENDICE Prerelease | EN | Archeops | SWSH272 | S4 | B | Silver Tempest 2022 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0431 | APPENDICE Prerelease | EN | Quaquaval | SVP005 | S4 | B | Scarlet & Violet 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0432 | APPENDICE Prerelease | EN | Pawmot | SVP006 | S4 | B | Scarlet & Violet 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0433 | APPENDICE Prerelease | EN | Hawlucha | SVP007 | S4 | B | Scarlet & Violet 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0434 | APPENDICE Prerelease | EN | Revavroom | SVP008 | S4 | B | Scarlet & Violet 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0435 | APPENDICE Prerelease | EN | Baxcalibur | SVP019 | S4 | B | Paldea Evolved 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0436 | APPENDICE Prerelease | EN | Tinkaton | SVP020 | S4 | B | Paldea Evolved 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0437 | APPENDICE Prerelease | EN | Murkrow | SVP021 | S4 | B | Paldea Evolved 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0438 | APPENDICE Prerelease | EN | Pelipper | SVP022 | S4 | B | Paldea Evolved 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0439 | APPENDICE Prerelease | EN | Palafin | SVP036 | S4 | B | Obsidian Flames 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0440 | APPENDICE Prerelease | EN | Cleffa | SVP037 | S4 | B | Obsidian Flames 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0441 | APPENDICE Prerelease | EN | Togekiss | SVP038 | S4 | B | Obsidian Flames 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0442 | APPENDICE Prerelease | EN | Mawile | SVP039 | S4 | B | Obsidian Flames 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0443 | APPENDICE Prerelease | EN | Chi-Yu | SVP057 | S4 | B | Paradox Rift 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0444 | APPENDICE Prerelease | EN | Iron Bundle | SVP058 | S4 | B | Paradox Rift 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0445 | APPENDICE Prerelease | EN | Xatu | SVP059 | S4 | B | Paradox Rift 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0446 | APPENDICE Prerelease | EN | Aegislash | SVP060 | S4 | B | Paradox Rift 2023 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0447 | APPENDICE Prerelease | EN | Feraligatr | SVP089 | S4 | B | Temporal Forces 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0448 | APPENDICE Prerelease | EN | Metang | SVP090 | S4 | B | Temporal Forces 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0449 | APPENDICE Prerelease | EN | Koraidon | SVP091 | S4 | B | Temporal Forces 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0450 | APPENDICE Prerelease | EN | Miraidon | SVP092 | S4 | B | Temporal Forces 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0451 | APPENDICE Prerelease | EN | Thwackey | SVP115 | S4 | B | Twilight Masquerade 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0452 | APPENDICE Prerelease | EN | Infernape | SVP116 | S4 | B | Twilight Masquerade 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0453 | APPENDICE Prerelease | EN | Froslass | SVP117 | S4 | B | Twilight Masquerade 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0454 | APPENDICE Prerelease | EN | Tatsugiri | SVP118 | S4 | B | Twilight Masquerade 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0455 | APPENDICE Prerelease | EN | Ledian | SVP133 | S4 | B | Stellar Crown 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0456 | APPENDICE Prerelease | EN | Crabominable | SVP134 | S4 | B | Stellar Crown 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0457 | APPENDICE Prerelease | EN | Drifblim | SVP135 | S4 | B | Stellar Crown 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0458 | APPENDICE Prerelease | EN | Bouffalant | SVP136 | S4 | B | Stellar Crown 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0459 | APPENDICE Prerelease | EN | Gouging Fire | SVP151 | S4 | B | Surging Sparks 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0460 | APPENDICE Prerelease | EN | Chien-Pao | SVP152 | S4 | B | Surging Sparks 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0461 | APPENDICE Prerelease | EN | Magneton | SVP153 | S4 | B | Surging Sparks 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0462 | APPENDICE Prerelease | EN | Indeedee | SVP154 | S4 | B | Surging Sparks 2024 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0463 | APPENDICE Prerelease | EN | Ns Darmanitan | SVP181 | S4 | B | Journey Together 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0464 | APPENDICE Prerelease | EN | Ionos Kilowattrel | SVP182 | S4 | B | Journey Together 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0465 | APPENDICE Prerelease | EN | Lillies Ribombee | SVP183 | S4 | B | Journey Together 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0466 | APPENDICE Prerelease | EN | Hops Snorlax | SVP184 | S4 | B | Journey Together 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0467 | APPENDICE Prerelease | EN | Ethans Typhlosion | 034/182 | S4 | B | Destined Rivals 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0468 | APPENDICE Prerelease | EN | Mistys Gyarados | 049/182 | S4 | B | Destined Rivals 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0469 | APPENDICE Prerelease | EN | Team Rockets Mimikyu | 087/182 | S4 | B | Destined Rivals 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0470 | APPENDICE Prerelease | EN | Team Rockets Tyranitar | 096/182 | S4 | B | Destined Rivals 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0471 | APPENDICE Prerelease | EN | Meganium | MEP001 | S4 | B | Mega Evolution 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0472 | APPENDICE Prerelease | EN | Inteleon | MEP002 | S4 | B | Mega Evolution 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0473 | APPENDICE Prerelease | EN | Alakazam | MEP003 | S4 | B | Mega Evolution 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0474 | APPENDICE Prerelease | EN | Lunatone | MEP004 | S4 | B | Mega Evolution 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0475 | APPENDICE Prerelease | EN | Ceruledge | MEP014 | S4 | B | Phantasmal Flames 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0476 | APPENDICE Prerelease | EN | Zacian | MEP015 | S4 | B | Phantasmal Flames 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0477 | APPENDICE Prerelease | EN | Flygon | MEP016 | S4 | B | Phantasmal Flames 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0478 | APPENDICE Prerelease | EN | Toxtricity | MEP017 | S4 | B | Phantasmal Flames 2025 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0479 | APPENDICE Prerelease | EN | Serperior | MEP064 | S4 | B | Perfect Order 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0480 | APPENDICE Prerelease | EN | Barbaracle | MEP065 | S4 | B | Perfect Order 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0481 | APPENDICE Prerelease | EN | Tyrantrum | MEP066 | S4 | B | Perfect Order 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0482 | APPENDICE Prerelease | EN | Doublade | MEP067 | S4 | B | Perfect Order 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0483 | APPENDICE Prerelease | EN | Delphox | MEP074 | S4 | B | Chaos Rising 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0484 | APPENDICE Prerelease | EN | Ampharos | MEP075 | S4 | B | Chaos Rising 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0485 | APPENDICE Prerelease | EN | Crobat | MEP076 | S4 | B | Chaos Rising 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0486 | APPENDICE Prerelease | EN | Goodra | MEP077 | S4 | B | Chaos Rising 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0487 | APPENDICE Prerelease | EN | Miraidon | MEP082 | S4 | B | Pitch Black 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0488 | APPENDICE Prerelease | EN | Slowbro | MEP083 | S4 | B | Pitch Black 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0489 | APPENDICE Prerelease | EN | Dhelmise | MEP084 | S4 | B | Pitch Black 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0490 | APPENDICE Prerelease | EN | Bastiodon | MEP085 | S4 | B | Pitch Black 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0491 | APPENDICE Prerelease | EN | Masquerain | MEP111 | S4 | B | Delta Reign 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0492 | APPENDICE Prerelease | EN | Magmortar | MEP112 | S4 | B | Delta Reign 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0493 | APPENDICE Prerelease | EN | Enamorus | MEP113 | S4 | B | Delta Reign 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+0494 | APPENDICE Prerelease | EN | Kommo-o | MEP114 | S4 | B | Delta Reign 2026 (promo in mazzo sigillato, non carta singola) | F17, F18, F19
+
+FONTI - URL CONSULTABILI
+[F01] Quattro promo film WOTC ancora sealed, lotto Catawiki
+       https://www.catawiki.com/it/l/106746895-pokemon-4-blister-pack-pokemon-wotc-1999-the-first-movie-promo-set-4-sealed-cards-pikachu-mewtwo-dragonite
+[F02] Bulbapedia - Ancient Mew e involucro originale
+       https://bulbapedia.bulbagarden.net/wiki/Ancient_Mew_%28TCG%29
+[F03] Elite Fourum - Ancient Mew, differenze di versioni e confezioni
+       https://www.elitefourum.com/t/ancient-mew-variants-and-versions-differences/40111
+[F04] Pokumon - storia e premi Pokemon Players Club PLAY
+       https://pokumon.com/pokemon-players-club/
+[F05] Pokumon - elenco promozionali PLAY
+       https://pokumon.com/promo_set/play/
+[F06] Bulbapedia - promo PPP
+       https://bulbapedia.bulbagarden.net/wiki/PPP_Promotional_cards_%28TCG%29
+[F07] Pokumon - promozione Meiji Chocolate e numeri carte
+       https://pokumon.com/meiji-chocolate-pokemon-promotion/
+[F08] Heritage - sealed DP-P Meiji lotto 21
+       https://comics.ha.com/itm/memorabilia/trading-cards/pokemon-dp-p-meiji-chocolate-promos-sealed-cello-packs-group-of-21-the-pokemon-company-2007-2008-/a/43249-77154.s
+[F09] Heritage - sealed PCG-P Meiji lotto 6
+       https://comics.ha.com/itm/memorabilia/trading-cards/pokemon-pcg-p-meiji-chocolate-promos-sealed-cello-packs-group-of-6-the-pokemon-company-2004-/a/43249-77148.s
+[F10] Heritage - sealed PCG-P Rayquaza 014
+       https://comics.ha.com/itm/memorabilia/trading-cards/pokemon-rayquaza-014-pcg-p-meiji-chocolate-promo-sealed-cello-pack-the-pokemon-company-2004-/a/43249-77144.s
+[F11] Heritage - sealed ADV-P Meiji lotto 2
+       https://comics.ha.com/itm/memorabilia/trading-cards/pokemon-adv-p-meiji-chocolate-promos-sealed-cello-packs-group-of-2-the-pokemon-company-2004-/a/43249-77151.s
+[F12] Shonen Grail - Meiji promo serie e sleeve sigillate
+       https://shonengrail.com/pokemon/meiji-promos
+[F13] DirriCards - categoria tedesca carte sealed
+       https://dirricards.de/collections/sealed-einzekarten
+[F14] Bulbapedia - Elite Trainer Box e promo comprese
+       https://bulbapedia.bulbagarden.net/wiki/Elite_Trainer_Box_%28TCG%29
+[F15] Pokecompare - tabella promo ETB 2026
+       https://pokecompare.com/blog/pokemon-etb-promo-cards-list
+[F16] PokeBeach - nuovo involucro promo ETB da Stellar Crown
+       https://www.pokebeach.com/2024/09/elite-trainer-box-promos-now-packaged-with-card-dividers
+[F17] Bulbapedia - Build & Battle Box, liste e dotazione
+       https://bulbapedia.bulbagarden.net/wiki/Build_%26_Battle_Box_%28TCG%29
+[F18] TCG Promos - elenco completo prerelease
+       https://tcgpromos.com/pokemon-prerelease-promo-cards
+[F19] Bulbapedia - carte prerelease per generazione
+       https://bulbapedia.bulbagarden.net/wiki/Prerelease_cards_%28TCG%29
+[F20] TCG Promos - prodotti sealed e promo contenute
+       https://tcgpromos.com/sealed-products-all
+[F21] Pokemon.com - Illustration Contest 2024 confezione tre promo
+       https://www.pokemon.com/uk/news/pokemon-trading-card-game-illustration-contest-2024-winners-promo-cards
+[F22] Rarecards - Illustration Contest 2024 sealed promo set EN
+       https://rarecards.nl/en/products/illustration-contest-2024-promo-sealed-set
+[F23] Pokemon Central Wiki - promo giapponesi SV-P
+       https://wiki.pokemoncentral.it/Carte_promozionali_SV-P_%28GCC%29
+[F24] Huggins & Scott - lotto Toys R Us in larga parte factory sealed
+       https://hugginsandscott.com/auction/2025/May/1574/2016-2018-pokemon-toys-r-us-promo-collection-138-mostly-sealed-with-3-pikachu-tougher-examples
+[F25] Bulbapedia - lista promo Toys R Us
+       https://bulbapedia.bulbagarden.net/wiki/Toys_%22R%22_Us_Promotional_cards_%28TCG%29
+[F26] Folio - 9 promo Pizza Hut cinese tradizionale 2024-26
+       https://folio.fyi/blog/pizza-hut-pokemon-cards
+[F27] TYRA TCG - quattro Batik Pikachu in sealed pack
+       https://tyratcg.com/en/products/pokemon-promo-4-pack-pikachu-berkemeja-batik-sealed
+[F28] Folio - promo esclusivi indonesiani
+       https://folio.fyi/blog/indonesian-exclusive-pokemon-cards
+[F29] Pokevault - Gym Pack giapponese 2026 vol. 6 sealed
+       https://pokevault.com/pokemon-mega-promo-card-6-random
+[F30] Pokevault - Gym Pack giapponese 2020 vol.4 sealed
+       https://pokevault.com/sword-shield-promo-card-4-random
+[F31] Bulbapedia - liste promo S-P giapponesi
+       https://bulbapedia.bulbagarden.net/wiki/S-P_Promotional_cards_%28TCG%29
+[F32] Pokémon Central Wiki - DVD Detective Pikachu Italia
+       https://wiki.pokemoncentral.it/Film_Pok%C3%A9mon_distribuiti_da_Warner_Bros._in_Italia
+[F33] Lucca Comics ufficiale - promo Pikachu Lucca 60
+       https://lucca2026.luccacomicsandgames.com/it/news/la-carta-di-pikachu-per-lucca-60-unedizione-unica-in-regalo-per-tutta-la-community
+[F34] Subito - inserzione esemplare Pikachu Lucca sigillato
+       https://www.subito.it/hobby-collezionismo/pikachu-promo-lucca-c-g-60-carta-sigillata-lucca-666268623.htm
+[F35] TCG Promos - archivio promo e distribuzioni
+       https://tcgpromos.com/catalog
+[F36] ZardoCards - assortimento sealed singles
+       https://zardocards.com/collections/raw-sealed
+[F37] Bulbapedia - prodotti Scarlet & Violet, promo e UPC
+       https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise
+[F38] Bulbapedia - catalogo promozionali M-P giapponesi
+       https://bulbapedia.bulbagarden.net/wiki/M-P_Promotional_cards_%28TCG%29
+[F39] Folio - panoramica Gym Promo Pack 2014-2026
+       https://folio.fyi/blog/pokemon-card-gym-promo-packs
+[F40] Pokemon.com - ETB Black Bolt White Flare
+       https://www.pokemon.com/uk/pokemon-tcg/product-gallery/scarlet-violet-black-bolt-elite-trainer-box-scarlet-violet-white-flare-elite-trainer-box
+[F41] Bulbapedia - elenco SWSH Black Star promos
+       https://bulbapedia.bulbagarden.net/wiki/SWSH_Black_Star_Promos_%28TCG%29
+[F42] Bulbapedia - elenco MEP Black Star promos
+       https://bulbapedia.bulbagarden.net/wiki/MEP_Black_Star_Promos_%28TCG%29
+[F43] Catawiki - Special Delivery Bidoof sealed
+       https://www.catawiki.com/en/l/108467306-pokemon-card-special-delivery-bidoof-holo-sealed-swsh177-pokemon
+[F44] PokeBeach - sigilli WOTC checklist storica
+       https://www.pokebeach.com/forums/threads/sealed-cards-wotc-promo-checklist-included.97942/
+[F45] Folio - elenco Gym Promo giapponesi 2014-26
+       https://folio.fyi/blog/pokemon-card-gym-promo-packs
+[F46] PokeBeach - promozioni Toys R Us 2016
+       https://www.pokebeach.com/2016/03/toys-r-us-giving-out-up-to-eight-promo-cards-for-20th-anniversary
+[F47] PokeBeach - promo Illustration Contest 2024 EN
+       https://www.pokebeach.com/2025/02/2024-illustration-contest-promos-and-sylveon-promo-to-be-given-out-for-pokemon-day
+[F48] Pokumon - promozionali Japan Players Club per distribuzione
+       https://pokumon.com/release_event/pokemon-players-club/
+[F49] TCG Terminal - elenco Mega Evolution promos
+       https://tcgterminal.io/set/me-mega-evolution-promo
+[F50] Sito Pokémon ufficiale - news prodotti ETB
+       https://www.pokemon.com/us/pokemon-tcg/product-gallery/scarlet-violet-stellar-crown-elite-trainer-box
+[F51] Pokumon - promozionali Meiji Chocolate cartellino
+       https://pokumon.com/meiji-chocolate-pokemon-promotion/
+[F52] Pokémon Central Wiki - promo carte M-P 2026
+       https://wiki.pokemoncentral.it/Carte_promozionali_M-P_%28GCC%29
+[F53] Folio - promotional pack Pizza Hut testimonianza sigilli
+       https://folio.fyi/blog/pizza-hut-pokemon-cards
+[F54] Special Delivery Bidoof - Bulbapedia
+       https://bulbapedia.bulbagarden.net/wiki/Special_Delivery_Bidoof_%28SWSH_Promo_177%29
+[F55] Catawiki - quattro promo film originale sigillate
+       https://www.catawiki.com/en/l/107727133-pokemon-4-blister-pack-pokemon-wotc-1999-the-first-movie-promo-set-4-sealed-cards-pikachu-mewtwo-dragonite-wotc-base-set
+
+LIMITI E LACUNE
+- Fonti A e B non costituiscono autenticazione del sigillo di un esemplare in vendita.
+- Le righe C NON sono carte confirmed-sealed. Conservate come candidati per non far sparire i nomi richiesti ma non comprovati.
+- Le carte S4 NON sono sealed singles: il deck prerelease puo contenere molte carte.
+- Molte S3 giapponesi sono carte a estrazione casuale: la bustina esterna non certifica quale carta sia contenuta senza aprirla.
+- Sealed ETB da Stellar Crown: la promo e di norma avvolta insieme a code card e divisori; le carte Pokemon Center hanno varianti stamp da registrare separatamente.
+- Le promozioni italiane, spagnole, francesi, coreane, thailandesi, cinesi e tedesche non sono complete in ogni dettaglio.
+- Nessuna fonte ufficiale certifica al 100% la totalita delle promo sigillate dal 1996 al 2026.
+
+RIGHE: 494 | A=36 | B=371 | C=87 | PRERELEASE S4=172
