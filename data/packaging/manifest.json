@@ -1,0 +1,301 @@
+{
+  "document": {
+    "document_key": "sealed:2026-11-17:3b4a41bd8220",
+    "title": "CATALOGO POKEMON SEALED - ELENCO CARTE E FONTI",
+    "document_date": "2026-11-17",
+    "sha256": "3b4a41bd82208be408a3523a139300baad35f0ff7266f3465a7f8233f06bcffe",
+    "archive_path": "data/packaging/catalogo-sealed-2026-11-17.txt",
+    "source_manifest": [
+      {
+        "source_id": "F01",
+        "title": "Quattro promo film WOTC ancora sealed, lotto Catawiki",
+        "url": "https://www.catawiki.com/it/l/106746895-pokemon-4-blister-pack-pokemon-wotc-1999-the-first-movie-promo-set-4-sealed-cards-pikachu-mewtwo-dragonite"
+      },
+      {
+        "source_id": "F02",
+        "title": "Bulbapedia - Ancient Mew e involucro originale",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/Ancient_Mew_%28TCG%29"
+      },
+      {
+        "source_id": "F03",
+        "title": "Elite Fourum - Ancient Mew, differenze di versioni e confezioni",
+        "url": "https://www.elitefourum.com/t/ancient-mew-variants-and-versions-differences/40111"
+      },
+      {
+        "source_id": "F04",
+        "title": "Pokumon - storia e premi Pokemon Players Club PLAY",
+        "url": "https://pokumon.com/pokemon-players-club/"
+      },
+      {
+        "source_id": "F05",
+        "title": "Pokumon - elenco promozionali PLAY",
+        "url": "https://pokumon.com/promo_set/play/"
+      },
+      {
+        "source_id": "F06",
+        "title": "Bulbapedia - promo PPP",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/PPP_Promotional_cards_%28TCG%29"
+      },
+      {
+        "source_id": "F07",
+        "title": "Pokumon - promozione Meiji Chocolate e numeri carte",
+        "url": "https://pokumon.com/meiji-chocolate-pokemon-promotion/"
+      },
+      {
+        "source_id": "F08",
+        "title": "Heritage - sealed DP-P Meiji lotto 21",
+        "url": "https://comics.ha.com/itm/memorabilia/trading-cards/pokemon-dp-p-meiji-chocolate-promos-sealed-cello-packs-group-of-21-the-pokemon-company-2007-2008-/a/43249-77154.s"
+      },
+      {
+        "source_id": "F09",
+        "title": "Heritage - sealed PCG-P Meiji lotto 6",
+        "url": "https://comics.ha.com/itm/memorabilia/trading-cards/pokemon-pcg-p-meiji-chocolate-promos-sealed-cello-packs-group-of-6-the-pokemon-company-2004-/a/43249-77148.s"
+      },
+      {
+        "source_id": "F10",
+        "title": "Heritage - sealed PCG-P Rayquaza 014",
+        "url": "https://comics.ha.com/itm/memorabilia/trading-cards/pokemon-rayquaza-014-pcg-p-meiji-chocolate-promo-sealed-cello-pack-the-pokemon-company-2004-/a/43249-77144.s"
+      },
+      {
+        "source_id": "F11",
+        "title": "Heritage - sealed ADV-P Meiji lotto 2",
+        "url": "https://comics.ha.com/itm/memorabilia/trading-cards/pokemon-adv-p-meiji-chocolate-promos-sealed-cello-packs-group-of-2-the-pokemon-company-2004-/a/43249-77151.s"
+      },
+      {
+        "source_id": "F12",
+        "title": "Shonen Grail - Meiji promo serie e sleeve sigillate",
+        "url": "https://shonengrail.com/pokemon/meiji-promos"
+      },
+      {
+        "source_id": "F13",
+        "title": "DirriCards - categoria tedesca carte sealed",
+        "url": "https://dirricards.de/collections/sealed-einzekarten"
+      },
+      {
+        "source_id": "F14",
+        "title": "Bulbapedia - Elite Trainer Box e promo comprese",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/Elite_Trainer_Box_%28TCG%29"
+      },
+      {
+        "source_id": "F15",
+        "title": "Pokecompare - tabella promo ETB 2026",
+        "url": "https://pokecompare.com/blog/pokemon-etb-promo-cards-list"
+      },
+      {
+        "source_id": "F16",
+        "title": "PokeBeach - nuovo involucro promo ETB da Stellar Crown",
+        "url": "https://www.pokebeach.com/2024/09/elite-trainer-box-promos-now-packaged-with-card-dividers"
+      },
+      {
+        "source_id": "F17",
+        "title": "Bulbapedia - Build & Battle Box, liste e dotazione",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/Build_%26_Battle_Box_%28TCG%29"
+      },
+      {
+        "source_id": "F18",
+        "title": "TCG Promos - elenco completo prerelease",
+        "url": "https://tcgpromos.com/pokemon-prerelease-promo-cards"
+      },
+      {
+        "source_id": "F19",
+        "title": "Bulbapedia - carte prerelease per generazione",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/Prerelease_cards_%28TCG%29"
+      },
+      {
+        "source_id": "F20",
+        "title": "TCG Promos - prodotti sealed e promo contenute",
+        "url": "https://tcgpromos.com/sealed-products-all"
+      },
+      {
+        "source_id": "F21",
+        "title": "Pokemon.com - Illustration Contest 2024 confezione tre promo",
+        "url": "https://www.pokemon.com/uk/news/pokemon-trading-card-game-illustration-contest-2024-winners-promo-cards"
+      },
+      {
+        "source_id": "F22",
+        "title": "Rarecards - Illustration Contest 2024 sealed promo set EN",
+        "url": "https://rarecards.nl/en/products/illustration-contest-2024-promo-sealed-set"
+      },
+      {
+        "source_id": "F23",
+        "title": "Pokemon Central Wiki - promo giapponesi SV-P",
+        "url": "https://wiki.pokemoncentral.it/Carte_promozionali_SV-P_%28GCC%29"
+      },
+      {
+        "source_id": "F24",
+        "title": "Huggins & Scott - lotto Toys R Us in larga parte factory sealed",
+        "url": "https://hugginsandscott.com/auction/2025/May/1574/2016-2018-pokemon-toys-r-us-promo-collection-138-mostly-sealed-with-3-pikachu-tougher-examples"
+      },
+      {
+        "source_id": "F25",
+        "title": "Bulbapedia - lista promo Toys R Us",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/Toys_%22R%22_Us_Promotional_cards_%28TCG%29"
+      },
+      {
+        "source_id": "F26",
+        "title": "Folio - 9 promo Pizza Hut cinese tradizionale 2024-26",
+        "url": "https://folio.fyi/blog/pizza-hut-pokemon-cards"
+      },
+      {
+        "source_id": "F27",
+        "title": "TYRA TCG - quattro Batik Pikachu in sealed pack",
+        "url": "https://tyratcg.com/en/products/pokemon-promo-4-pack-pikachu-berkemeja-batik-sealed"
+      },
+      {
+        "source_id": "F28",
+        "title": "Folio - promo esclusivi indonesiani",
+        "url": "https://folio.fyi/blog/indonesian-exclusive-pokemon-cards"
+      },
+      {
+        "source_id": "F29",
+        "title": "Pokevault - Gym Pack giapponese 2026 vol. 6 sealed",
+        "url": "https://pokevault.com/pokemon-mega-promo-card-6-random"
+      },
+      {
+        "source_id": "F30",
+        "title": "Pokevault - Gym Pack giapponese 2020 vol.4 sealed",
+        "url": "https://pokevault.com/sword-shield-promo-card-4-random"
+      },
+      {
+        "source_id": "F31",
+        "title": "Bulbapedia - liste promo S-P giapponesi",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/S-P_Promotional_cards_%28TCG%29"
+      },
+      {
+        "source_id": "F32",
+        "title": "Pokémon Central Wiki - DVD Detective Pikachu Italia",
+        "url": "https://wiki.pokemoncentral.it/Film_Pok%C3%A9mon_distribuiti_da_Warner_Bros._in_Italia"
+      },
+      {
+        "source_id": "F33",
+        "title": "Lucca Comics ufficiale - promo Pikachu Lucca 60",
+        "url": "https://lucca2026.luccacomicsandgames.com/it/news/la-carta-di-pikachu-per-lucca-60-unedizione-unica-in-regalo-per-tutta-la-community"
+      },
+      {
+        "source_id": "F34",
+        "title": "Subito - inserzione esemplare Pikachu Lucca sigillato",
+        "url": "https://www.subito.it/hobby-collezionismo/pikachu-promo-lucca-c-g-60-carta-sigillata-lucca-666268623.htm"
+      },
+      {
+        "source_id": "F35",
+        "title": "TCG Promos - archivio promo e distribuzioni",
+        "url": "https://tcgpromos.com/catalog"
+      },
+      {
+        "source_id": "F36",
+        "title": "ZardoCards - assortimento sealed singles",
+        "url": "https://zardocards.com/collections/raw-sealed"
+      },
+      {
+        "source_id": "F37",
+        "title": "Bulbapedia - prodotti Scarlet & Violet, promo e UPC",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise"
+      },
+      {
+        "source_id": "F38",
+        "title": "Bulbapedia - catalogo promozionali M-P giapponesi",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/M-P_Promotional_cards_%28TCG%29"
+      },
+      {
+        "source_id": "F39",
+        "title": "Folio - panoramica Gym Promo Pack 2014-2026",
+        "url": "https://folio.fyi/blog/pokemon-card-gym-promo-packs"
+      },
+      {
+        "source_id": "F40",
+        "title": "Pokemon.com - ETB Black Bolt White Flare",
+        "url": "https://www.pokemon.com/uk/pokemon-tcg/product-gallery/scarlet-violet-black-bolt-elite-trainer-box-scarlet-violet-white-flare-elite-trainer-box"
+      },
+      {
+        "source_id": "F41",
+        "title": "Bulbapedia - elenco SWSH Black Star promos",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/SWSH_Black_Star_Promos_%28TCG%29"
+      },
+      {
+        "source_id": "F42",
+        "title": "Bulbapedia - elenco MEP Black Star promos",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/MEP_Black_Star_Promos_%28TCG%29"
+      },
+      {
+        "source_id": "F43",
+        "title": "Catawiki - Special Delivery Bidoof sealed",
+        "url": "https://www.catawiki.com/en/l/108467306-pokemon-card-special-delivery-bidoof-holo-sealed-swsh177-pokemon"
+      },
+      {
+        "source_id": "F44",
+        "title": "PokeBeach - sigilli WOTC checklist storica",
+        "url": "https://www.pokebeach.com/forums/threads/sealed-cards-wotc-promo-checklist-included.97942/"
+      },
+      {
+        "source_id": "F45",
+        "title": "Folio - elenco Gym Promo giapponesi 2014-26",
+        "url": "https://folio.fyi/blog/pokemon-card-gym-promo-packs"
+      },
+      {
+        "source_id": "F46",
+        "title": "PokeBeach - promozioni Toys R Us 2016",
+        "url": "https://www.pokebeach.com/2016/03/toys-r-us-giving-out-up-to-eight-promo-cards-for-20th-anniversary"
+      },
+      {
+        "source_id": "F47",
+        "title": "PokeBeach - promo Illustration Contest 2024 EN",
+        "url": "https://www.pokebeach.com/2025/02/2024-illustration-contest-promos-and-sylveon-promo-to-be-given-out-for-pokemon-day"
+      },
+      {
+        "source_id": "F48",
+        "title": "Pokumon - promozionali Japan Players Club per distribuzione",
+        "url": "https://pokumon.com/release_event/pokemon-players-club/"
+      },
+      {
+        "source_id": "F49",
+        "title": "TCG Terminal - elenco Mega Evolution promos",
+        "url": "https://tcgterminal.io/set/me-mega-evolution-promo"
+      },
+      {
+        "source_id": "F50",
+        "title": "Sito Pokémon ufficiale - news prodotti ETB",
+        "url": "https://www.pokemon.com/us/pokemon-tcg/product-gallery/scarlet-violet-stellar-crown-elite-trainer-box"
+      },
+      {
+        "source_id": "F51",
+        "title": "Pokumon - promozionali Meiji Chocolate cartellino",
+        "url": "https://pokumon.com/meiji-chocolate-pokemon-promotion/"
+      },
+      {
+        "source_id": "F52",
+        "title": "Pokémon Central Wiki - promo carte M-P 2026",
+        "url": "https://wiki.pokemoncentral.it/Carte_promozionali_M-P_%28GCC%29"
+      },
+      {
+        "source_id": "F53",
+        "title": "Folio - promotional pack Pizza Hut testimonianza sigilli",
+        "url": "https://folio.fyi/blog/pizza-hut-pokemon-cards"
+      },
+      {
+        "source_id": "F54",
+        "title": "Special Delivery Bidoof - Bulbapedia",
+        "url": "https://bulbapedia.bulbagarden.net/wiki/Special_Delivery_Bidoof_%28SWSH_Promo_177%29"
+      },
+      {
+        "source_id": "F55",
+        "title": "Catawiki - quattro promo film originale sigillate",
+        "url": "https://www.catawiki.com/en/l/107727133-pokemon-4-blister-pack-pokemon-wotc-1999-the-first-movie-promo-set-4-sealed-cards-pikachu-mewtwo-dragonite-wotc-base-set"
+      }
+    ],
+    "limitations": [
+      "Fonti A e B non costituiscono autenticazione del sigillo di un esemplare in vendita.",
+      "Le righe C NON sono carte confirmed-sealed. Conservate come candidati per non far sparire i nomi richiesti ma non comprovati.",
+      "Le carte S4 NON sono sealed singles: il deck prerelease puo contenere molte carte.",
+      "Molte S3 giapponesi sono carte a estrazione casuale: la bustina esterna non certifica quale carta sia contenuta senza aprirla.",
+      "Sealed ETB da Stellar Crown: la promo e di norma avvolta insieme a code card e divisori; le carte Pokemon Center hanno varianti stamp da registrare separatamente.",
+      "Le promozioni italiane, spagnole, francesi, coreane, thailandesi, cinesi e tedesche non sono complete in ogni dettaglio.",
+      "Nessuna fonte ufficiale certifica al 100% la totalita delle promo sigillate dal 1996 al 2026."
+    ]
+  },
+  "rows": 494,
+  "claimed_levels": {
+    "A": 36,
+    "B": 371,
+    "C": 87
+  }
+}

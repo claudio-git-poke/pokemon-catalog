@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import { supabase, Card } from '@/lib/supabase'
 import Link from 'next/link'
 import PrintingTraits from '@/components/printing-traits'
+import CardPackagings from '@/components/card-packagings'
 import {MANUAL_CARD_FIELDS, protectionExpectedValues, type ManualCardField} from '@/lib/manual-fields'
 
 export default function CardDetailPage() {
@@ -226,6 +227,7 @@ export default function CardDetailPage() {
       </div>
 
       <PrintingTraits cardId={card.id}/>
+      <CardPackagings cardId={card.id}/>
       <section className="bg-white rounded-xl shadow p-6 space-y-3">
         <h2 className="font-semibold">Correzioni manuali</h2>
         <p className="text-sm">Puoi proteggere anche dati già presenti, senza riscriverli. Seleziona solo i valori che hai controllato: gli altri continueranno ad aggiornarsi.</p>
