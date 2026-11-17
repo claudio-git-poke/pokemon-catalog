@@ -26,6 +26,11 @@ export function createPlatform({token,organization},{fetchImpl=fetch}={}){
    if(!Object.values(values).every(v=>Number.isSafeInteger(v)&&v>=0))throw Error('Risposta dei consumi Turso non valida.')
    return values
   },
+  async databaseUsage(){
+   const [report,list]=await Promise.all([call('GET','/usage'),call('GET','/databases')])
+   const names=new Map((list.databases||[]).map(d=>[d.DbId,d.Name]))
+   return (report.databases||[]).map(d=>({database:names.get(d.uuid)||'eliminato:'+String(d.uuid).slice(0,8),rows_written:Number(d.total?.rows_written||0),rows_read:Number(d.total?.rows_read||0),storage_bytes:Number(d.total?.storage_bytes||0)}))
+  },
   async groups(){return (await call('GET','/groups')).groups||[]},
   async locations(){
    const response=await fetchImpl(API+'/locations',{headers:{authorization:'Bearer '+token}})

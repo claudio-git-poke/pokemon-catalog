@@ -7,7 +7,7 @@ import {safeTursoError} from './turso-client.mjs'
 // if loaded with SQL). A control write of 100 rows proves that the usage
 // counter is moving during the observation window. The probe database is
 // always deleted at the end.
-const ROWS=50000,CONTROL=100,file='/tmp/turso-upload-probe.db',sleep=ms=>new Promise(r=>setTimeout(r,ms))
+const KEEP=process.env.PROBE_KEEP==='true',ROWS=50000,CONTROL=100,file='/tmp/turso-upload-probe.db',sleep=ms=>new Promise(r=>setTimeout(r,ms))
 const log=value=>console.log(JSON.stringify(value))
 let platform,name,created=false,exit=0
 try{
@@ -22,7 +22,11 @@ try{
  for(let i=1;i<=ROWS;i++)insert.run(i,'valore-'+i)
  db.exec('COMMIT;PRAGMA wal_checkpoint(TRUNCATE);');db.close()
  const bytes=await readFile(file);log({phase:'file',rows:ROWS,bytes:bytes.length})
- name='upload-probe-'+Date.now().toString(36)
+ // With PROBE_KEEP the database stays alive: the usage counter of deleted
+ // databases may never be reported. The hourly usage workflow shows it later.
+ name=KEEP?'upload-probe':'upload-probe-'+Date.now().toString(36)
+ if(KEEP&&(await platform.databases()).some(d=>d.Name===name)){log({phase:'already-present',database:name});process.exitCode=0;name=null}
+ if(name){
  const database=await platform.createUploadDatabase(name,group);created=true
  const jwt=await platform.databaseToken(name)
  await uploadDatabaseFile({hostname:database.Hostname,jwt,body:bytes,size:bytes.length})
@@ -38,7 +42,7 @@ try{
  client.close()
  log({phase:'verified',rows:maximum,control_rows:CONTROL})
  let after=before
- for(let i=0;i<12;i++){
+ for(let i=0;i<(KEEP?2:12);i++){
   await sleep(30000)
   after=await platform.usage()
   const written=after.rows_written-before.rows_written
@@ -48,9 +52,10 @@ try{
  const written=after.rows_written-before.rows_written
  const verdict=written<CONTROL?'Contatore non aggiornato nella finestra: ripetere la prova più tardi.':written<CONTROL+ROWS/2?'Il caricamento del file NON conta come righe scritte.':'Il caricamento del file CONTA come righe scritte.'
  log({phase:'result',rows_written_delta:written,expected_if_counted:ROWS*2+CONTROL,verdict})
+ }
 }catch(error){console.error(safeTursoError(error));exit=1}
 finally{
- if(created)try{await platform.deleteDatabase(name);log({phase:'deleted',database:name})}catch(error){console.error('Eliminazione del database di prova non riuscita: '+safeTursoError(error));exit=1}
+ if(created&&!KEEP)try{await platform.deleteDatabase(name);log({phase:'deleted',database:name})}catch(error){console.error('Eliminazione del database di prova non riuscita: '+safeTursoError(error));exit=1}
  await rm(file,{force:true}).catch(()=>{})
  process.exitCode=exit
 }
