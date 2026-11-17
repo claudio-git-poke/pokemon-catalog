@@ -7,7 +7,7 @@ RARITIES={
  'illustration-rare':['illustration-rare','ar'],'special-illustration-rare':['special-illustration-rare','sar'],
  'hyper-rare':['hyper-rare','ur'],'mega-hyper-rare':['mega-hyper-rare','mur'],
  'mega-attack-rare':['mega-attack-rare'],'promo':['promo'],
- 'shiny-rare':['shiny-rare','s'],'shiny-ultra-rare':['ssr'],
+ 'shiny-rare':['shiny-rare','s'],'shiny-ultra-rare':['shiny-ultra-rare','ssr'],
 }
 TYPES={'colorless','darkness','dragon','fairy','fighting','fire','grass','lightning','metal','psychic','water'}
 SET_SOURCES={'TCGdex','PokemonSymbols','Xero_Community','1niceroli_AssetRepo','SilphGhost','PokemonTCG_Storico'}
@@ -28,6 +28,7 @@ def resolve_set(row,sets):
  return (next(iter(matches)),'source-name') if len(matches)==1 else (None,'ambiguous' if matches else 'unmapped')
 
 def propose_rule(row,indexes,available_tags):
+ prior_tag=row.get('tag_code')
  row={**row,'provenance':dict(row.get('provenance') or {}),'match_code':None,'tag_codes':[]}
  row['match_mode']=None;row['tag_code']=None
  kind,code=row['kind'],row['source_code']
@@ -39,13 +40,13 @@ def propose_rule(row,indexes,available_tags):
  if kind=='promo_stamp' and code in {'1st-edition','trick-or-trade'} and '/visual-symbols/' in row['image_url']:
   row['match_mode']='tag';row['tag_code']='stamp:'+code;row['tag_codes']=[row['tag_code']];return row
  if kind=='rarity' and code in RARITIES:
-  tags=['rarity:'+t for t in RARITIES[code] if 'rarity:'+t in available_tags]
+  tags=['rarity:'+t for t in RARITIES[code]]
  elif kind=='energy' and code.removeprefix('tcg-') in TYPES:
   tags=['type:'+code.removeprefix('tcg-')]
   tags=[t for t in tags if t in available_tags]
  else:tags=[]
  if tags:
-  row.update(match_mode='tag',tag_code=tags[0],tag_codes=tags);return row
+  row.update(match_mode='tag',tag_code=prior_tag if prior_tag in tags else tags[0],tag_codes=tags);return row
  if kind!='set_symbol' or row['provenance'].get('source') not in SET_SOURCES:return row
  u=urllib.parse.urlsplit(row['image_url'])
  if u.hostname=='raw.githubusercontent.com' and re.fullmatch('/1niceroli/ptcg-assets/main/sv0?9/symbol.png',u.path):

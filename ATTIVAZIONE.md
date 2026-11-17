@@ -87,3 +87,10 @@ Per un avvio manuale, Actions → Aggiornamento catalogo Pokémon → Run workfl
 ## Registro incrementale
 
 Dopo `db/automazione.sql` applicare anche `db/log-events.sql` (già applicato al progetto collegato). Gli eventi sono salvati in catalog_sync_events con un indice su esecuzione e ID. Il browser scarica solo nuove righe ogni secondo senza sovrapporre richieste, mostra al massimo 600 righe in diretta e offre pagine da 200 righe per lo storico. I contatori pesanti si aggiornano separatamente circa ogni 30 secondi. Ricerca nel testo anche nello storico, pausa lettura e scelta esecuzione disponibili. Il nuovo worker registra anche carte già presenti, fonti alternative, esclusioni e dettagli delle fonti immagine. Le sessioni già avviate alimentano automaticamente il nuovo registro tramite un adattatore compatibile, ma conservano il precedente livello di dettaglio fino al loro termine. I vecchi log precedentemente eliminati dal limite di 2.000 righe non sono recuperabili qui; rimangono nei log completi di GitHub Actions.
+
+
+## Recupero delle rarità e normalizzazione giapponese
+
+Dopo `db/visual-card-fallback.sql`, applicare `db/catalog-rarity-evidence.sql` nel SQL Editor. La migrazione è ripetibile e aggiunge due RPC di scrittura riservate a `service_role`. Il workflow **Ripristino rarità delle carte** normalizza le varianti storiche, legge gli elenchi TCGdex per rarità in DE, ES, PT, FR, EN, IT e JA e aggiorna solo gli ID esatti della stessa lingua. Le carte giapponesi Card Atlas usano il codice di rarità documentato nella propria pagina ufficiale; le sigle senza equivalenza certa conservano il tag originale. Nessuna finitura viene dedotta dalla rarità.
+
+Il recupero rispetta i campi manuali, salta le righe momentaneamente bloccate e registra come parziali i dati rinviati. Il passaggio successivo può completarli. Le chiavi delle stampe, le immagini e i collegamenti manuali restano invariati. `scripts/check-visual-links.mjs` verifica l’API pubblica con la chiave anon, inclusi i casi del terzo controllo.
