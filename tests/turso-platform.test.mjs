@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {createPlatform,platformConfiguration,validDatabaseName,uploadDatabaseFile} from '../scripts/turso-platform.mjs'
+import {createPlatform,platformConfiguration,validDatabaseName,uploadDatabaseFile,ensureGroup} from '../scripts/turso-platform.mjs'
 test('platform client sends scoped requests and never needs the token in a URL',async()=>{
  const calls=[]
  const fetchImpl=async(url,init)=>{calls.push({url,method:init.method,auth:init.headers.authorization,body:init.body});const path=new URL(url).pathname
@@ -21,4 +21,10 @@ test('configuration and names are validated before any request',async()=>{
  const failing=createPlatform({token:'t',organization:'demo'},{fetchImpl:async()=>({ok:false,status:402,async text(){return 'quota'}})})
  await assert.rejects(failing.usage(),/HTTP 402/)
  await assert.rejects(uploadDatabaseFile({hostname:'h',jwt:'j',body:Buffer.from('x'),fetchImpl:async()=>({ok:false,status:413,async text(){return 'too large'}})}),/HTTP 413/)
+})
+test('a missing group is created next to the Vercel functions',async()=>{
+ const created=[]
+ const platform={async groups(){return []},async locations(){return ['aws-eu-west-1','aws-us-east-1']},async createGroup(name,location){created.push([name,location])}}
+ assert.equal(await ensureGroup(platform),'default');assert.deepEqual(created,[['default','aws-us-east-1']])
+ assert.equal(await ensureGroup({async groups(){return [{name:'altro'}]}}),'altro')
 })

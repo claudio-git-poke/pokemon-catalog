@@ -1,6 +1,6 @@
 import {DatabaseSync} from 'node:sqlite'
 import {readFile,rm} from 'node:fs/promises'
-import {createPlatform,platformConfiguration,uploadDatabaseFile} from './turso-platform.mjs'
+import {createPlatform,platformConfiguration,uploadDatabaseFile,ensureGroup} from './turso-platform.mjs'
 import {safeTursoError} from './turso-client.mjs'
 // Measures whether uploading a SQLite file counts as rows written.
 // The probe file holds 50,000 rows plus one index (about 100,000 rows written
@@ -13,9 +13,7 @@ let platform,name,created=false,exit=0
 try{
  platform=createPlatform(platformConfiguration())
  const before=await platform.usage();log({phase:'usage-before',...before})
- const groups=await platform.groups()
- const group=(groups.find(g=>g.name==='default')||groups[0])?.name
- if(!group)throw Error('Nessun gruppo nel account Turso: crearne uno dalla dashboard (Create group) e riavviare la prova.')
+ const group=await ensureGroup(platform,log)
  log({phase:'group',group,databases:(await platform.databases()).length})
  await rm(file,{force:true})
  const db=new DatabaseSync(file)
