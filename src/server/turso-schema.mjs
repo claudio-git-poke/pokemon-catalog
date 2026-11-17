@@ -18,12 +18,19 @@ export async function prepareCatalogSchema(client,schema,{log=()=>{}}={}){
   'CREATE TABLE IF NOT EXISTS _catalog_entry_tags(tag TEXT NOT NULL,entry_rowid INTEGER NOT NULL,PRIMARY KEY(tag,entry_rowid)) WITHOUT ROWID',
   'CREATE INDEX IF NOT EXISTS _catalog_entry_tags_row ON _catalog_entry_tags(entry_rowid)'
  ],'write')
- if(Number((await client.execute('SELECT ready FROM _catalog_api_state WHERE id=1')).rows[0].ready))return {ready:true,already_prepared:true}
+ if(Number((await client.execute('SELECT ready FROM _catalog_api_state WHERE id=1')).rows[0].ready)){
+  await client.execute('UPDATE _catalog_api_state SET ready=0 WHERE id=1')
+  await installManualGuards(client,schema)
+  await client.execute('UPDATE _catalog_api_state SET ready=1 WHERE id=1')
+  return {ready:true,already_prepared:true}
+ }
  for(const table of schema.tables){
   const exists=(await client.execute({sql:'SELECT type FROM sqlite_master WHERE name=?',args:[table.table_name]})).rows[0]
   if(exists&&exists.type!=='view')throw Error('Nome già occupato nella destinazione: '+table.table_name)
   await client.execute(`CREATE VIEW IF NOT EXISTS ${qid(table.table_name)} AS SELECT ${table.columns.map(c=>`json_extract(_row,'$.${c.name}') AS ${qid(c.name)}`).join(',')},_row,_key,rowid AS _entry_rowid FROM ${sourceTable(table.table_name)}`)
-  await client.execute(`CREATE UNIQUE INDEX IF NOT EXISTS ${qid('_catalog_pk_'+table.table_name)} ON ${sourceTable(table.table_name)}(${table.primary_key.map(c=>`json_extract(_row,'$.${c}')`).join(',')})`)
+  // The large historical log uses the compound run/id index below. A second
+  // expression index duplicates its existing stored-key uniqueness and consumes quota.
+  if(table.table_name!=='catalog_sync_events')await client.execute(`CREATE UNIQUE INDEX IF NOT EXISTS ${qid('_catalog_pk_'+table.table_name)} ON ${sourceTable(table.table_name)}(${table.primary_key.map(c=>`json_extract(_row,'$.${c}')`).join(',')})`)
  }
  const indexes=[['cards','source_uid'],['cards','sigla','lingua','numero'],['cards','image_status'],['catalog_search_entries','card_id'],['catalog_search_entries','set_code','card_id'],['catalog_search_entries','language'],['catalog_printing_inventory','card_id'],['catalog_visual_links','asset_key'],['catalog_packaging_links','card_id'],['catalog_sync_events','run_id','id']]
  for(const [name,...fields]of indexes)await client.execute(`CREATE INDEX IF NOT EXISTS ${qid('_catalog_idx_'+name+'_'+fields.join('_'))} ON ${sourceTable(name)}(${fields.map(f=>`json_extract(_row,'$.${f}')`).join(',')})`)

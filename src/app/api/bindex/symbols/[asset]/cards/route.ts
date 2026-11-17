@@ -1,10 +1,10 @@
 import {NextRequest,NextResponse} from 'next/server'
-import {createClient} from '@supabase/supabase-js'
+import {createCatalogServerClient} from '@/lib/catalog-server'
 export const dynamic='force-dynamic'
 export async function GET(req:NextRequest,{params}:{params:{asset:string}}){
  const p=req.nextUrl.searchParams,limit=Number(p.get('limit')||24)
  if(!/^[a-f0-9]{32}$/.test(params.asset)||!Number.isInteger(limit)||limit<1||limit>100)return NextResponse.json({error:'Simbolo o limite non valido'},{status:400})
- const db=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,{auth:{persistSession:false}})
+ const db=createCatalogServerClient()
  const grouped=p.get('grouped')==='true'
  const {data,error}=await db.rpc(grouped?'catalog_visual_group_cards':'catalog_visual_cards',grouped?{symbol_group:params.asset,after_key:p.get('after')||'',page_size:limit,include_review:p.get('review')==='true',filter_language:p.get('language')||null}:{symbol_key:params.asset,after_key:p.get('after')||'',page_size:limit,include_review:p.get('review')==='true'})
  if(error)return NextResponse.json({error:error.message},{status:503})

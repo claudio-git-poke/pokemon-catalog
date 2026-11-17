@@ -1,6 +1,6 @@
 import {CATALOG_LANGUAGE_CODES} from '@/lib/catalog-languages'
 import {NextRequest,NextResponse} from 'next/server'
-import {createClient} from '@supabase/supabase-js'
+import {createCatalogServerClient} from '@/lib/catalog-server'
 import {parseIdentificationQuery,validateObservations} from '@/lib/catalog-identification'
 export const maxDuration=30
 export async function POST(req:NextRequest){
@@ -11,7 +11,7 @@ export async function POST(req:NextRequest){
   const allowed=CATALOG_LANGUAGE_CODES
   if(body.language&&!allowed.includes(body.language))return NextResponse.json({error:'Lingua non riconosciuta.'},{status:400})
   const offset=Number.isInteger(body.offset)?Math.min(10000,Math.max(0,body.offset)):0
-  const db=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,{auth:{persistSession:false,autoRefreshToken:false}})
+  const db=createCatalogServerClient()
   const termResult=await db.from('catalog_terms').select('code,label,aliases').limit(2000)
   if(termResult.error)throw Error(termResult.error.message)
   const parsed=parseIdentificationQuery(body.query,termResult.data||[])

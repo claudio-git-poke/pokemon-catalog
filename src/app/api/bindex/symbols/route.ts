@@ -1,10 +1,10 @@
 import {NextRequest,NextResponse} from 'next/server'
-import {createClient} from '@supabase/supabase-js'
+import {createCatalogServerClient} from '@/lib/catalog-server'
 export const dynamic='force-dynamic'
 export async function GET(req:NextRequest){
  const p=req.nextUrl.searchParams,limit=Number(p.get('limit')||48),after=p.get('after')||''
  if(!Number.isInteger(limit)||limit<1||limit>100||after&&!/^[a-f0-9]{32}$/.test(after))return NextResponse.json({error:'Limite o cursore non valido'},{status:400})
- const db=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,{auth:{persistSession:false}})
+ const db=createCatalogServerClient()
  if(p.get('grouped')==='true'){
   const {data,error}=await db.rpc('catalog_visual_group_page',{after_group:after,page_size:limit,filter_kind:p.get('kind')||null,filter_language:p.get('language')||null,include_unlinked:p.get('all')==='true'})
   if(error)return NextResponse.json({error:error.message},{status:503})

@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+export const catalogUsesTurso = process.env.NEXT_PUBLIC_CATALOG_DATABASE === 'turso'
+const supabaseUrl = catalogUsesTurso ? `${typeof window === 'undefined' ? 'http://catalog.internal' : window.location.origin}/api/catalog-db` : process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = catalogUsesTurso ? 'catalog-public' : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey,{auth:{persistSession:!catalogUsesTurso,autoRefreshToken:!catalogUsesTurso}})
 
 export type Card = {
   manual_overrides?: Record<string, unknown>

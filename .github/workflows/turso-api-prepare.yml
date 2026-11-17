@@ -2,7 +2,7 @@ name: Prepara indici e protezioni Turso
 on:
   push:
     branches: [main]
-    paths: ['scripts/prepare-turso-api.mjs','src/server/turso-*.mjs','.github/workflows/turso-api-prepare.yml']
+    paths: ['scripts/prepare-turso-api.mjs','scripts/verify-turso-api.mjs','src/server/turso-*.mjs','.github/workflows/turso-api-prepare.yml']
   workflow_run:
     workflows: ['Copia verificata catalogo su Turso']
     types: [completed]
@@ -36,3 +36,10 @@ jobs:
         env:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      - name: Confronta letture, ricerca e simboli con il database originale
+        run: node scripts/verify-turso-api.mjs
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
