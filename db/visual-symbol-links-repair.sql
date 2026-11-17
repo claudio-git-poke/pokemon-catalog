@@ -33,6 +33,22 @@ create or replace view public.catalog_visual_group_members with(security_invoker
  from public.catalog_visual_assets a;
 grant select on public.catalog_visual_group_members to anon,authenticated,service_role;
 
+-- A conservative language prefilter. 'und' keeps legacy parent-language fallbacks eligible.
+create or replace function public.catalog_visual_entry_languages(payload jsonb,entry_language text,entry_release text) returns text[]
+language sql immutable security invoker set search_path='' as $fn$
+ select array_remove(array[
+  public.catalog_visual_language(entry_language),
+  public.catalog_visual_language(payload->>'printing_language'),
+  public.catalog_visual_language(payload->>'source_language'),
+  case when(entry_release is null or payload ? 'variant') and nullif(payload->>'printing_language','') is null
+   and nullif(payload->>'source_language','') is null then 'und' end
+ ],null)
+$fn$;
+revoke all on function public.catalog_visual_entry_languages(jsonb,text,text) from public;
+grant execute on function public.catalog_visual_entry_languages(jsonb,text,text) to anon,authenticated,service_role;
+create index if not exists catalog_entry_visual_languages on public.catalog_search_entries
+ using gin(public.catalog_visual_entry_languages(source_payload,language,release_code));
+
 -- Shared implementation keeps per-reference and grouped APIs consistent.
 create or replace function public.catalog_visual_matches(wanted_assets text[],after_key text default '',page_size integer default 24,include_review boolean default false,filter_language text default null)
 returns jsonb language plpgsql stable security invoker set search_path='' set statement_timeout='5s' set plan_cache_mode='force_custom_plan' as $$
@@ -56,10 +72,13 @@ begin
  ), candidates as(
   select e.entry_key,r.asset_key from refs r join public.catalog_search_entries e on e.tags && r.effective_tags
   where r.match_mode='tag' and r.scope='physical' and r.availability='available'
+   and(filter_language is null or public.catalog_visual_entry_languages(e.source_payload,e.language,e.release_code) && array[public.catalog_visual_language(filter_language),'und'])
+   and(include_review or r.source_language='und' or public.catalog_visual_entry_languages(e.source_payload,e.language,e.release_code) && array[public.catalog_visual_language(r.source_language),'und'])
   union all
   select e.entry_key,p.asset_key from prefixes p join public.cards c on
    (c.source_uid collate "C")>=p.prefix||'-' and (c.source_uid collate "C")<p.prefix||'.' and starts_with(c.source_uid,p.prefix||'-')
   join public.catalog_search_entries e on e.card_id=c.id
+  where filter_language is null or public.catalog_visual_entry_languages(e.source_payload,e.language,e.release_code) && array[public.catalog_visual_language(filter_language),'und']
  ), automatic as(
   select e.entry_key,case when r.match_mode='tag' then 'source' else 'candidate' end status,'candidate'::text image_match_status,null::text position,
    e.source_url evidence_url,'automatic'::text method,r.asset_key reference_asset_key,e.card_id,e.verification
