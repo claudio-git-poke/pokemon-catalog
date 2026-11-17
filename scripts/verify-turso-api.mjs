@@ -8,7 +8,8 @@ let client
 try{
  client=(await createTursoClient()).client
  const schema=JSON.parse(await readFile(new URL('../data/turso-source-schema.json',import.meta.url),'utf8'))
- const state=(await client.execute('SELECT ready FROM _catalog_api_state WHERE id=1')).rows[0]
+ const exists=(await client.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='_catalog_api_state'")).rows.length
+ const state=exists?(await client.execute('SELECT ready FROM _catalog_api_state WHERE id=1')).rows[0]:null
  if(!Number(state?.ready)){console.log(JSON.stringify({check:'turso-api-parity',verified:false,reason:'snapshot-or-indexes-incomplete'}))}
  else{
   const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY

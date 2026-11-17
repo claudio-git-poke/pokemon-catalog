@@ -1,7 +1,7 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {createClient} from '@supabase/supabase-js'
-import {catalogFixture,schema} from './helpers/turso-fixture.mjs'
+import {catalogFixture,schema,putRow} from './helpers/turso-fixture.mjs'
 import {handleCatalogRequest} from '../src/server/turso-http.mjs'
 import {updateCard,protectCardFields} from '../src/server/turso-writes.mjs'
 
@@ -38,6 +38,9 @@ test('manual edits are atomic, retain unrelated current locks, enqueue publicati
  const before=Number((await client.execute('SELECT version FROM _catalog_manual_outbox')).rows[0].version)
  const invalid=await db.from('cards').update({file_name:null}).eq('id',1);assert.ok(invalid.error);assert.equal(Number((await client.execute('SELECT version FROM _catalog_manual_outbox')).rows[0].version),before)
  assert.equal((await client.execute('SELECT mode,depth FROM _catalog_write_context')).rows[0].mode,'manual')
+ await putRow(client,'cards',{id:2,file_name:'other.png'})
+ const duplicate=await db.from('cards').update({file_name:'other.png'}).eq('id',1);assert.equal(duplicate.status,409)
+ assert.equal((await db.from('cards').select('file_name').eq('id',1).single()).data.file_name,'iono.png')
  client.close()
 })
 test('HTTP cannot expose private history, invoke worker RPCs, spoof automatic mode or make cross-origin writes',async()=>{

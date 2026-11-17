@@ -42,6 +42,7 @@ export async function updateCard(client,schema,params,patch,mode='manual'){
  return writeTransaction(client,async tx=>{
   const result=await tx.execute({sql:'SELECT _row FROM _copy_cards WHERE _key=?',args:[JSON.stringify([Number(id)])]})
   if(!result.rows.length)return {rows:[]}
+  if(own(clean,'file_name')&&(await tx.execute({sql:"SELECT _key FROM _copy_cards WHERE json_extract(_row,'$.file_name')=? AND _key<>? LIMIT 1",args:[clean.file_name,JSON.stringify([Number(id)])]})).rows.length)throw new CatalogRestError('Esiste già una carta con questo nome file.','23505',409)
   await saveRow(tx,JSON.parse(result.rows[0]._row),clean,mode,'card_editor')
   return readCatalogRows(tx,schema,'cards',params)
  })
