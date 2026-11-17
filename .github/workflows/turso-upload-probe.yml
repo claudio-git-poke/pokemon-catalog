@@ -4,6 +4,11 @@ on:
     branches: [main]
     paths: ['scripts/turso-upload-probe.mjs','scripts/turso-platform.mjs','.github/workflows/turso-upload-probe.yml']
   workflow_dispatch:
+    inputs:
+      keep:
+        description: 'Lasciare il database di prova per leggere i consumi più tardi'
+        type: boolean
+        default: true
 permissions:
   contents: read
 concurrency:
@@ -27,3 +32,4 @@ jobs:
         env:
           TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
           TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
+          PROBE_KEEP: ${{ github.event_name != 'workflow_dispatch' || inputs.keep }}
