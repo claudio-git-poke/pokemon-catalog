@@ -50,3 +50,14 @@ test('an incomplete metadata page is repeated rather than skipped, and completed
  await backfillCardMetadata({db,fetchPage:page,languages:['it'],version:'test',log:()=>{},clock:()=>2000,deadline:100000})
  assert.equal(calls[0],8,'an interrupted cycle resumes after earlier acknowledged pages')
 })
+test('bounded metadata jobs acknowledge one configured-size page and resume instead of falsely completing its language',async()=>{
+ let state=[],calls=[]
+ const db={from(){return {select(){return Promise.resolve({data:state,error:null})},upsert(row){state=[row];return Promise.resolve({data:[row],error:null})}}},async rpc(){return {data:{updated:1,matched:1,deferred:0},error:null}}}
+ const page=async(language,n,size)=>{calls.push([language,n,size]);return Array.from({length:n===1?500:3},(_,i)=>({source_uid:'tcgdex:de:sv02-'+i}))}
+ const options={db,fetchPage:page,languages:['de'],version:'worker-page500',pageSize:500,maxPages:1,log:()=>{},clock:()=>1000,deadline:100000}
+ let result=await backfillCardMetadata(options)
+ assert.deepEqual(calls,[['de',1,500]]);assert.equal(state[0].next_page,2);assert.equal(state[0].completed_at,null);assert.ok(result.deferred>0)
+ calls=[];result=await backfillCardMetadata(options)
+ assert.deepEqual(calls,[['de',2,500]]);assert.equal(state[0].next_page,1);assert.ok(state[0].completed_at);assert.equal(result.deferred,0)
+ await assert.rejects(backfillCardMetadata({...options,version:undefined}),/versione distinta/)
+})

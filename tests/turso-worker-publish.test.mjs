@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import {catalogFixture,rowFor,schema} from './helpers/turso-fixture.mjs'
 import {canonicalJson} from '../scripts/turso-snapshot.mjs'
 import {stageWorkerDelta,publishWorkerDelta} from '../scripts/turso-worker-publish.mjs'
+import {hydrateWorker} from '../scripts/turso-worker-data.mjs'
+import {readFileSync} from 'node:fs'
 const read=async(c,name,key)=>{const r=(await c.execute({sql:'SELECT _row FROM "_copy_'+name+'" WHERE _key=?',args:[canonicalJson(key)]})).rows[0];return r?JSON.parse(r._row):null}
 
 test('durable publication resumes after interruption, preserves a later manual edit and timestamps feeds at publication',async()=>{
@@ -42,5 +44,17 @@ test('a conflicting new identity rolls back data and cursor; authenticated archi
  assert.equal((await read(c,'cards',[1])).nome,'Originale');assert.equal(Number((await c.execute('SELECT cursor FROM _catalog_worker_journal')).rows[0].cursor),0)
  assert.equal((await c.execute('SELECT mode FROM _catalog_write_context')).rows[0].mode,'manual')
  await assert.rejects(stageWorkerDelta(c,schema,{...packet,run_id:'102'}),/precedente/)
+ c.close()
+})
+test('historical-log sequence reservations survive a decimal digit boundary in textual key order',async()=>{
+ const c=await catalogFixture({catalog_sync_runs:[{id:1,started_at:'2026-11-17T00:00:00Z',status:'success'}]})
+ const changes=[9999,10000].map(id=>({table_name:'catalog_sync_events',record_key:[id],first_old:null,last_new:rowFor('catalog_sync_events',{id,run_id:1,event_key:'log-'+id,at:'2026-11-17T00:00:00Z',message:'event'})}))
+ await stageWorkerDelta(c,schema,{contract:'catalog-worker-delta-v1',run_id:'103',source_id:'domain-fixture',changes})
+ await publishWorkerDelta(c,schema,'103')
+ assert.equal(Number((await c.execute("SELECT value FROM _catalog_worker_sequences WHERE table_name='catalog_sync_events'")).rows[0].value),10000)
+ const snapshot=JSON.parse(readFileSync(new URL('../data/turso-worker-pg-schema.json',import.meta.url),'utf8')),statements=[]
+ await hydrateWorker({client:c,snapshot,executeSql:async sql=>statements.push(sql)})
+ assert.ok(statements.includes("SELECT pg_catalog.setval('public.catalog_sync_events_id_seq',10000,true);"))
+ assert.ok(!statements.some(sql=>sql.startsWith('INSERT INTO "public"."catalog_sync_events"')))
  c.close()
 })

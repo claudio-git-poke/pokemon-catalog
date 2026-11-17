@@ -29,8 +29,14 @@ export async function hydrateWorker({client,snapshot,executeSql,log=()=>{}}){
   }
   for(const sequence of snapshot.sequences){
    const owner=sequence.ownership;if(!owner)continue
-   const maximum=(await client.execute('SELECT json_extract(_row,\'$.'+owner.column+'\') value FROM '+qid('_copy_'+owner.table)+' ORDER BY _position DESC LIMIT 1')).rows[0]?.value
-   if(maximum!=null){if(!Number.isSafeInteger(Number(maximum))||Number(maximum)<1)throw Error('Sequenza non rappresentabile senza perdita.');await executeSql("SELECT pg_catalog.setval('"+sequence.schema+'.'+sequence.name+"',"+Number(maximum)+',true);')}
+   let maximum
+   if(owner.table==='catalog_sync_events'){
+    const baseline=(await client.execute({sql:'SELECT cursor FROM _catalog_snapshot_state WHERE table_name=?',args:[owner.table]})).rows[0]?.cursor
+    maximum=baseline?JSON.parse(baseline)[0]:0
+    const counterExists=(await client.execute("SELECT name FROM sqlite_master WHERE name='_catalog_worker_sequences'")).rows.length
+    if(counterExists)maximum=Math.max(Number(maximum),(await client.execute({sql:'SELECT value FROM _catalog_worker_sequences WHERE table_name=?',args:[owner.table]})).rows[0]?.value||0)
+   }else maximum=(await client.execute('SELECT max(json_extract(_row,\'$.'+owner.column+'\')) value FROM '+qid('_copy_'+owner.table))).rows[0]?.value
+   if(maximum!=null&&Number(maximum)!==0){if(!Number.isSafeInteger(Number(maximum))||Number(maximum)<1)throw Error('Sequenza non rappresentabile senza perdita.');await executeSql("SELECT pg_catalog.setval('"+sequence.schema+'.'+sequence.name+"',"+Number(maximum)+',true);')}
   }
  }finally{await executeSql('SET session_replication_role=origin;')}
 }

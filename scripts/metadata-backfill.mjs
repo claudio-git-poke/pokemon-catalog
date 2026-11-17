@@ -4,7 +4,10 @@ import {fetchMetadataPage} from './tcgdex-metadata-pages.mjs'
 import {retryRarityRpc} from './rarity-evidence.mjs'
 export const METADATA_VERSION='fields-v1-p2000:'+createHash('sha256').update(readFileSync(new URL('../data/catalog-rarity-aliases.json',import.meta.url))).update(readFileSync(new URL('../data/catalog-metadata-aliases.json',import.meta.url))).digest('hex').slice(0,16)
 const check=async q=>{const {data,error}=await q;if(error)throw Error(error.message);return data}
-export async function backfillCardMetadata({db,log=console.log,deadline=Date.now()+35*60000,clock=Date.now,fetchPage=fetchMetadataPage,languages,version=METADATA_VERSION}){
+export async function backfillCardMetadata({db,log=console.log,deadline=Date.now()+35*60000,clock=Date.now,fetchPage=fetchMetadataPage,languages,version=METADATA_VERSION,pageSize=2000,maxPages=Infinity}){
+ if(!Number.isInteger(pageSize)||pageSize<1||pageSize>2000||maxPages!==Infinity&&(!Number.isInteger(maxPages)||maxPages<1))throw Error('Limiti del recupero metadati non validi.')
+ if(pageSize!==2000&&version===METADATA_VERSION)throw Error('Una dimensione pagina diversa richiede una versione distinta del cursore.')
+ let processedPages=0
  const stats={languages:{},updated:0,matched:0,deferred:0}
  const available=languages||await retryRarityRpc(db,'catalog_card_metadata_languages',{})
  const states=await check(db.from('catalog_metadata_backfill_state').select('*'))
@@ -13,7 +16,7 @@ export async function backfillCardMetadata({db,log=console.log,deadline=Date.now
   const aPending=byLanguage.get(a)?.next_page>1,bPending=byLanguage.get(b)?.next_page>1
   return Number(bPending)-Number(aPending)||priority.indexOf(a)-priority.indexOf(b)
  })
- const timeLeft=()=>clock()<deadline-65000
+ const timeLeft=()=>clock()<deadline-65000&&processedPages<maxPages
  for(const language of ordered){
   if(!timeLeft()){stats.deferred++;break}
   const saved=byLanguage.get(language),same=saved?.mapping_version===version
@@ -23,7 +26,7 @@ export async function backfillCardMetadata({db,log=console.log,deadline=Date.now
   try{
    while(timeLeft()){
     // Fetch two pages concurrently; acknowledge them strictly in order after publishing every batch.
-    const window=await Promise.allSettled([fetchPage(language,page,2000),fetchPage(language,page+1,2000)])
+    const window=await Promise.allSettled(Array.from({length:Math.min(2,maxPages-processedPages)},(_,i)=>fetchPage(language,page+i,pageSize)))
     for(const result of window){
      if(result.status==='rejected')throw result.reason
      const rows=result.value
@@ -33,10 +36,11 @@ export async function backfillCardMetadata({db,log=console.log,deadline=Date.now
       current.updated+=r.updated;current.matched+=r.matched;stats.updated+=r.updated;stats.matched+=r.matched;deferred+=r.deferred
      }
      if(deferred){stats.deferred+=deferred;throw Error('Righe bloccate: la pagina sarà ripetuta')}
-     const complete=rows.length<2000,next_page=complete?1:page+1
+     const complete=rows.length<pageSize,next_page=complete?1:page+1
      await check(db.from('catalog_metadata_backfill_state').upsert({source_language:language,next_page,mapping_version:version,
       completed_at:complete?new Date(clock()).toISOString():null,updated_at:new Date(clock()).toISOString()},{onConflict:'source_language'}))
      current.next_page=next_page;current.complete=complete
+     processedPages++
      await log(`Metadati ${language}: pagina ${page}, ${current.matched} carte presenti, ${current.updated} righe aggiornate${complete?' · lingua completata':''}.`)
      page++
      if(complete)break

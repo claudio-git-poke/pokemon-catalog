@@ -1,0 +1,53 @@
+name: Verifica importatori PostgreSQL temporanei
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/turso-worker-*.mjs','scripts/verify-turso-native-worker.mjs','data/turso-worker-pg-schema.json','.github/workflows/turso-native-verify.yml']
+  workflow_run:
+    workflows: ['Prepara indici e protezioni Turso']
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: turso-native-worker
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: catalog_worker_${{ github.run_id }}
+          POSTGRES_PASSWORD: local-only-disposable-worker
+        ports: ['127.0.0.1:5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Installa PostgREST ufficiale con versione e digest fissati
+        run: |
+          curl --fail --location --silent --show-error --retry 3 --output postgrest.tar.xz https://github.com/PostgREST/postgrest/releases/download/v16.6/postgrest-v16.6-linux-static-x86-64.tar.xz
+          echo '335ea29f00145705fb569b1268b9c8e53d062f8f6f9188192e92ea3781d2dca1  postgrest.tar.xz' | sha256sum --check
+          tar -xJf postgrest.tar.xz postgrest
+          chmod 700 postgrest
+      - name: Ricostruisce e verifica senza pubblicare nuove righe
+        run: node --experimental-strip-types scripts/verify-turso-native-worker.mjs
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          CATALOG_DISPOSABLE_POSTGRES: '1'
+          PGHOST: 127.0.0.1
+          PGPORT: '5432'
+          PGDATABASE: catalog_worker_${{ github.run_id }}
+          PGUSER: postgres
+          PGPASSWORD: local-only-disposable-worker
