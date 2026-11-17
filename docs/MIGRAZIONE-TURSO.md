@@ -24,3 +24,13 @@ La prima esecuzione include anche il registro tecnico storico. I nuovi log dell'
 Una copia verificata non equivale ancora al passaggio delle API. Il rapporto riporta esplicitamente `cutover: false`. Prima di cambiare il sito occorrono il livello di compatibilità per le richieste di ricercaDB, la protezione delle scritture manuali e l'adattamento degli importatori. La copia originale Supabase va conservata finché questi controlli non sono completati.
 
 Il piano gratuito Turso ha limiti di spazio e operazioni. I successivi aggiornamenti devono modificare soltanto righe effettivamente cambiate e conservare un registro tecnico limitato, evitando di riscrivere continuamente l'intero catalogo.
+
+## Letture e protezioni dopo la copia
+
+Il workflow **Prepara indici e protezioni Turso** attende che la copia sia interamente verificata. Prepara gli indici di ricerca, le viste con i nomi originali e i gruppi di simboli con gli stessi identificativi PostgreSQL. La lettura pubblica ammette soltanto tabelle e campi del contratto originale; la cronologia privata resta esclusa.
+
+Le modifiche SQL sulle viste del catalogo vengono acquisite come manuali. I worker impostano invece `mode='automatic'` nella propria transazione e lo ripristinano prima del commit. I trigger conservano le protezioni precedenti, anche per valori nulli, array vuoti e JSON vuoti. Le correzioni delle varianti prevalgono su quelle generali della carta; una scelta manuale aggiorna anche la ricerca e viene aggiunta alla cronologia append-only. Una modifica non valida annulla l'intera transazione.
+
+Gli hash `_hash` certificano la copia iniziale. Una modifica successiva viene marcata `pending` finché il writer non aggiorna il digest: quel marcatore non viene presentato come un hash verificato del contenuto corrente. I campi interni non fanno parte dell'API pubblica.
+
+La preparazione degli indici non effettua il cambio del sito e non riattiva gli importatori Supabase.
