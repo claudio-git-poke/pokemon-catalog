@@ -1,0 +1,26 @@
+name: Connessione gratuita Turso
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/check-turso-connection.mjs','scripts/turso-client.mjs','.github/workflows/turso-connection.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  connection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verifica SQL senza modificare dati
+        run: node scripts/check-turso-connection.mjs
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
