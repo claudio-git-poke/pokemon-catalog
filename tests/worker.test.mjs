@@ -23,12 +23,15 @@ test('worker imports, reconciles, retries, excludes Pocket and preserves a concu
    return {serie:{id:'misc'},cards:[{id:'mfb-14',localId:'14',name:'Arcanine'}, ...(extended && path.startsWith('en/') ? [{id:'mfb-10',localId:'10',name:'Charmeleon'}] : [])]}
   }
   const search=async card=>{searches++;return {url:null,message:'Not yet available'}}
-  const first=await syncCatalog({db,fetchSource,search})
+  const printed=[],originalLog=console.log
+  console.log=(...args)=>printed.push(args.join(' '))
+  let first
+  try{first=await syncCatalog({db,fetchSource,search})}finally{console.log=originalLog}
   assert.equal(first.linked,1);assert.equal(first.added,SOURCES.length-1)
   const logged=(await pg.query('select summary from catalog_sync_runs order by id desc limit 1')).rows[0].summary
-  const events=(await pg.query('select message from catalog_sync_events where run_id=1 order by id')).rows
-  assert.ok(events.some(e=>e.message.includes('Collegata carta esistente')))
-  assert.ok(events.some(e=>e.message.includes('Ricerca immagini')))
+  assert.ok(printed.some(e=>e.includes('Collegata carta esistente')))
+  assert.ok(printed.some(e=>e.includes('Ricerca immagini')))
+  assert.equal((await pg.query('select count(*)::int n from catalog_sync_events')).rows[0].n,0,'events stay out of the database')
   assert.equal(logged.events,undefined)
   assert.equal(logged.current,'Esecuzione conclusa')
   assert.equal(logged.added,first.added)

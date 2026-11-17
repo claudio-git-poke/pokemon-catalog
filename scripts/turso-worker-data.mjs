@@ -55,6 +55,8 @@ export function captureDeltaStatements(snapshot){
    END $fn$;`
  ]
  for(const table of snapshot.tables){
+  // Technical log rows never reach Turso: they are kept in GitHub Actions output.
+  if(table.name==='catalog_sync_events')continue
   const primary=snapshot.constraints.find(c=>c.table===table.name&&c.type==='p')?.definition.match(/^PRIMARY KEY \(([^)]+)\)/)?.[1].split(',').map(k=>k.trim().replaceAll('"',''))
   if(!primary?.length||primary.some(k=>!/^[a-z][a-z0-9_]*$/.test(k)))throw Error('Chiave primaria non valida: '+table.name)
   statements.push('CREATE TRIGGER zzzzzz_turso_delta AFTER INSERT OR UPDATE OR DELETE ON public.'+qid(table.name)+" FOR EACH ROW EXECUTE FUNCTION catalog_internal.capture_turso_delta('"+primary.join(',')+"');")

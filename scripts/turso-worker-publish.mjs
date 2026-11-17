@@ -1,6 +1,7 @@
 import {sealWorkerDelta,openWorkerDelta,mergeWorkerChange} from './turso-worker-data.mjs'
 import {canonicalJson,hash,recordKey} from './turso-snapshot.mjs'
 import {normalizeCatalog} from '../src/server/turso-values.mjs'
+import {estimateWrites} from './turso-budget.mjs'
 const qid=value=>'"'+String(value).replaceAll('"','""')+'"'
 const storage=name=>qid('_copy_'+name)
 async function transaction(client,operation){const tx=await client.transaction('write');try{const value=await operation(tx);await tx.commit();return value}catch(error){await tx.rollback();throw error}finally{tx.close()}}
@@ -76,16 +77,23 @@ async function readRows(tx,name,keys){
  const rows=(await tx.execute({sql:'SELECT _key,_row,_position FROM '+storage(name)+' WHERE _key IN ('+keys.map(()=>'?').join(',')+')',args:keys})).rows
  return new Map(rows.map(r=>[r._key,{row:JSON.parse(r._row),position:Number(r._position)}]))
 }
-export async function publishWorkerDelta(client,schema,runId,{batchSize=100,log=()=>{},maxBatches=Infinity,clock=Date.now}={}){
+export async function publishWorkerDelta(client,schema,runId,{batchSize=100,log=()=>{},maxBatches=Infinity,clock=Date.now,writeBudget=Infinity}={}){
  if(!Number.isSafeInteger(batchSize)||batchSize<1||batchSize>200||maxBatches!==Infinity&&(!Number.isSafeInteger(maxBatches)||maxBatches<0))throw Error('Lotto di pubblicazione non valido.')
+ if(writeBudget!==Infinity&&!(Number.isSafeInteger(writeBudget)&&writeBudget>=0))throw Error('Budget di scrittura non valido.')
  const {journal,packet}=await readPacket(client,runId)
  if(!packet)return {run_id:runId,complete:true,already_applied:true}
  const meta=(await client.execute('SELECT source_id FROM _catalog_snapshot_meta WHERE id=1')).rows[0]
  if(packet.source_id!==meta.source_id)throw Error('Origine della pubblicazione non valida.')
  const ordered=orderWorkerChanges(schema,packet.changes)
  if(canonicalJson(ordered)!==canonicalJson(packet.changes))throw Error('Ordine delle differenze non valido.')
- let batches=0,cursor=Number(journal.cursor)
- while(cursor<packet.changes.length&&batches++<maxBatches){
+ let batches=0,cursor=Number(journal.cursor),estimated=0,budgetReached=false
+ while(cursor<packet.changes.length&&batches<maxBatches){
+  // Conservative estimate of the Turso rows written by the next batch: stop
+  // before the free-plan budget instead of discovering the excess afterwards.
+  const nextTable=packet.changes[cursor].table_name,nextRows=Math.min(batchSize,packet.changes.length-cursor)
+  if(estimated+estimateWrites(nextTable,nextRows)>writeBudget){budgetReached=true;break}
+  batches++
+  const before=cursor
   cursor=await transaction(client,async tx=>{
    const saved=(await tx.execute({sql:'SELECT cursor,state FROM _catalog_worker_journal WHERE run_id=?',args:[runId]})).rows[0]
    if(saved.state==='applied')return packet.changes.length
@@ -132,7 +140,8 @@ export async function publishWorkerDelta(client,schema,runId,{batchSize=100,log=
    await tx.batch(finish)
    return end
   })
-  await log({phase:'publish-worker',run_id:runId,rows:cursor,total:packet.changes.length})
+  estimated+=estimateWrites(nextTable,cursor-before)
+  await log({phase:'publish-worker',run_id:runId,rows:cursor,total:packet.changes.length,estimated_writes:estimated})
  }
  if(cursor===packet.changes.length){
   await transaction(client,async tx=>{
@@ -144,5 +153,5 @@ export async function publishWorkerDelta(client,schema,runId,{batchSize=100,log=
    await tx.execute({sql:'DELETE FROM _catalog_worker_chunks WHERE run_id=?',args:[runId]})
   })
  }
- return {run_id:runId,complete:cursor===packet.changes.length,rows:cursor,total:packet.changes.length}
+ return {run_id:runId,complete:cursor===packet.changes.length,rows:cursor,total:packet.changes.length,estimated_writes:estimated,budget_reached:budgetReached}
 }
