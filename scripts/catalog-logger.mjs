@@ -1,8 +1,11 @@
 import {databaseError,isTransientDatabaseError} from './database-errors.mjs'
-import { randomUUID } from 'node:crypto'
-export function createCatalogLogger({db,runId,summary,clock=Date.now,output=console.log,wait=ms=>new Promise(resolve=>setTimeout(resolve,ms))}) {
- summary.logger_version=3
- let buffer=[],lastFlush=0,flushing=Promise.resolve(),pending=[]
+// Log v4: every message goes only to the process output (GitHub Actions keeps
+// the full log). The database receives just the small run summary, at most
+// once every `summaryEveryMs`. Storing each event filled the free database
+// quota (1.1 million rows, 332 MB) and multiplied the writes of every session.
+export function createCatalogLogger({db,runId,summary,clock=Date.now,output=console.log,wait=ms=>new Promise(resolve=>setTimeout(resolve,ms)),summaryEveryMs=30000}) {
+ summary.logger_version=4
+ let lastFlush=0,flushing=Promise.resolve(),pending=null
  async function check(operation){
   for(let attempt=0;;attempt++){
    let error
@@ -16,26 +19,18 @@ export function createCatalogLogger({db,runId,summary,clock=Date.now,output=cons
  }
  return async function log(message,force=false){
   const at=new Date(clock()).toISOString()
-  buffer.push({run_id:runId,at,message,event_key:randomUUID()})
   output(`[${at}] ${message}`)
-  if(force || clock()-lastFlush>=1000 || buffer.length>=50){
-   // Detach synchronously: concurrent workers must never insert the same batch twice.
-   const batch=buffer
-   buffer=[]
-   lastFlush=clock()
-   const snapshot={...summary,log_version:2,current:message,updated_at:at}
-   pending.push({batch,snapshot})
-   // A failed flush remains queued. A later call retries it with the SAME keys,
-   // including when events committed but the summary response was lost.
-   flushing=flushing.catch(()=>{}).then(async()=>{
-    while(pending.length){
-     const task=pending[0]
-     await check(()=>db.from('catalog_sync_events').upsert(task.batch,{onConflict:'run_id,event_key',ignoreDuplicates:true}))
-     await check(()=>db.from('catalog_sync_runs').update({summary:task.snapshot}).eq('id',runId))
-     pending.shift()
-    }
-   })
-   await flushing
-  }
+  if(!force&&clock()-lastFlush<summaryEveryMs)return
+  lastFlush=clock()
+  // Only the latest summary matters: a newer snapshot replaces one still waiting.
+  pending={...summary,log_version:3,current:message,updated_at:at}
+  flushing=flushing.catch(()=>{}).then(async()=>{
+   while(pending){
+    const snapshot=pending
+    await check(()=>db.from('catalog_sync_runs').update({summary:snapshot}).eq('id',runId))
+    if(pending===snapshot)pending=null
+   }
+  })
+  await flushing
  }
 }

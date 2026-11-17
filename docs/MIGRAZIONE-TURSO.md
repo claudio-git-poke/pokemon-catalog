@@ -72,3 +72,34 @@ I genitori vengono inseriti prima dei figli e le cancellazioni seguono l'ordine 
 Le date dei feed vengono assegnate al momento della pubblicazione. La coda manuale viene confermata soltanto alla fine e soltanto per la versione effettivamente elaborata: una correzione successiva rimane in attesa. La chiave e i blocchi cifrati vengono eliminati dopo la pubblicazione completa; restano il digest e i metadati dell'esecuzione. Un'identità nuova già occupata sospende il lotto conservando l'archivio.
 
 Il registro è privato e non richiede artifact pubblici con dati del catalogo. Restano da collegare questi moduli all'esecutore temporaneo e alla ripartenza dei worker; questo codice da solo non riattiva nessun importatore.
+
+## Limiti gratuiti e freno dei consumi (17 novembre 2026)
+
+La prima copia ha esaurito la quota gratuita mensile di 10 milioni di righe scritte e Turso ha bloccato l'account fino al rinnovo. Turso conta anche ogni voce di indice e ogni riga toccata dai trigger. Le cause:
+
+- il registro tecnico `catalog_sync_events` (1.130.600 righe, più di metà della copia), con circa tre scritture per riga;
+- la preparazione degli indici, della ricerca a testo e della tabella dei tag sulle 349.530 stampe.
+
+I workflow **Copia verificata catalogo su Turso** e **Prepara indici e protezioni Turso** sono disattivati. Supabase ha superato il limite gratuito di 500 MB: il catalogo resta fermo fino al passaggio a Turso.
+
+Correzioni:
+
+- Il registro v4 scrive gli eventi solo nell'output del processo (log di GitHub Actions). Nel database resta il riepilogo dell'esecuzione, aggiornato al massimo ogni 30 secondi. La pagina `/automazione` rimanda ai log di GitHub Actions invece di interrogare il database ogni secondo. Le differenze dei worker non includono più `catalog_sync_events`.
+- `scripts/turso-budget.mjs` legge i consumi ufficiali dalla Platform API di Turso e divide la quota residua fino all'80% del limite sui giorni e sulle esecuzioni rimanenti. Senza credenziali o con una risposta non valida il freno blocca le scritture.
+- `publishWorkerDelta` accetta `writeBudget`: stima il costo di ogni lotto prima di eseguirlo e si ferma conservando il cursore, per riprendere all'esecuzione successiva.
+
+Costi misurati sullo schema reale (`tests/helpers/turso-fixture.mjs`):
+
+| Tabella | Righe modificate per riga pubblicata | Stima in scritture Turso, con margine |
+|---|---|---|
+| Stampa (`catalog_search_entries`) | circa 27 | 70 |
+| Carta (`cards`) | circa 5 | 40 |
+| Altre tabelle | — | 15 |
+
+Un aggiornamento di massa delle 349.530 stampe costerebbe quindi più del doppio dell'intera quota mensile gratuita. I recuperi retroattivi devono procedere a rate, entro il budget di ogni esecuzione.
+
+Segreti necessari per il freno:
+
+- `TURSO_API_TOKEN`: token della Platform API, creato dalla dashboard Turso o con `turso auth api-tokens mint`;
+- `TURSO_ORGANIZATION`: slug dell'organizzazione o dell'account;
+- facoltativo `TURSO_RESET_DAY`: giorno di rinnovo della quota, predefinito 1.
