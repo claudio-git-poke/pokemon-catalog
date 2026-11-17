@@ -27,6 +27,15 @@ export function createPlatform({token,organization},{fetchImpl=fetch}={}){
    return values
   },
   async groups(){return (await call('GET','/groups')).groups||[]},
+  async locations(){
+   const response=await fetchImpl(API+'/locations',{headers:{authorization:'Bearer '+token}})
+   if(!response.ok)throw Error('Elenco delle località Turso non disponibile: HTTP '+response.status)
+   return Object.keys((await response.json()).locations||{})
+  },
+  async createGroup(name,location){
+   if(!/^[a-z0-9-]{1,40}$/.test(name)||!/^[a-z0-9-]{2,40}$/.test(location))throw Error('Gruppo o località non validi.')
+   return (await call('POST','/groups',{name,location})).group
+  },
   async databases(){return (await call('GET','/databases')).databases||[]},
   async createUploadDatabase(name,group){
    const database=(await call('POST','/databases',{name:validDatabaseName(name),group,seed:{type:'database_upload'}})).database
@@ -40,6 +49,20 @@ export function createPlatform({token,organization},{fetchImpl=fetch}={}){
   },
   async deleteDatabase(name){return call('DELETE','/databases/'+validDatabaseName(name))}
  }
+}
+// Vercel runs the site functions in iad1 (US East) unless configured otherwise:
+// the database group stays next to them.
+export const PREFERRED_LOCATIONS=['aws-us-east-1','iad','aws-us-east-2','aws-eu-west-1']
+export async function ensureGroup(platform,log=()=>{}){
+ const groups=await platform.groups()
+ const existing=groups.find(g=>g.name==='default')||groups[0]
+ if(existing)return existing.name
+ const available=await platform.locations()
+ const location=PREFERRED_LOCATIONS.find(l=>available.includes(l))||available[0]
+ if(!location)throw Error('Nessuna località Turso disponibile per creare il gruppo.')
+ await platform.createGroup('default',location)
+ log({phase:'group-created',group:'default',location})
+ return 'default'
 }
 // Upload a WAL-checkpointed SQLite file as the initial content of a database
 // created with seed type database_upload.
