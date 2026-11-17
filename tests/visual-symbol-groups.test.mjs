@@ -119,5 +119,11 @@ test('generic fallback is scoped to matching printings, stable across pages and 
   await pg.exec("insert into catalog_visual_links(asset_key,entry_key,status,evidence_url) values(repeat('1',32),'a:en','rejected','https://example.com/review');")
   assert.ok(!(await single()).some(r=>r.card_id===4),'rejecting a known printing does not revive its generic fallback')
   assert.ok(!(await cards(pg,key,'',100,'en')).results.some(r=>r.card_id===4))
+  await pg.exec(`insert into cards values(5,'atlas:ko:OTHER-5','ko',null);
+   insert into catalog_search_entries(entry_key,card_id,name,language,tags,source_payload,verification) values('card:5',5,'Parent language fallback','INT',array['type:fire'],'{}','catalog');
+   insert into catalog_visual_assets(asset_key,kind,source_code,source_language,name,scope,image_url,image_sha256,availability,match_mode,tag_code,original_path,source_pack)
+    values(repeat('9',32),'energy','fire','und','Fire','physical','https://example.com/fire.png',repeat('f',64),'available','tag','type:fire','fire.png','test');`)
+  const fallback=(await pg.query("select catalog_visual_matches(array[repeat('9',32)],'',100,false,'ko') r")).rows[0].r
+  assert.equal(fallback.results[0].card_id,5,'the indexed prefilter keeps undocumented parent-language fallbacks')
  }finally{await pg.close()}
 })

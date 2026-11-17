@@ -33,9 +33,25 @@ create or replace view public.catalog_visual_group_members with(security_invoker
  from public.catalog_visual_assets a;
 grant select on public.catalog_visual_group_members to anon,authenticated,service_role;
 
+-- A conservative language prefilter. 'und' keeps legacy parent-language fallbacks eligible.
+create or replace function public.catalog_visual_entry_languages(payload jsonb,entry_language text,entry_release text) returns text[]
+language sql immutable security invoker set search_path='' as $fn$
+ select array_remove(array[
+  public.catalog_visual_language(entry_language),
+  case when nullif(payload->>'printing_language','') is not null then public.catalog_visual_language(payload->>'printing_language') end,
+  case when nullif(payload->>'source_language','') is not null then public.catalog_visual_language(payload->>'source_language') end,
+  case when(entry_release is null or payload ? 'variant') and nullif(payload->>'printing_language','') is null
+   and nullif(payload->>'source_language','') is null then 'und' end
+ ],null)
+$fn$;
+revoke all on function public.catalog_visual_entry_languages(jsonb,text,text) from public;
+grant execute on function public.catalog_visual_entry_languages(jsonb,text,text) to anon,authenticated,service_role;
+create index if not exists catalog_entry_visual_languages on public.catalog_search_entries
+ using gin(public.catalog_visual_entry_languages(source_payload,language,release_code));
+
 -- Shared implementation keeps per-reference and grouped APIs consistent.
 create or replace function public.catalog_visual_matches(wanted_assets text[],after_key text default '',page_size integer default 24,include_review boolean default false,filter_language text default null)
-returns jsonb language plpgsql stable security invoker set search_path='' set statement_timeout='5s' as $$
+returns jsonb language plpgsql stable security invoker set search_path='' set statement_timeout='5s' set plan_cache_mode='force_custom_plan' as $$
 declare result jsonb;
 begin
  if page_size is null or page_size<1 or page_size>100 or coalesce(cardinality(wanted_assets),0)>1000 then raise exception 'Limite non valido';end if;
@@ -56,31 +72,36 @@ begin
  ), candidates as(
   select e.entry_key,r.asset_key from refs r join public.catalog_search_entries e on e.tags && r.effective_tags
   where r.match_mode='tag' and r.scope='physical' and r.availability='available'
+   and(filter_language is null or public.catalog_visual_entry_languages(e.source_payload,e.language,e.release_code) && array[public.catalog_visual_language(filter_language),'und'])
+   and(include_review or r.source_language='und' or public.catalog_visual_entry_languages(e.source_payload,e.language,e.release_code) && array[public.catalog_visual_language(r.source_language),'und'])
   union all
   select e.entry_key,p.asset_key from prefixes p join public.cards c on
    (c.source_uid collate "C")>=p.prefix||'-' and (c.source_uid collate "C")<p.prefix||'.' and starts_with(c.source_uid,p.prefix||'-')
   join public.catalog_search_entries e on e.card_id=c.id
+  where filter_language is null or public.catalog_visual_entry_languages(e.source_payload,e.language,e.release_code) && array[public.catalog_visual_language(filter_language),'und']
  ), automatic as(
   select e.entry_key,case when r.match_mode='tag' then 'source' else 'candidate' end status,'candidate'::text image_match_status,null::text position,
-   e.source_url evidence_url,'automatic'::text method,r.asset_key reference_asset_key
-  from candidates k join refs r using(asset_key) join public.catalog_search_entries e using(entry_key) join public.cards c on c.id=e.card_id
-  where include_review or r.source_language='und' or public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
-   (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(r.source_language)
+   e.source_url evidence_url,'automatic'::text method,r.asset_key reference_asset_key,e.card_id,e.verification
+  from candidates k join refs r using(asset_key) join public.catalog_search_entries e using(entry_key)
+  where include_review or r.source_language='und' or exists(select 1 from public.cards c where c.id=e.card_id and public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
+   (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(r.source_language))
  ), manual as(
-  select l.entry_key,l.status,l.image_match_status,l.position,l.evidence_url,'reviewed-link'::text method,l.asset_key reference_asset_key
-  from public.catalog_visual_links l join refs r using(asset_key) where r.scope='physical' and l.status<>'rejected'
+  select l.entry_key,l.status,l.image_match_status,l.position,l.evidence_url,'reviewed-link'::text method,l.asset_key reference_asset_key,e.card_id,e.verification
+  from public.catalog_visual_links l join refs r using(asset_key) join public.catalog_search_entries e using(entry_key) where r.scope='physical' and l.status<>'rejected'
  ), selected as materialized(select * from automatic union all select * from manual), variant_cards as materialized(
-  -- Decide fallback before pagination. Explicit rejections must never revive a generic row.
-  select distinct e.card_id from selected s join public.catalog_search_entries e using(entry_key) join public.cards c on c.id=e.card_id
-  where e.verification<>'catalog' and(filter_language is null or public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
-   (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(filter_language))
+  -- Carry identity fields through candidates instead of re-reading every entry twice.
+  select distinct s.card_id from selected s where s.verification<>'catalog' and(filter_language is null or exists(select 1 from public.catalog_search_entries e join public.cards c on c.id=e.card_id
+    where e.entry_key=s.entry_key and public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
+    (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(filter_language)))
   union select e.card_id from blocked b join public.catalog_search_entries e using(entry_key) where e.verification<>'catalog'
  ), deduplicated as(
-  select distinct on(s.entry_key) s.* from selected s join public.catalog_search_entries e using(entry_key) join public.cards c on c.id=e.card_id
+  select distinct on(s.entry_key) s.entry_key,s.status,s.image_match_status,s.position,s.evidence_url,s.method,s.reference_asset_key
+  from selected s left join variant_cards v on v.card_id=s.card_id
   where not exists(select 1 from blocked b where b.entry_key=s.entry_key)
-   and(e.verification<>'catalog' or not exists(select 1 from variant_cards v where v.card_id=e.card_id))
-   and(filter_language is null or public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
-    (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(filter_language))
+   and(s.verification<>'catalog' or v.card_id is null)
+   and(filter_language is null or exists(select 1 from public.catalog_search_entries e join public.cards c on c.id=e.card_id
+    where e.entry_key=s.entry_key and public.catalog_visual_actual_language(e.source_payload,e.language,c.source_language,e.release_code,
+    (e.manual_overrides ? 'language') or (c.manual_overrides ? 'lingua'))=public.catalog_visual_language(filter_language)))
   order by s.entry_key,(s.method='reviewed-link') desc,(s.status='verified') desc,(s.image_match_status='verified') desc,s.reference_asset_key
  ), page as(select * from deduplicated where entry_key>after_key order by entry_key limit page_size+1), body as(
   select p.*,e.name,e.collector_number,e.set_code,e.language,e.tags,e.release_year,e.release_code,c.id card_id,c.image_url reference_image_url,

@@ -19,5 +19,5 @@ try{
  const priority=await reportedMetadataCards(db)
  summary.priority=priority.length?await enrichCatalog({db,log,cardRows:priority,limit:600,budgetMs:180000,concurrency:3}):null
  await log(`Recupero metadati concluso: ${summary.restored} rarità già documentate ripristinate.`,true)
- await check(db.from('catalog_sync_runs').update({status:'success',finished_at:new Date().toISOString(),summary}).eq('id',run.id))
+ await check(db.from('catalog_sync_runs').update({status:summary.priority?.errors?'partial':'success',finished_at:new Date().toISOString(),summary}).eq('id',run.id))
 }catch(error){await check(db.from('catalog_sync_runs').update({status:'error',finished_at:new Date().toISOString(),summary:{...summary,error:String(error)}}).eq('id',run.id));throw error}
