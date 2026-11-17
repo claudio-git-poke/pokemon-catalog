@@ -21,9 +21,9 @@ try{
   const deadline=Date.now()+100*60000,log=value=>console.log(JSON.stringify(value))
   for(const table of tables){
    if(Date.now()>deadline-30000)break
-   const copied=await copyTable({client,source,table,pageSize:table.table_name==='catalog_sync_events'?1000:table.table_name==='catalog_sync_runs'?20:400,deadline,log})
+   const copied=await copyTable({client,source,table,batchRows:table.table_name==='catalog_sync_events'?1000:400,pageSize:table.table_name==='catalog_sync_events'?1000:table.table_name==='catalog_sync_runs'?20:400,deadline,log})
    if(copied.state==='copying')break
-   await verifyTable({client,source,table,pageSize:table.table_name==='catalog_sync_runs'?10:600,deadline,log})
+   await verifyTable({client,source,table,pageSize:table.table_name==='catalog_sync_events'?6000:table.table_name==='catalog_sync_runs'?10:600,deadline,log})
   }
  }
  const report=await snapshotReport(client)
