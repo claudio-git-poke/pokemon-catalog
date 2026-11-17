@@ -2,6 +2,7 @@ import {atlasCards,atlasSets,normalizedSet,normalizedNumber} from './atlas-sourc
 import {normalizeSearch} from '../src/lib/catalog-identification.ts'
 import {baseFacts} from './enrich-catalog.mjs'
 import {termsForEntries} from './variant-mappings.mjs'
+import {rarityTags} from './card-metadata.mjs'
 
 const check=async q=>{const {data,error}=await q;if(error)throw Error(error.message);return data}
 export function atlasMetadataEntry(card,detail,set){
@@ -11,7 +12,7 @@ export function atlasMetadataEntry(card,detail,set){
  if(source.protocol!=='https:'||source.hostname!==hosts[set.source_language])throw Error('Pagina ufficiale della fonte non valida.')
  const m=detail.metadata||{},tags=[],facts={...baseFacts(card),asian_script:true}
  const code=x=>normalizeSearch(String(x)).replaceAll(' ','-')
- if(m.rarity&&code(m.rarity))tags.push('rarity:'+code(m.rarity))
+ tags.push(...rarityTags(m.rarity,set.source_language))
  for(const type of Array.isArray(m.types)?m.types:[])if(code(type))tags.push('type:'+code(type))
  if(m.card_type&&code(m.card_type))tags.push('card-type:'+code(m.card_type))
  if(m.regulation&&/^[A-Z]$/.test(m.regulation))tags.push('regulation:'+m.regulation.toLowerCase())
@@ -22,7 +23,7 @@ export function atlasMetadataEntry(card,detail,set){
  return {entry_key:`atlas-metadata:${card.id}`,card_id:card.id,name:card.nome,set_code:card.sigla,language:card.lingua,
   collector_number:number,denominator:m.set_total?String(m.set_total).replace(/^0+(?=\d)/,''):null,
   tags:[...new Set(tags)].sort(),facts,source_url:source.href,
-  source_payload:{provider:'card-atlas',id:detail.id,localId:number,metadata_scope:'card-metadata-only',reference_image_only:true,metadata:m},
+  source_payload:{provider:'card-atlas',id:detail.id,localId:number,source_language:set.source_language,rarity:m.rarity??null,metadata_scope:'card-metadata-only',reference_image_only:true,metadata:m},
   verification:'source',image_url:null,label:'Dati della carta da catalogo ufficiale · finitura e stampini da verificare',
   search_text:normalizeSearch(`${card.nome} ${detail.name} ${card.sigla} ${card.codice||''}`),updated_at:new Date().toISOString()}
 }

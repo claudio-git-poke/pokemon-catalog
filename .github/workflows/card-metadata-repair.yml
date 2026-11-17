@@ -2,7 +2,7 @@ name: Ripristino rarità delle carte
 on:
   push:
     branches: [main]
-    paths: ['scripts/repair-card-metadata.mjs','scripts/card-metadata.mjs','data/catalog-rarity-aliases.json','db/visual-card-fallback.sql','.github/workflows/card-metadata-repair.yml']
+    paths: ['scripts/repair-card-metadata.mjs','scripts/rarity-evidence.mjs','db/catalog-rarity-evidence.sql','scripts/card-metadata.mjs','data/catalog-rarity-aliases.json','db/visual-card-fallback.sql','.github/workflows/card-metadata-repair.yml']
   schedule:
     - cron: '43 * * * *'
   workflow_dispatch:
@@ -14,7 +14,7 @@ concurrency:
 jobs:
   repair:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:

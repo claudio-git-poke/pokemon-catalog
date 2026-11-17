@@ -4,9 +4,11 @@ const aliases=JSON.parse(readFileSync(new URL('../data/catalog-rarity-aliases.js
 export function rarityTags(rarity,language='en'){
  if(typeof rarity!=='string'||!rarity.trim())return []
  const normalized=normalizeSearch(rarity),raw='rarity:'+normalized.replaceAll(' ','-')
+ if(!normalized)return []
  const canonical=aliases[language]?.[normalized]||aliases.en[normalized]
- return [...new Set([raw,canonical].filter(Boolean))]
+ return [...new Set([raw,...(Array.isArray(canonical)?canonical:[canonical])].filter(Boolean))]
 }
+export const knownRarity=(rarity,language='en')=>typeof rarity==='string'&&!!(aliases[language]?.[normalizeSearch(rarity)]||aliases.en[normalizeSearch(rarity)])
 export function cardMetadataEntry(card,detail,facts={}){
  const mfb=(card.sigla||'').split('@')[0].toLowerCase()==='mfb'
  return {entry_key:'card:'+card.id,card_id:card.id,collector_number:mfb?null:String(detail.localId||card.source_local_id||card.numero||'').split('/')[0].replace(/^0+(?=\d)/,'').toLowerCase(),

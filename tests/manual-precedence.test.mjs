@@ -37,6 +37,48 @@ async function fixture({legacy=false,history=false,review=false}={}){
 }
 const row=async(pg,table,where='true')=>(await pg.query(`select * from ${table} where ${where}`)).rows[0]
 
+test('rarity repairs are repeatable, preserve manual empties and use only the exact source identity',async()=>{
+ const pg=await fixture();try{
+  await pg.exec(await sql('visual-card-fallback'))
+  const migration=await sql('catalog-rarity-evidence');await pg.exec(migration);await pg.exec(migration)
+  await pg.exec(`set role service_role;update cards set source_uid='tcgdex:it:sv02-269',source_card_id='sv02-269',source_language='it' where id=1;
+   update catalog_search_entries set source_payload='{"id":"sv02-269","source_language":"it","rarity":"Rara illustrazione speciale","variant":{"type":"holo"}}',tags=array['rarity:rara-illustrazione-speciale'] where entry_key='source:1';`)
+  assert.equal((await pg.query('select catalog_repair_rarity_tags() r')).rows[0].r.updated,1)
+  const variant=await row(pg,'catalog_search_entries',"entry_key='source:1'")
+  assert.ok(variant.tags.includes('rarity:special-illustration-rare'));assert.equal(variant.source_payload.variant.type,'holo')
+  assert.equal((await pg.query('select catalog_repair_rarity_tags() r')).rows[0].r.updated,0)
+  const evidence={source_uid:'tcgdex:it:sv02-269',source_card_id:'sv02-269',source_language:'it',rarity:'Rara illustrazione speciale',evidence_url:'https://api.tcgdex.net/v2/it/rarities/Rara%20illustrazione%20speciale'}
+  const apply=async items=>(await pg.query('select catalog_apply_rarity_evidence($1) r',[JSON.stringify(items)])).rows[0].r
+  assert.equal((await apply([{...evidence,source_language:'de'}])).updated,0)
+  assert.equal((await apply([evidence])).updated,1)
+  let generic=await row(pg,'catalog_search_entries',"entry_key='card:1'")
+  assert.ok(generic.tags.includes('rarity:special-illustration-rare'));assert.equal(generic.source_payload.variant,undefined)
+  assert.equal(generic.name,'Pikachu');assert.equal(generic.image_url,null)
+  assert.equal((await apply([evidence])).updated,0)
+  await pg.exec(`reset role;update catalog_search_entries set tags='{}',source_payload='{}' where entry_key='card:1';set role service_role;`)
+  assert.equal((await apply([evidence])).updated,0)
+  assert.deepEqual((await row(pg,'catalog_search_entries',"entry_key='card:1'")).tags,[])
+  await pg.exec('reset role;set role anon')
+  await assert.rejects(apply([evidence]),/permission denied/)
+  await assert.rejects(pg.exec('select catalog_repair_rarity_tags()'),/permission denied/)
+ }finally{await pg.close()}
+})
+
+test('stored Japanese rarity and decomposed card type are repaired without inventing a finish',async()=>{
+ const pg=await fixture();try{
+  await pg.exec(await sql('visual-card-fallback'));await pg.exec(await sql('catalog-rarity-evidence'))
+  await pg.exec(`set role service_role;update cards set source_uid='atlas:ja:SV9-101',source_card_id='SV9-101',source_language='ja',lingua='JP' where id=1;
+   update catalog_search_entries set source_payload='{"id":"SV9-101","provider":"card-atlas","metadata":{"rarity":"rare_sar","card_type":"基本エネルギー"}}',tags=array['rarity:rare-sar','card-type:基本エネルキ-ー'],facts='{}' where entry_key='source:1';`)
+  assert.equal((await pg.query('select catalog_repair_rarity_tags() r')).rows[0].r.updated,1)
+  const entry=await row(pg,'catalog_search_entries',"entry_key='source:1'")
+  assert.ok(entry.tags.includes('rarity:sar'));assert.ok(entry.tags.includes('rarity:special-illustration-rare'))
+  assert.ok(entry.tags.includes('card-type:基本エネルギー'));assert.ok(!entry.tags.includes('card-type:基本エネルキ-ー'))
+  assert.deepEqual(entry.facts,{});assert.equal(entry.image_url,null);assert.equal(entry.source_payload.rarity,'rare_sar')
+  assert.equal((await pg.query('select catalog_backfill_generic_rarity() r')).rows[0].r.updated,1)
+  assert.ok((await row(pg,'catalog_search_entries',"entry_key='card:1'")).tags.includes('rarity:sar'))
+ }finally{await pg.close()}
+})
+
 test('all manual card fields, empty values and repeated corrections survive stale workers; other fields still enrich',async()=>{
  const pg=await fixture();try{
   await pg.exec(`update cards set sigla='BOO',nome='Nome corretto',lingua='IT',numero=53,variante='reverse',codice=null,notes='Mia nota',image_url=null where id=1;`)

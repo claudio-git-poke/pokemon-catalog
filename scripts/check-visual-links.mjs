@@ -51,8 +51,15 @@ console.log(JSON.stringify({check:'paldea-evolved',results:expansion.length,iono
 const rarity=await pages('catalog_visual_cards',{symbol_key:'27ee47a73a3b3d9370356a15f2748291',include_review:false})
 const languages={}
 for(const r of rarity)languages[r.actual_language]=(languages[r.actual_language]||0)+1
-assert.ok(languages.en>0&&languages.it>0,'Documented English and Italian rarities must be reachable')
+for(const language of ['en','it','fr','de','es','pt','ja','ko'])assert.ok(languages[language]>0,'Documented rarity missing in '+language)
 console.log(JSON.stringify({check:'special-illustration-rare',results:rarity.length,languages}))
+const reported=await get('catalog_search_entries?'+new URLSearchParams({select:'entry_key,tags',entry_key:'in.(card:115782,card:128115,card:166794,card:158315,card:158495,tcgdex:73923:jr7oetx1mqug9)'}))
+const required={'card:115782':'special-illustration-rare','card:128115':'special-illustration-rare','card:166794':'special-illustration-rare','card:158315':'double-rare','card:158495':'special-illustration-rare','tcgdex:73923:jr7oetx1mqug9':'special-illustration-rare'}
+for(const [key,rarity] of Object.entries(required))assert.ok(reported.find(e=>e.entry_key===key)?.tags.includes('rarity:'+rarity),'Rarity missing on '+key)
+console.log(JSON.stringify({check:'reported-missing-rarities',rows:reported.length}))
+const shiny=await pages('catalog_visual_cards',{symbol_key:'8e745edd4de74f4d1757ba3717d19ed8',include_review:false})
+assert.ok(shiny.some(e=>e.actual_language==='en'),'English Shiny Ultra Rare must have documented English results')
+console.log(JSON.stringify({check:'shiny-ultra-rare-en',results:shiny.length}))
 const trick=await pages('catalog_visual_group_cards',{symbol_group:'38c3e9d561c7b766d3ece9a05e50d763',include_review:false})
 for(const year of [2022,2023,2024])assert.ok(trick.some(x=>x.release_year===year&&x.actual_language==='en'))
 console.log(JSON.stringify({check:'trick-or-trade',results:trick.length}))

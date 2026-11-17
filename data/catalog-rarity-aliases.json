@@ -8,7 +8,18 @@
       "meta/translations/es.json",
       "meta/translations/pt.json"
     ],
-    "retrieved_at": "2026-11-16"
+    "retrieved_at": "2026-11-16",
+    "japanese_codes": {
+      "provider": "https://github.com/type-null/PTCG-database",
+      "official_examples": [
+        "https://www.pokemon-card.com/card-search/details.php/card/48516",
+        "https://www.pokemon-card.com/card-search/details.php/card/35860",
+        "https://www.pokemon-card.com/card-search/details.php/card/38932",
+        "https://www.pokemon-card.com/card-search/details.php/card/49983",
+        "https://www.pokemon-card.com/card-search/details.php/card/48522"
+      ],
+      "icon_path": "https://www.pokemon-card.com/assets/images/card/rarity/ic_<code>.gif"
+    }
   },
   "languages": {
     "en": {
@@ -100,6 +111,200 @@
       "promo": "rarity:promo",
       "shiny rara": "rarity:shiny-rare",
       "brilhante ultra rara": "rarity:shiny-ultra-rare"
+    },
+    "ja": {
+      "rare c c": [
+        "rarity:c",
+        "rarity:common"
+      ],
+      "c": [
+        "rarity:c",
+        "rarity:common"
+      ],
+      "rare c": [
+        "rarity:c",
+        "rarity:common"
+      ],
+      "rare u c": [
+        "rarity:u",
+        "rarity:uncommon"
+      ],
+      "u": [
+        "rarity:u",
+        "rarity:uncommon"
+      ],
+      "rare u": [
+        "rarity:u",
+        "rarity:uncommon"
+      ],
+      "rare r c": [
+        "rarity:r",
+        "rarity:rare"
+      ],
+      "r": [
+        "rarity:r",
+        "rarity:rare"
+      ],
+      "rare r": [
+        "rarity:r",
+        "rarity:rare"
+      ],
+      "rare rr": [
+        "rarity:rr",
+        "rarity:double-rare"
+      ],
+      "rr": [
+        "rarity:rr",
+        "rarity:double-rare"
+      ],
+      "rare sr c": [
+        "rarity:sr",
+        "rarity:ultra-rare"
+      ],
+      "sr": [
+        "rarity:sr",
+        "rarity:ultra-rare"
+      ],
+      "rare ar": [
+        "rarity:ar",
+        "rarity:illustration-rare"
+      ],
+      "ar": [
+        "rarity:ar",
+        "rarity:illustration-rare"
+      ],
+      "rare sar": [
+        "rarity:sar",
+        "rarity:special-illustration-rare"
+      ],
+      "sar": [
+        "rarity:sar",
+        "rarity:special-illustration-rare"
+      ],
+      "rare ur c": [
+        "rarity:ur",
+        "rarity:hyper-rare"
+      ],
+      "ur": [
+        "rarity:ur",
+        "rarity:hyper-rare"
+      ],
+      "rare s": [
+        "rarity:s",
+        "rarity:shiny-rare"
+      ],
+      "s": [
+        "rarity:s",
+        "rarity:shiny-rare"
+      ],
+      "rare s 2": [
+        "rarity:s",
+        "rarity:shiny-rare"
+      ],
+      "rare ssr": [
+        "rarity:ssr",
+        "rarity:shiny-ultra-rare"
+      ],
+      "ssr": [
+        "rarity:ssr",
+        "rarity:shiny-ultra-rare"
+      ],
+      "rare ma": [
+        "rarity:ma",
+        "rarity:mega-attack-rare"
+      ],
+      "ma": [
+        "rarity:ma",
+        "rarity:mega-attack-rare"
+      ],
+      "rare mur": [
+        "rarity:mur",
+        "rarity:mega-hyper-rare"
+      ],
+      "mur": [
+        "rarity:mur",
+        "rarity:mega-hyper-rare"
+      ],
+      "rare hr": [
+        "rarity:hr"
+      ],
+      "hr": [
+        "rarity:hr"
+      ],
+      "rare chr": [
+        "rarity:chr"
+      ],
+      "chr": [
+        "rarity:chr"
+      ],
+      "rare csr": [
+        "rarity:csr"
+      ],
+      "csr": [
+        "rarity:csr"
+      ],
+      "rare tr": [
+        "rarity:tr"
+      ],
+      "tr": [
+        "rarity:tr"
+      ],
+      "rare ss": [
+        "rarity:ss"
+      ],
+      "ss": [
+        "rarity:ss"
+      ]
+    },
+    "ko": {
+      "c": [
+        "rarity:c",
+        "rarity:common"
+      ],
+      "u": [
+        "rarity:u",
+        "rarity:uncommon"
+      ],
+      "r": [
+        "rarity:r",
+        "rarity:rare"
+      ],
+      "rr": [
+        "rarity:rr",
+        "rarity:double-rare"
+      ],
+      "sr": [
+        "rarity:sr",
+        "rarity:ultra-rare"
+      ],
+      "ar": [
+        "rarity:ar",
+        "rarity:illustration-rare"
+      ],
+      "sar": [
+        "rarity:sar",
+        "rarity:special-illustration-rare"
+      ],
+      "ur": [
+        "rarity:ur",
+        "rarity:hyper-rare"
+      ],
+      "s": [
+        "rarity:s",
+        "rarity:shiny-rare"
+      ],
+      "ssr": [
+        "rarity:ssr",
+        "rarity:shiny-ultra-rare"
+      ],
+      "ma": [
+        "rarity:ma",
+        "rarity:mega-attack-rare"
+      ],
+      "mur": [
+        "rarity:mur",
+        "rarity:mega-hyper-rare"
+      ]
     }
   }
 }

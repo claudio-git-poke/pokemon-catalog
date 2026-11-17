@@ -19,6 +19,7 @@ test('uploaded archive references retain hash provenance and distinguish actual 
   if(a.kind==='set_symbol'&&a.mime_type==='image/png')assert.ok(a.provenance.image_validation.width<=600&&a.provenance.image_validation.height<=600)
  }
  assert.ok(rows.some(a=>a.kind==='rarity'&&a.source_code==='special-illustration-rare'&&a.tag_codes.includes('rarity:sar')))
+ for(const a of rows.filter(a=>a.source_code==='shiny-ultra-rare'&&a.match_mode==='tag'))assert.ok(a.tag_codes.includes('rarity:ssr')&&a.tag_codes.includes('rarity:shiny-ultra-rare'))
  assert.ok(rows.some(a=>a.kind==='energy'&&a.source_code==='tcg-fire'&&a.tag_code==='type:fire'))
  for(const a of rows.filter(r=>['rarity','energy'].includes(r.kind)&&['ace-spec-rare','black-white-rare','move-special','move-physical','move-status','mega-evolution'].includes(r.source_code)))assert.equal(a.match_mode,null)
  assert.ok(rows.some(a=>a.source_code==='w-promo'&&a.availability==='missing'))
@@ -66,6 +67,8 @@ assert propose_rule({**base,'source_code':'base-set'},{'en':[{'id':'base1','name
 for code in ['sv9','sv09']:
  assert propose_rule({**base,'source_code':code,'image_url':'https://raw.githubusercontent.com/1niceroli/ptcg-assets/main/'+code+'/symbol.png'},{'en':sets},[])['match_mode'] is None
 assert propose_rule({**base,'kind':'energy','source_code':'move-special'},{},['type:move-special'])['match_mode'] is None
+sur=propose_rule({**base,'kind':'rarity','source_code':'shiny-ultra-rare','tag_code':'rarity:ssr'},{},['rarity:ssr'])
+assert sur['tag_codes']==['rarity:shiny-ultra-rare','rarity:ssr'] and sur['tag_code']=='rarity:ssr'
 assert propose_rule({**base,'source_language':'ja','source_code':'sv3'},{'en':[{'id':'sv03','name':'English'}],'ja':[{'id':'sv3','name':'Japanese'}]},[])['match_code']=='sv3'
 `],{stdio:'pipe'})
 })
