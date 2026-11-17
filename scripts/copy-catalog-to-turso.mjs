@@ -21,9 +21,9 @@ try{
   const deadline=Date.now()+100*60000,log=value=>console.log(JSON.stringify(value))
   for(const table of tables){
    if(Date.now()>deadline-30000)break
-   const copied=await copyTable({client,source,table,pageSize:table.table_name==='catalog_sync_events'?1000:400,deadline,log})
+   const copied=await copyTable({client,source,table,pageSize:table.table_name==='catalog_sync_events'?1000:table.table_name==='catalog_sync_runs'?20:400,deadline,log})
    if(copied.state==='copying')break
-   await verifyTable({client,source,table,deadline,log})
+   await verifyTable({client,source,table,pageSize:table.table_name==='catalog_sync_runs'?10:600,deadline,log})
   }
  }
  const report=await snapshotReport(client)
@@ -35,5 +35,9 @@ try{
  await writeFile('turso-snapshot-report.json',JSON.stringify(report,null,2))
  console.log(JSON.stringify({phase:'snapshot-report',complete:report.complete,verified_tables:report.verified,total_tables:schema.tables.length,rows:report.rows,manual_rows:report.manual_rows,cutover:false}))
  if(!report.complete)throw Error('Copia parziale salvata: il prossimo avvio riprenderà dai punti verificati.')
-}catch(error){console.error(safeTursoError(error));process.exitCode=1}
+}catch(error){
+ const message=safeTursoError(error);console.error(message)
+ if(client)try{await writeFile('turso-snapshot-report.json',JSON.stringify({...await snapshotReport(client),complete:false,cutover:false,error:message,checked_at:new Date().toISOString()},null,2))}catch{}
+ process.exitCode=1
+}
 finally{client?.close()}
