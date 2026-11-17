@@ -1,0 +1,38 @@
+name: Prepara indici e protezioni Turso
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/prepare-turso-api.mjs','src/server/turso-*.mjs','.github/workflows/turso-api-prepare.yml']
+  workflow_run:
+    workflows: ['Copia verificata catalogo su Turso']
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: turso-api-prepare
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Controlla connessione e avanzamento della copia
+        run: node scripts/check-turso-connection.mjs
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      - name: Prepara soltanto dopo una copia interamente verificata
+        run: node scripts/prepare-turso-api.mjs
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
