@@ -19,4 +19,5 @@ test('three-way publication preserves concurrent manual changes, explicit empty 
  assert.deepEqual(mergeWorkerChange(before,after,null),{operation:'keep'})
  assert.deepEqual(mergeWorkerChange(null,after,current),{operation:'conflict'})
  assert.deepEqual(mergeWorkerChange(before,null,before),{operation:'delete'})
+ assert.deepEqual(mergeWorkerChange({id:1,status:'pending'},{id:1,status:'done'},{id:1,status:'pending'}),{operation:'write',row:{id:1,status:'done'}})
 })

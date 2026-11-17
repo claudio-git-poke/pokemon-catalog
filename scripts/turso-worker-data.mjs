@@ -97,6 +97,6 @@ export function mergeWorkerChange(before,after,current){
   if(canonicalJson(old)!==canonicalJson(next)&&canonicalJson(old)===canonicalJson(latest))row[key]=next
  }
  for(const [key,value]of Object.entries(current.manual_overrides||{}))row[key]=value
- row.manual_overrides=current.manual_overrides??{}
+ if(Object.hasOwn(current,'manual_overrides'))row.manual_overrides=current.manual_overrides??{}
  return canonicalJson(row)===canonicalJson(current)?{operation:'keep'}:{operation:'write',row}
 }
