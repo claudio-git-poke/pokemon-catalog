@@ -1,0 +1,52 @@
+name: Copia verificata catalogo su Turso
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/copy-catalog-to-turso.mjs','scripts/turso-snapshot.mjs','scripts/turso-source-reader.mjs','scripts/freeze-supabase-workers.mjs','data/turso-source-schema.json','.github/workflows/turso-snapshot.yml']
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: turso-catalog-snapshot
+  cancel-in-progress: false
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verifica prima la destinazione
+        run: node scripts/check-turso-connection.mjs
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      - name: Sospendi gli importatori Supabase durante il trasferimento
+        run: node scripts/freeze-supabase-workers.mjs
+        env:
+          GH_ACTIONS_TOKEN: ${{ github.token }}
+      - name: Copia e verifica senza cancellare dati in origine
+        run: node scripts/copy-catalog-to-turso.mjs
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: turso-snapshot-verification
+          path: |
+            turso-snapshot-report.json
+            turso-paused-workflows.json
+          if-no-files-found: ignore
+          retention-days: 90
