@@ -6,11 +6,14 @@ const request=async(url,options={})=>{
  return r
 }
 let key=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const discovery={}
 if(!key){
  // Reuse the existing public browser configuration without storing or logging a key.
  const html=await(await request(site+'/copertura')).text()
  const urls=[...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(x=>new URL(x[1],site)).filter(u=>u.origin===site&&u.pathname.endsWith('.js')).slice(0,24)
  const chunks=await Promise.allSettled(urls.map(async u=>(await request(u)).text()))
+ discovery.scripts=urls.length;discovery.loaded=chunks.filter(x=>x.status==='fulfilled').length
+ discovery.project_chunks=chunks.filter(x=>x.status==='fulfilled'&&x.value.includes('vjpvbsvpumzrqzoupxee.supabase.co')).length
  for(const chunk of chunks){
   if(chunk.status!=='fulfilled')continue
   if(chunk.value.includes('vjpvbsvpumzrqzoupxee.supabase.co')){const modern=chunk.value.match(/sb_publishable_[A-Za-z0-9_-]{20,}/);if(modern)key=modern[0]}
@@ -19,7 +22,7 @@ if(!key){
   }
  }
 }
-assert.ok(key,'Public browser configuration unavailable')
+assert.ok(key,'Public browser configuration unavailable: '+JSON.stringify(discovery))
 if(key.startsWith('eyJ'))assert.equal(JSON.parse(Buffer.from(key.split('.')[1],'base64url')).role,'anon')
 const headers={apikey:key,'Content-Type':'application/json'}
 const get=async(path)=>(await request(api+'/rest/v1/'+path,{headers})).json()
