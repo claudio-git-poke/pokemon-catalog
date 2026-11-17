@@ -19,6 +19,8 @@ Il workflow **Copia verificata catalogo su Turso**:
 
 La prima esecuzione include anche il registro tecnico storico. I nuovi log dell'operazione restano in GitHub Actions e non aumentano il database Supabase. Il processo non abilita funzionalità a pagamento.
 
+I lotti vengono inviati con un solo INSERT parametrizzato attraverso `json_each`, limitando dimensione e numero di righe. Non si rilegge uno stato che la stessa transazione ha appena confermato. Un'esecuzione più recente può sostituire quella in corso: le transazioni completate e i punti di verifica restano salvati e la pagina interrotta viene ripetuta.
+
 ## Passaggio del sito
 
 Una copia verificata non equivale ancora al passaggio delle API. Il rapporto riporta esplicitamente `cutover: false`. Prima di cambiare il sito occorrono il livello di compatibilità per le richieste di ricercaDB, la protezione delle scritture manuali e l'adattamento degli importatori. La copia originale Supabase va conservata finché questi controlli non sono completati.
