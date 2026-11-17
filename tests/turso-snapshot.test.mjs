@@ -16,7 +16,7 @@ test('snapshot replay survives an interrupted page, preserves every manual empty
  await initializeSnapshot(client,[table],'fixture')
  const original=client.batch;let batches=0
  client.batch=async (...args)=>{if(++batches===2)throw Error('network interruption');return original(...args)}
- await assert.rejects(copyTable({client,source,table}),/network/)
+ await assert.rejects(copyTable({client,source,table,batchRows:150}),/network/)
  assert.equal((await client.execute('SELECT n FROM _catalog_snapshot_state')).rows[0].n,0)
  assert.equal((await client.execute('SELECT count(*) n FROM _copy_cards')).rows[0].n,150)
  client.batch=original

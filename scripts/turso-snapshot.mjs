@@ -37,7 +37,7 @@ export async function initializeSnapshot(client,tables,sourceId){
  return {complete:false}
 }
 export async function getSnapshotState(client,table){return(await client.execute({sql:'SELECT * FROM _catalog_snapshot_state WHERE table_name=?',args:[table.table_name]})).rows[0]}
-export async function copyTable({client,source,table,pageSize=400,deadline=Infinity,clock=Date.now,log=()=>{}}){
+export async function copyTable({client,source,table,pageSize=400,batchRows=400,deadline=Infinity,clock=Date.now,log=()=>{}}){
  let saved=await getSnapshotState(client,table)
  if(saved&&['copied','verified'].includes(saved.state))return saved
  const count=await source.count(table)
@@ -50,13 +50,13 @@ export async function copyTable({client,source,table,pageSize=400,deadline=Infin
   const cursor=saved.cursor?JSON.parse(saved.cursor):null,rows=await source.page(table,cursor,pageSize)
   if(rows.length>pageSize)throw Error('Pagina troppo grande: '+table.table_name)
   let n=Number(saved.n),currentChain=saved.chain,manualN=Number(saved.manual_n),manualChain=saved.manual_chain,lastCursor=cursor
-  const statements=[],seen=new Set()
+  const documents=[],seen=new Set()
   for(const row of rows){
    const {key,values}=recordKey(table,row),serialized=canonicalJson(row),digest=hash(serialized)
    if(seen.has(key)||canonicalJson(values)===saved.cursor)throw Error('Cursore duplicato: '+table.table_name)
    seen.add(key);n++;currentChain=chain(currentChain,key,digest);lastCursor=values
    const protectedHash=manualHash(key,row);if(protectedHash){manualN++;manualChain=chain(manualChain,key,protectedHash)}
-   statements.push({sql:`INSERT INTO ${mirror(table)}(_key,_row,_hash,_position) VALUES(?,?,?,?) ON CONFLICT(_key) DO UPDATE SET _row=excluded._row,_hash=excluded._hash,_position=excluded._position WHERE _hash<>excluded._hash OR _position<>excluded._position`,args:[key,serialized,digest,n]})
+   documents.push({key,row,digest,position:n})
   }
   const complete=rows.length<pageSize
   if(n>count||complete&&(n!==count||await source.count(table)!==count))throw Error('Conteggio origine cambiato: '+table.table_name)
@@ -64,15 +64,18 @@ export async function copyTable({client,source,table,pageSize=400,deadline=Infin
   if(rows.length&&nextCursor===saved.cursor)throw Error('La pagina non avanza: '+table.table_name)
   // Bound HTTP request size. Only the final transaction acknowledges this page;
   // replaying an interrupted page reuses the same keys and positions.
+  const insert=rows=>({sql:`INSERT INTO ${mirror(table)}(_key,_row,_hash,_position) SELECT json_extract(j.value,'$.key'),json_extract(j.value,'$.row'),json_extract(j.value,'$.digest'),json_extract(j.value,'$.position') FROM json_each(?)j WHERE 1 ON CONFLICT(_key) DO UPDATE SET _row=excluded._row,_hash=excluded._hash,_position=excluded._position WHERE _hash<>excluded._hash OR _position<>excluded._position`,args:[JSON.stringify(rows)]})
   let batch=[],bytes=0
-  for(const statement of statements){
-   const size=Buffer.byteLength(JSON.stringify(statement))
-   if(batch.length&&(batch.length>=150||bytes+size>750000)){await client.batch(batch,'write');batch=[];bytes=0}
-   batch.push(statement);bytes+=size
+  for(const document of documents){
+   const size=Buffer.byteLength(JSON.stringify(document))
+   if(batch.length&&(batch.length>=batchRows||bytes+size>500000)){await client.batch([insert(batch)],'write');batch=[];bytes=0}
+   batch.push(document);bytes+=size
   }
-  batch.push({sql:'UPDATE _catalog_snapshot_state SET cursor=?,n=?,chain=?,manual_n=?,manual_chain=?,state=?,updated_at=? WHERE table_name=?',args:[nextCursor,n,currentChain,manualN,manualChain,complete?'copied':'copying',new Date(clock()).toISOString(),table.table_name]})
-  await client.batch(batch,'write')
-  saved=await getSnapshotState(client,table)
+  const write=batch.length?[insert(batch)]:[]
+  const state=complete?'copied':'copying'
+  write.push({sql:'UPDATE _catalog_snapshot_state SET cursor=?,n=?,chain=?,manual_n=?,manual_chain=?,state=?,updated_at=? WHERE table_name=?',args:[nextCursor,n,currentChain,manualN,manualChain,state,new Date(clock()).toISOString(),table.table_name]})
+  await client.batch(write,'write')
+  saved={...saved,cursor:nextCursor,n,chain:currentChain,manual_n:manualN,manual_chain:manualChain,state}
   await log({table:table.table_name,phase:'copy',rows:n,total:count,manual:manualN,complete})
   if(complete)return saved
  }
@@ -97,7 +100,7 @@ export async function verifyTable({client,source,table,pageSize=600,deadline=Inf
    if(position!==Number(saved.n)||targetCount!==position||await source.count(table)!==position||currentChain!==saved.chain||manualN!==Number(saved.manual_n)||manualChain!==saved.manual_chain)throw Error('Conteggi o hash discordanti: '+table.table_name)
   }
   await client.execute({sql:'UPDATE _catalog_snapshot_state SET verify_position=?,verify_chain=?,verify_manual_n=?,verify_manual_chain=?,state=?,updated_at=? WHERE table_name=?',args:[position,currentChain,manualN,manualChain,complete?'verified':'copied',new Date(clock()).toISOString(),table.table_name]})
-  saved=await getSnapshotState(client,table)
+  saved={...saved,verify_position:position,verify_chain:currentChain,verify_manual_n:manualN,verify_manual_chain:manualChain,state:complete?'verified':'copied'}
   if(complete){await log({table:table.table_name,phase:'verified',rows:position,manual:manualN,chain:currentChain});return saved}
  }
  return saved
