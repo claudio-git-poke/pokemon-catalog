@@ -8,6 +8,7 @@ export async function initializeWorkerJournal(client){
  await client.batch([
   "CREATE TABLE IF NOT EXISTS _catalog_worker_journal(run_id TEXT PRIMARY KEY,source_id TEXT NOT NULL,digest TEXT NOT NULL,data_key BLOB,state TEXT NOT NULL,cursor INTEGER NOT NULL DEFAULT 0,total INTEGER NOT NULL,chunk_count INTEGER NOT NULL,byte_length INTEGER NOT NULL,created_at TEXT NOT NULL,finished_at TEXT)",
   'CREATE TABLE IF NOT EXISTS _catalog_worker_chunks(run_id TEXT NOT NULL,part INTEGER NOT NULL,data BLOB NOT NULL,PRIMARY KEY(run_id,part)) WITHOUT ROWID'
+  ,'CREATE TABLE IF NOT EXISTS _catalog_worker_sequences(table_name TEXT PRIMARY KEY,value INTEGER NOT NULL)'
  ],'write')
 }
 export function orderWorkerChanges(schema,changes){
@@ -125,6 +126,7 @@ export async function publishWorkerDelta(client,schema,runId,{batchSize=100,log=
    if(writes.length)statements.push({sql:'INSERT INTO '+storage(name)+"(_key,_row,_hash,_position) SELECT json_extract(value,'$.key'),json_extract(value,'$.row'),json_extract(value,'$.digest'),json_extract(value,'$.position') FROM json_each(?) WHERE 1 ON CONFLICT(_key) DO UPDATE SET _row=excluded._row,_hash=excluded._hash",args:[JSON.stringify(writes)]})
    if(deletes.length)statements.push({sql:'DELETE FROM '+storage(name)+' WHERE _key IN('+deletes.map(()=>'?').join(',')+')',args:deletes})
    await tx.batch(statements)
+   if(name==='catalog_sync_events'&&writes.length)await tx.execute({sql:'INSERT INTO _catalog_worker_sequences(table_name,value) VALUES(?,?) ON CONFLICT(table_name) DO UPDATE SET value=max(value,excluded.value)',args:[name,Math.max(...writes.map(w=>JSON.parse(w.row).id))]})
    const finalRows=await readRows(tx,name,writes.map(w=>w.key)),hashes=[...finalRows].map(([key,r])=>({key,digest:hash(canonicalJson(r.row))}))
    const finish=[]
    if(hashes.length)finish.push({sql:'UPDATE '+storage(name)+" SET _hash=(SELECT json_extract(value,'$.digest') FROM json_each(?) WHERE json_extract(value,'$.key')=_key) WHERE _key IN (SELECT json_extract(value,'$.key') FROM json_each(?))",args:[JSON.stringify(hashes),JSON.stringify(hashes)]})

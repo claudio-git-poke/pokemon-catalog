@@ -72,3 +72,13 @@ I genitori vengono inseriti prima dei figli e le cancellazioni seguono l'ordine 
 Le date dei feed vengono assegnate al momento della pubblicazione. La coda manuale viene confermata soltanto alla fine e soltanto per la versione effettivamente elaborata: una correzione successiva rimane in attesa. La chiave e i blocchi cifrati vengono eliminati dopo la pubblicazione completa; restano il digest e i metadati dell'esecuzione. Un'identità nuova già occupata sospende il lotto conservando l'archivio.
 
 Il registro è privato e non richiede artifact pubblici con dati del catalogo. Restano da collegare questi moduli all'esecutore temporaneo e alla ripartenza dei worker; questo codice da solo non riattiva nessun importatore.
+
+## Verifica dell'ambiente temporaneo
+
+Il workflow **Verifica importatori PostgreSQL temporanei** usa PostgreSQL 17 isolato sul solo indirizzo locale del runner GitHub. PostgREST è scaricato dalla distribuzione ufficiale, con versione e SHA-256 fissati. Il client SQL rifiuta indirizzi remoti e nomi di database diversi da quello temporaneo; i processi PostgreSQL e PostgREST non ricevono i segreti Turso.
+
+La sessione SQL resta aperta per tutto il caricamento, mantenendo correttamente l'impostazione di replica fino alla fine. Il proxy locale conserva il prefisso `/rest/v1` atteso dagli importatori esistenti. La prova controlla conteggi e letture tramite il client reale, senza pubblicare nuove righe su Turso. I token locali hanno scadenza breve e vengono mascherati nei log.
+
+Gli identificativi nuovi ripartono dal massimo numerico effettivo. Per il registro tecnico, un contatore privato conserva le prenotazioni successive alla copia iniziale: l'ordinamento testuale delle chiavi non può far riutilizzare un identificativo quando cambia il numero di cifre.
+
+Il recupero dei metadati supporta pagine e sessioni limitate, con una versione separata del cursore quando cambia la dimensione pagina. Una pagina piena avanza il segnalibro e resta incompleta; soltanto una pagina più corta conclude la lingua. Il comportamento delle sessioni esistenti resta invariato con i parametri predefiniti.
