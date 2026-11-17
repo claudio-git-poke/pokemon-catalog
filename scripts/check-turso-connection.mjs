@@ -12,5 +12,13 @@ try{
   const rows=(await client.execute('SELECT table_name,n,manual_n,state FROM _catalog_snapshot_state ORDER BY table_name')).rows.map(r=>({table:r.table_name,rows:Number(r.n),manual:Number(r.manual_n),state:r.state}))
   console.log(JSON.stringify({check:'turso-copy-progress',rows:rows.reduce((n,r)=>n+r.rows,0),verified:rows.filter(r=>r.state==='verified').length,tables:rows}))
  }
+ const preparing=(await client.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='_catalog_api_build'")).rows.length
+ if(preparing){
+  const tasks=(await client.execute('SELECT task,cursor,complete FROM _catalog_api_build ORDER BY task')).rows.map(r=>({task:r.task,rows:Number(r.cursor),complete:!!Number(r.complete)}))
+  const state=(await client.execute('SELECT ready FROM _catalog_api_state WHERE id=1')).rows[0]
+  console.log(JSON.stringify({check:'turso-api-progress',ready:!!Number(state?.ready),tasks}))
+ }
+ const pages=Number(Object.values((await client.execute('PRAGMA page_count')).rows[0])[0]),pageSize=Number(Object.values((await client.execute('PRAGMA page_size')).rows[0])[0])
+ console.log(JSON.stringify({check:'turso-storage',bytes:pages*pageSize}))
 }catch(error){console.error(safeTursoError(error));process.exitCode=1}
 finally{client?.close()}
