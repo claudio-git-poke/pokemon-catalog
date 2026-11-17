@@ -1,5 +1,6 @@
 import {readFileSync} from 'node:fs'
 import {normalizeSearch} from '../src/lib/catalog-identification.ts'
+import {searchableMetadataTags,metadataPayload} from './card-metadata-tags.mjs'
 const aliases=JSON.parse(readFileSync(new URL('../data/catalog-rarity-aliases.json',import.meta.url),'utf8')).languages
 export function rarityTags(rarity,language='en'){
  if(typeof rarity!=='string'||!rarity.trim())return []
@@ -12,10 +13,10 @@ export const knownRarity=(rarity,language='en')=>typeof rarity==='string'&&!!(al
 export function cardMetadataEntry(card,detail,facts={}){
  const mfb=(card.sigla||'').split('@')[0].toLowerCase()==='mfb'
  return {entry_key:'card:'+card.id,card_id:card.id,collector_number:mfb?null:String(detail.localId||card.source_local_id||card.numero||'').split('/')[0].replace(/^0+(?=\d)/,'').toLowerCase(),
-  facts,label:'Variante non ancora identificata',search_text:normalizeSearch([card.nome,card.sigla,card.codice].filter(Boolean).join(' ')),
-  name:card.nome||'',set_code:card.sigla||'',language:card.lingua||'',tags:[...(mfb?['family:my-first-battle']:[]),...rarityTags(detail.rarity,card.source_language)],
+  facts,label:'Variante non ancora identificata',search_text:normalizeSearch([card.nome,card.sigla,card.codice,...rarityTags(detail.rarity,card.source_language),...searchableMetadataTags(detail,card.source_language)].filter(Boolean).join(' ')),
+  name:card.nome||'',set_code:card.sigla||'',language:card.lingua||'',tags:[...(mfb?['family:my-first-battle']:[]),...rarityTags(detail.rarity,card.source_language),...searchableMetadataTags(detail,card.source_language)],
   source_url:`https://api.tcgdex.net/v2/${card.source_language}/cards/${encodeURIComponent(detail.id)}`,
-  source_payload:{id:detail.id,rarity:detail.rarity??null,set:detail.set,source_language:card.source_language,metadata_scope:'card-metadata-only',reference_image_only:true},verification:'catalog',updated_at:new Date().toISOString()}
+  source_payload:{...metadataPayload(detail,card.source_language),metadata_tags:[...rarityTags(detail.rarity,card.source_language),...searchableMetadataTags(detail,card.source_language)].sort(),metadata_scope:'card-metadata-only',reference_image_only:true},verification:'catalog',updated_at:new Date().toISOString()}
 }
 
 export async function reportedMetadataCards(db){

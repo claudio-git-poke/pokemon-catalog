@@ -1,0 +1,1127 @@
+{
+  "https://assets.tcgdex.net/en/ecard/ecard1/logo.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:20.174303+00:00"
+  },
+  "https://assets.tcgdex.net/en/xy/xy10/logo.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:20.175461+00:00"
+  },
+  "https://assets.tcgdex.net/es/swsh/swsh1/logo.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:20.176287+00:00"
+  },
+  "https://assets.tcgdex.net/es/swsh/swsh12/logo.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:20.176806+00:00"
+  },
+  "https://assets.tcgdex.net/fr/dp/dp1/logo.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:20.177331+00:00"
+  },
+  "https://assets.tcgdex.net/fr/ex/ex12/logo.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:20.178411+00:00"
+  },
+  "https://assets.tcgdex.net/it/swsh/swshp/logo.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:20.179462+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/25th-anniversary-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:20.182085+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/30th-celebration.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:24.668215+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/adv-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:25.609847+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/alolan-moonlight.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:25.613049+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/alter-genesis.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:25.613898+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/amazing-volt-tackle.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:25.615189+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/ancient-roar.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:25.656507+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/awakened-heroes.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:25.657585+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/awakening-psychic-king.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:25.659580+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/bandit-ring.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:30.824292+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/battle-partners.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:30.831481+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/battle-region.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:30.832443+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/black-bolt.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:30.847793+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/black-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:30.852507+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/blue-shock.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:30.855771+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/blue-sky-stream.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:30.856858+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/bw-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:30.927923+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/champion-road.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:35.245327+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/clay-burst.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:35.256775+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/cold-flare.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:35.284020+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/collection-moon.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:35.299629+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/collection-sun.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:35.331721+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/collection-x.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:35.335687+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/collection-y.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:35.336679+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/crimson-haze.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:35.399889+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/cruel-traitor.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:40.571298+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/cry-from-the-mysterious.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:40.583582+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/cyber-judge.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:40.595952+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dark-order.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:40.609919+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dark-phantasma.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:40.616351+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dark-rush.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:40.626997+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/darkness-that-consumes-light.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:40.631376+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dawn-dash.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:40.659843+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/double-blaze.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:44.813638+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dp-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:44.818912+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dpt-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:44.860257+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dragon-blade.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:44.860552+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dragon-blast.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:44.863896+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dragon-selection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:44.865375+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dragon-storm.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:44.891691+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/dream-league.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:44.919548+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/eevee-heroes.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:49.631179+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/emerald-break.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:49.667926+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/ex-battle-boost.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:49.668528+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/expansion-pack-20th-anniversary.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:49.683009+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/explosive-walker.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:49.692740+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/facing-a-new-trial.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:49.699495+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/fairy-rise.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:49.723781+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/fever-burst-fighter.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:49.783875+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/flight-of-legends.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:55.919981+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/forbidden-light.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:55.928587+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/freeze-bolt.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:55.963722+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/fusion-arts.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:55.965150+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/future-flash.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:55.967601+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/gaia-volcano.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:55.971428+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/gg-end.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:55.983943+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/glory-of-the-rocket-gang.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:13:55.995543+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/golden-sky-silvery-ocean.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:01.369116+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/great-detective-pikachu.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:01.375591+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/gx-battle-boost.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:01.383776+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/gx-ultra-shiny.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:01.391534+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/hail-blizzard.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:01.392259+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/heart-gold-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:01.393025+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/holon-phantom.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:01.397074+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/holon-research-tower.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:01.407698+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/hot-wind-arena.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:06.584418+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/incandescent-arcana.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:06.613314+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/inferno-x.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:06.617251+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/infinity-zone.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:06.631522+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/islands-await-you.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:06.647612+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/j-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:06.655480+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/jet-black-spirit.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:06.667260+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/l-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:06.683700+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/legendary-heartbeat.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:12.156994+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/legendary-shine-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:12.172561+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/lost-abyss.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:12.215747+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/m-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:12.218120+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/magma-gang-vs-aqua-gang-double-crisis.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:12.234639+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/mc-donalds-original-minimum-pack.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:12.239584+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/mega-brave.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:12.251479+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/mega-dream-ex.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:12.252023+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/mega-symphonia.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:22.807902+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/megalo-cannon.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:22.811436+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/miracle-crystal.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:22.817444+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/miracle-twin.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:22.818881+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/mirage-forest.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:22.823304+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/moonlit-pursuit.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:22.851424+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/mysterious-mountains.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:22.863372+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/mythical-and-legendary-dream-shine-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:22.892346+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/night-unison.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:28.281405+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/night-wanderer.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:28.287621+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/nihil-zero.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:28.295799+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/ninja-spinner.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:28.296106+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/offense-and-defense-of-the-furthest-ends.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:28.311586+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:28.315413+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/paradigm-trigger.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:28.323831+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/paradise-dragona.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:28.339674+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/pcg-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:33.210998+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/pearl-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:33.223841+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/peerless-fighters.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:33.248665+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/phantom-gate.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:33.266418+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/pikachus-new-friends.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:33.267478+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/plasma-gale.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:33.275432+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/play-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:33.287391+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/pokekyun-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:33.299531+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/pokemon-card-151.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:37.768378+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/pokemon-go.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:37.768899+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/ppp-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:37.799577+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/premium-champion-pack.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:37.811776+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/promo-card-pack-25th-anniversary-edition.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:37.813202+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/psycho-drive.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:37.813674+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/rage-of-the-broken-heavens.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:37.813991+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/raging-surf.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:37.859599+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/rapid-strike-master.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:42.290298+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/rebellion-crash.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:42.301517+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/red-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:42.311445+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/red-flash.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:42.331941+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/remix-bout.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:42.332389+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/rising-fist.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:42.347733+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/rocket-gang-strikes-back.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:42.367585+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/ruler-of-the-black-flame.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:42.371411+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/s-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:47.307637+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/scarlet-ex.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:47.329410+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/secret-of-the-lakes.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:47.342901+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/shield.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:47.351484+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/shining-darkness.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:47.359675+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/shining-legends.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:47.360228+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/shiny-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:47.363331+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/shiny-star-v.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:47.475748+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/shiny-treasure-ex.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:52.379164+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/silver-lance.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:52.399257+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/single-strike-master.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:52.408152+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/sky-legend.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:52.432488+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/sky-splitting-charisma.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:52.464760+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/skyscraping-perfection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:52.471475+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/sm-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:52.488057+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/snow-hazard.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:52.499719+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/soul-silver-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:58.820490+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/southern-islands.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:58.854261+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/space-juggler.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:58.900109+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/space-time-creation-diamond-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:58.927579+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/spiral-force.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:58.935520+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/split-earth.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:58.943562+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/star-birth.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:58.947561+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/stellar-miracle.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:14:58.967775+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/storm-emeralda.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:04.569233+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/super-burst-impact.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:04.606476+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/super-electric-breaker.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:04.616502+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/sv-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:04.635549+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/sword.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:04.647572+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/t-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:04.655390+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/tag-bolt.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:04.663457+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/tag-team-gx-tag-all-stars.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:04.671408+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/temple-of-anger.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:10.553821+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/terastal-fest-ex.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:10.586085+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/thunder-knuckle.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:10.601734+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/thunderclap-spark.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:10.607582+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/tidal-storm.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:10.611461+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/time-gazer.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:10.616027+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/to-have-seen-the-battle-rainbow.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:10.620631+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/triplet-beat.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:10.663478+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/ultra-force.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:14.944049+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/ultra-moon.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:14.951418+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/ultra-sun.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:14.953038+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/ultradimensional-beasts.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:14.963520+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/violet-ex.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:14.964446+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/vmax-climax.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:14.995551+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/vmax-rising.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:15.027591+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/vstar-universe.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:15.095802+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/white-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:21.020614+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/white-flare.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:21.039280+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/wild-blaze.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:21.051557+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/wild-force.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:21.055322+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/wind-from-the-sea.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:21.095793+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/world-champions-pack.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:21.098227+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/japanese-sets/symbols/xy-p-promotional-cards.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:21.098889+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/30th-celebration-classic-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:21.119544+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/astral-radiance-trainer-gallery.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:26.444900+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/black-and-white-trainer-kit-excadrill.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:26.455421+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/black-and-white-trainer-kit-zoroark.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:26.459596+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/brilliant-stars-trainer-gallery.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:26.475463+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/celebrations-classic-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:26.491493+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/crown-zenith-galarian-gallery.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:26.551876+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/diamond-and-pearl-trainer-kit-lucario.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:26.559508+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/diamond-and-pearl-trainer-kit-manaphy.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:26.563586+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/evolutions.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:30.826060+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/expedition-base-set.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:30.828472+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/fire-red-and-leaf-green.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:30.851601+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/hs-trainer-kit-gyarados.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:30.875823+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/hs-trainer-kit-raichu.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:30.883009+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/hs-triumphant.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:30.883806+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/hs-undaunted.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:30.900183+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/hs-unleashed.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:30.935739+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/lost-origin-trainer-gallery.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:35.099383+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/mc-donalds-collection-2023.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:35.111939+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/mc-donalds-collection-2024.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:35.127022+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/scarlet-and-violet-energies.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:35.131409+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/shining-fates-shiny-vault.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:35.145948+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/silver-tempest-trainer-gallery.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:35.151472+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/sun-and-moon-trainer-kit-alolan-raichu.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:35.155390+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/sun-and-moon-trainer-kit-lycanroc.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:35.199635+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/wizards-black-star-promos.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:39.968199+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/xy-trainer-kit-bisharp.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:39.973334+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/xy-trainer-kit-latias.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:39.975460+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/xy-trainer-kit-latios.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:39.979480+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/xy-trainer-kit-noivern.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:39.983470+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/xy-trainer-kit-pikachu-libre.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:40.016528+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/xy-trainer-kit-suicune.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:40.016952+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/xy-trainer-kit-sylveon.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:40.043875+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/logos/xy-trainer-kit-wigglytuff.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:44.540725+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/symbols/30th-celebration-classic-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:44.551216+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/symbols/heart-gold-and-soul-silver.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:44.583674+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/symbols/hs-triumphant.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:44.595530+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/symbols/hs-undaunted.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:44.624137+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/symbols/hs-unleashed.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:44.643859+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/symbols/pokemon-futsal-collection.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:44.647833+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/symbols/scarlet-and-violet-black-star-promos.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:44.651840+00:00"
+  },
+  "https://pokesymbols.com/images/tcg/sets/symbols/sun-and-moon-trainer-kit-alolan-raichu.png": {
+    "status": 404,
+    "image": false,
+    "checked_at": "2026-11-17T13:15:49.454092+00:00"
+  }
+}

@@ -19,6 +19,11 @@
         "https://www.pokemon-card.com/card-search/details.php/card/48522"
       ],
       "icon_path": "https://www.pokemon-card.com/assets/images/card/rarity/ic_<code>.gif"
+    },
+    "upstream_translations": {
+      "repository": "https://github.com/tcgdex/cards-database",
+      "commit": "4218f64dcbf3de6e7b7548530f938fb0b9ebbe2a",
+      "path": "meta/translations"
     }
   },
   "languages": {
@@ -35,7 +40,42 @@
       "mega attack rare": "rarity:mega-attack-rare",
       "promo": "rarity:promo",
       "shiny rare": "rarity:shiny-rare",
-      "shiny ultra rare": "rarity:shiny-ultra-rare"
+      "shiny ultra rare": "rarity:shiny-ultra-rare",
+      "ace spec rare": [
+        "rarity:ace-spec-rare",
+        "rarity:ace"
+      ],
+      "amazing rare": "rarity:amazing-rare",
+      "classic collection": "rarity:classic-collection",
+      "full art trainer": "rarity:full-art-trainer",
+      "holo rare": "rarity:holo-rare",
+      "holo rare v": "rarity:holo-rare-v",
+      "holo rare vmax": "rarity:holo-rare-vmax",
+      "holo rare vstar": "rarity:holo-rare-vstar",
+      "legend": "rarity:legend",
+      "none": "rarity:none",
+      "radiant rare": "rarity:radiant-rare",
+      "rare holo": "rarity:rare-holo",
+      "rare holo lv x": "rarity:rare-holo-lv-x",
+      "rare prime": "rarity:rare-prime",
+      "secret rare": "rarity:secret-rare",
+      "shiny rare v": "rarity:shiny-rare-v",
+      "shiny rare vmax": "rarity:shiny-rare-vmax",
+      "one star": "rarity:one-star",
+      "two star": "rarity:two-star",
+      "three star": "rarity:three-star",
+      "crown": "rarity:crown",
+      "one diamond": "rarity:one-diamond",
+      "two diamond": "rarity:two-diamond",
+      "three diamond": "rarity:three-diamond",
+      "four diamond": "rarity:four-diamond",
+      "one shiny": "rarity:one-shiny",
+      "two shiny": "rarity:two-shiny",
+      "three shiny": "rarity:three-shiny",
+      "black white rare": [
+        "rarity:black-white-rare",
+        "rarity:bwr"
+      ]
     },
     "it": {
       "comune": "rarity:common",
@@ -50,7 +90,41 @@
       "mega attack rare": "rarity:mega-attack-rare",
       "promo": "rarity:promo",
       "shiny rare": "rarity:shiny-rare",
-      "ultrarara cromatica": "rarity:shiny-ultra-rare"
+      "ultrarara cromatica": "rarity:shiny-ultra-rare",
+      "rara asso tattico": [
+        "rarity:ace-spec-rare",
+        "rarity:ace"
+      ],
+      "policrome": "rarity:amazing-rare",
+      "collezione classica": "rarity:classic-collection",
+      "allenatore d arte completa": "rarity:full-art-trainer",
+      "olografica rara": "rarity:holo-rare",
+      "olografica rara v": "rarity:holo-rare-v",
+      "olografica rara vmax": "rarity:holo-rare-vmax",
+      "olografica rara vstar": "rarity:holo-rare-vstar",
+      "leggenda": "rarity:legend",
+      "nessuna": "rarity:none",
+      "rara lucente": "rarity:radiant-rare",
+      "rara olografica": "rarity:rare-holo",
+      "rara olografica lv x": "rarity:rare-holo-lv-x",
+      "super rara": "rarity:rare-prime",
+      "segreto rara": "rarity:secret-rare",
+      "shiny rare v": "rarity:shiny-rare-v",
+      "shiny rare vmax": "rarity:shiny-rare-vmax",
+      "une etoile": "rarity:one-star",
+      "deux etoiles": "rarity:two-star",
+      "trois etoiles": "rarity:three-star",
+      "couronne": "rarity:crown",
+      "une diamant": "rarity:one-diamond",
+      "deux diamant": "rarity:two-diamond",
+      "trois diamant": "rarity:three-diamond",
+      "quatre diamant": "rarity:four-diamond",
+      "un chromatique": "rarity:one-shiny",
+      "deux chromatique": "rarity:two-shiny",
+      "rara bianco e nero": [
+        "rarity:black-white-rare",
+        "rarity:bwr"
+      ]
     },
     "fr": {
       "commune": "rarity:common",
@@ -65,7 +139,42 @@
       "mega attack rare": "rarity:mega-attack-rare",
       "promo": "rarity:promo",
       "shiny rare": "rarity:shiny-rare",
-      "chromatique ultra rare": "rarity:shiny-ultra-rare"
+      "chromatique ultra rare": "rarity:shiny-ultra-rare",
+      "high tech rare": [
+        "rarity:ace-spec-rare",
+        "rarity:ace"
+      ],
+      "magnifique": "rarity:amazing-rare",
+      "collection classique": "rarity:classic-collection",
+      "dresseur full art": "rarity:full-art-trainer",
+      "holo rare": "rarity:holo-rare",
+      "holo rare v": "rarity:holo-rare-v",
+      "holo rare vmax": "rarity:holo-rare-vmax",
+      "holo rare vstar": "rarity:holo-rare-vstar",
+      "legende": "rarity:legend",
+      "sans rarete": "rarity:none",
+      "radieux rare": "rarity:radiant-rare",
+      "rare holo": "rarity:rare-holo",
+      "rare holo lv x": "rarity:rare-holo-lv-x",
+      "rare prime": "rarity:rare-prime",
+      "magnifique rare": "rarity:secret-rare",
+      "shiny rare v": "rarity:shiny-rare-v",
+      "shiny rare vmax": "rarity:shiny-rare-vmax",
+      "une etoile": "rarity:one-star",
+      "deux etoiles": "rarity:two-star",
+      "trois etoiles": "rarity:three-star",
+      "couronne": "rarity:crown",
+      "un diamant": "rarity:one-diamond",
+      "deux diamants": "rarity:two-diamond",
+      "trois diamants": "rarity:three-diamond",
+      "quatre diamants": "rarity:four-diamond",
+      "un chromatique": "rarity:one-shiny",
+      "deux chromatiques": "rarity:two-shiny",
+      "trois chromatiques": "rarity:three-shiny",
+      "rare noir blanc": [
+        "rarity:black-white-rare",
+        "rarity:bwr"
+      ]
     },
     "de": {
       "haufig": "rarity:common",
@@ -80,7 +189,41 @@
       "mega attack rare": "rarity:mega-attack-rare",
       "promo": "rarity:promo",
       "shiny rare": "rarity:shiny-rare",
-      "ultraselten schillernd": "rarity:shiny-ultra-rare"
+      "ultraselten schillernd": "rarity:shiny-ultra-rare",
+      "ass klasse": [
+        "rarity:ace-spec-rare",
+        "rarity:ace"
+      ],
+      "atemberaubend": "rarity:amazing-rare",
+      "klassische kollektion": "rarity:classic-collection",
+      "vollkunsttrainer": "rarity:full-art-trainer",
+      "holografisch selten": "rarity:holo-rare",
+      "holografisch selten v": "rarity:holo-rare-v",
+      "holografisch selten vmax": "rarity:holo-rare-vmax",
+      "holografisch selten vstar": "rarity:holo-rare-vstar",
+      "legende": "rarity:legend",
+      "keine": "rarity:none",
+      "selten strahlend": "rarity:radiant-rare",
+      "selten holografisch": "rarity:rare-holo",
+      "selten holografisch lv x": "rarity:rare-holo-lv-x",
+      "selten primus": "rarity:rare-prime",
+      "versteckt selten": "rarity:secret-rare",
+      "shiny rare v": "rarity:shiny-rare-v",
+      "shiny rare vmax": "rarity:shiny-rare-vmax",
+      "une etoile": "rarity:one-star",
+      "deux etoiles": "rarity:two-star",
+      "trois etoiles": "rarity:three-star",
+      "couronne": "rarity:crown",
+      "une diamant": "rarity:one-diamond",
+      "deux diamant": "rarity:two-diamond",
+      "trois diamant": "rarity:three-diamond",
+      "quatre diamant": "rarity:four-diamond",
+      "un chromatique": "rarity:one-shiny",
+      "deux chromatique": "rarity:two-shiny",
+      "schwarz weiß selten": [
+        "rarity:black-white-rare",
+        "rarity:bwr"
+      ]
     },
     "es": {
       "comun": "rarity:common",
@@ -95,7 +238,42 @@
       "mega attack rare": "rarity:mega-attack-rare",
       "promo": "rarity:promo",
       "shiny rare": "rarity:shiny-rare",
-      "rara ultra variocolor": "rarity:shiny-ultra-rare"
+      "rara ultra variocolor": "rarity:shiny-ultra-rare",
+      "rara as tactico": [
+        "rarity:ace-spec-rare",
+        "rarity:ace"
+      ],
+      "increibles": "rarity:amazing-rare",
+      "coleccion clasica": "rarity:classic-collection",
+      "entrenador de arte completo": "rarity:full-art-trainer",
+      "holo rara": "rarity:holo-rare",
+      "holo rara v": "rarity:holo-rare-v",
+      "holo rara vmax": "rarity:holo-rare-vmax",
+      "holo rara vstar": "rarity:holo-rare-vstar",
+      "leyenda": "rarity:legend",
+      "ninguno": "rarity:none",
+      "rara radiante": "rarity:radiant-rare",
+      "rara holo": "rarity:rare-holo",
+      "rara holo lv x": "rarity:rare-holo-lv-x",
+      "rara primigenia": "rarity:rare-prime",
+      "rara secreta": "rarity:secret-rare",
+      "shiny rare v": "rarity:shiny-rare-v",
+      "shiny rare vmax": "rarity:shiny-rare-vmax",
+      "una estrella": "rarity:one-star",
+      "dos estrellas": "rarity:two-star",
+      "tres estrellas": "rarity:three-star",
+      "corona": "rarity:crown",
+      "un diamante": "rarity:one-diamond",
+      "dos diamantes": "rarity:two-diamond",
+      "tres diamantes": "rarity:three-diamond",
+      "cuatro diamantes": "rarity:four-diamond",
+      "one shiny": "rarity:one-shiny",
+      "two shiny": "rarity:two-shiny",
+      "three shiny": "rarity:three-shiny",
+      "rara blanca y negra": [
+        "rarity:black-white-rare",
+        "rarity:bwr"
+      ]
     },
     "pt": {
       "comum": "rarity:common",
@@ -110,7 +288,40 @@
       "mega attack rare": "rarity:mega-attack-rare",
       "promo": "rarity:promo",
       "shiny rara": "rarity:shiny-rare",
-      "brilhante ultra rara": "rarity:shiny-ultra-rare"
+      "brilhante ultra rara": "rarity:shiny-ultra-rare",
+      "ace spec raro": [
+        "rarity:ace-spec-rare",
+        "rarity:ace"
+      ],
+      "raras incriveis": "rarity:amazing-rare",
+      "colecao clasica": "rarity:classic-collection",
+      "arte completa de treinador": "rarity:full-art-trainer",
+      "rara holo": "rarity:holo-rare",
+      "rara holo v": "rarity:holo-rare-v",
+      "rara holo vmax": "rarity:holo-rare-vmax",
+      "rara holo vstar": "rarity:holo-rare-vstar",
+      "legend": "rarity:legend",
+      "none": "rarity:none",
+      "rara radiante": "rarity:radiant-rare",
+      "rara holo lv x": "rarity:rare-holo-lv-x",
+      "rara prime": "rarity:rare-prime",
+      "rare secreta": "rarity:secret-rare",
+      "shiny rara v": "rarity:shiny-rare-v",
+      "shiny rara vmax": "rarity:shiny-rare-vmax",
+      "une etoile": "rarity:one-star",
+      "deux etoiles": "rarity:two-star",
+      "trois etoiles": "rarity:three-star",
+      "couronne": "rarity:crown",
+      "un diamant": "rarity:one-diamond",
+      "deux diamants": "rarity:two-diamond",
+      "trois diamants": "rarity:three-diamond",
+      "quatre diamants": "rarity:four-diamond",
+      "un chromatique": "rarity:one-shiny",
+      "deux chromatique": "rarity:two-shiny",
+      "rara preto e branco": [
+        "rarity:black-white-rare",
+        "rarity:bwr"
+      ]
     },
     "ja": {
       "rare c c": [

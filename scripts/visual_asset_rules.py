@@ -8,6 +8,7 @@ RARITIES={
  'hyper-rare':['hyper-rare','ur'],'mega-hyper-rare':['mega-hyper-rare','mur'],
  'mega-attack-rare':['mega-attack-rare'],'promo':['promo'],
  'shiny-rare':['shiny-rare','s'],'shiny-ultra-rare':['shiny-ultra-rare','ssr'],
+ 'ace-spec-rare':['ace-spec-rare','ace'],'black-white-rare':['black-white-rare','bwr'],
 }
 TYPES={'colorless','darkness','dragon','fairy','fighting','fire','grass','lightning','metal','psychic','water'}
 SET_SOURCES={'TCGdex','PokemonSymbols','Xero_Community','1niceroli_AssetRepo','SilphGhost','PokemonTCG_Storico'}

@@ -34,7 +34,7 @@ begin
  if lower(split_part(new.sigla,'@',1))='mfb' then base_tags:=array['family:my-first-battle'];end if;
  insert into public.catalog_search_entries(entry_key,card_id,collector_number,name,set_code,language,tags,facts,search_text)
  values('card:'||new.id,new.id,n,coalesce(new.nome,''),coalesce(new.sigla,''),coalesce(new.lingua,''),base_tags,public.catalog_base_facts(new),public.catalog_normalize(concat_ws(' ',new.nome,new.sigla,new.codice)))
- on conflict(entry_key) do update set collector_number=excluded.collector_number,name=excluded.name,set_code=excluded.set_code,language=excluded.language,tags=excluded.tags,facts=excluded.facts,search_text=excluded.search_text,updated_at=clock_timestamp();
+ on conflict(entry_key) do update set collector_number=excluded.collector_number,name=excluded.name,set_code=excluded.set_code,language=excluded.language,tags=excluded.tags||array(select distinct t from unnest(catalog_search_entries.tags)t where split_part(t,':',1)=any(array['rarity','type','regulation','stage','hp','illustrator','category'])),facts=excluded.facts,search_text=trim(excluded.search_text||' '||array_to_string(array(select distinct t from unnest(catalog_search_entries.tags)t where split_part(t,':',1)=any(array['rarity','type','regulation','stage','hp','illustrator','category'])),' ')),updated_at=clock_timestamp();
  if tg_op='UPDATE' then
   if (old.manual_overrides->'sigla',old.manual_overrides->'nome',old.manual_overrides->'lingua') is distinct from
      (new.manual_overrides->'sigla',new.manual_overrides->'nome',new.manual_overrides->'lingua') then

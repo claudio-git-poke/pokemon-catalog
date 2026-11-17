@@ -1,12 +1,12 @@
 {
   "references": 5630,
-  "missing": 1898,
+  "missing": 2123,
   "local-only": 112,
-  "available": 3620,
+  "available": 3395,
   "local_files": 3117,
   "unique_image_hashes": 2321,
-  "rules": 1485,
-  "validated_rule_urls": 963,
+  "rules": 1489,
+  "validated_rule_urls": 967,
   "disabled_image_rules": 1,
-  "validated_unique_image_hashes": 778
+  "validated_unique_image_hashes": 781
 }
