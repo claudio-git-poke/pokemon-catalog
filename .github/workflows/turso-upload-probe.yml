@@ -1,0 +1,29 @@
+name: Prova caricamento file su Turso
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/turso-upload-probe.mjs','scripts/turso-platform.mjs','.github/workflows/turso-upload-probe.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: turso-upload-probe
+  cancel-in-progress: false
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Misura se il caricamento di un file conta come righe scritte
+        run: node scripts/turso-upload-probe.mjs
+        env:
+          TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+          TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
