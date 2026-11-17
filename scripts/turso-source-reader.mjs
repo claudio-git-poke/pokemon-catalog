@@ -23,7 +23,7 @@ export function sourcePageQuery(table,cursor=null,limit=400){
  }
  return q
 }
-export function createSourceReader({url,key,fetcher=fetch}){
+export function createSourceReader({url,key,fetcher=fetch,attempts=3,wait=attempt=>new Promise(r=>setTimeout(r,1000*Math.min(30,2**attempt)))}){
  const parsed=new URL(url)
  if(parsed.protocol!=='https:'||parsed.username||parsed.password||!key)throw Error('Configurazione Supabase di origine non valida.')
  const base=parsed.origin+'/rest/v1/',headers={apikey:key,Authorization:'Bearer '+key}
@@ -32,9 +32,9 @@ export function createSourceReader({url,key,fetcher=fetch}){
   for(let attempt=0;;attempt++){
    let response
    try{response=await fetcher(base+table.table_name+'?'+query,{method,headers:{...headers,...extraHeaders},signal:AbortSignal.timeout(30000)})}
-   catch{if(attempt>=2)throw Error('Origine '+table.table_name+': richiesta interrotta.');await new Promise(r=>setTimeout(r,1000));continue}
+   catch{if(attempt>=attempts-1)throw Error('Origine '+table.table_name+': richiesta interrotta.');await wait(attempt);continue}
    if(response.ok)return response
-   if(attempt<2&&[429,500,502,503,504].includes(response.status)){await new Promise(r=>setTimeout(r,1000));continue}
+   if(attempt<attempts-1&&[429,500,502,503,504].includes(response.status)){await wait(attempt);continue}
    let code='';try{code=(await response.json()).code||''}catch{}
    throw Error('Origine '+table.table_name+': HTTP '+response.status+(code?' · '+String(code).replace(/[^A-Za-z0-9_]/g,''):''))
   }
