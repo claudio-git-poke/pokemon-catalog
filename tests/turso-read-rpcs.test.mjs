@@ -30,3 +30,14 @@ test('contract validation preserves code, variant and canonical market-page chec
  const c=await catalogFixture({set_carte:[{sigla:'SV02',numero:1,variante:'normal',nome:'Valid',codice:'SV-P EN',cardmarket_url:'https://www.cardmarket.com/it/Pokemon/Products/Singles/Valid',manual_overrides:{}},{sigla:'SV02',numero:2,variante:'bad--variant',nome:'Bad',codice:'SV02',manual_overrides:{}},{sigla:'SV02',numero:3,variante:'normal',nome:'Bad',codice:'lowercase',manual_overrides:{}},{sigla:'SV02',numero:4,variante:'normal',nome:'Bad',codice:null,cardmarket_url:'https://www.cardmarket.com/it/Pokemon/Products/Singles/Valid?tracking=1',manual_overrides:{}}]})
  const report=await bindexContractReport(c);assert.equal(report.cards,4);assert.equal(report.blocking,3);assert.equal(report.missing_code,1);assert.equal(report.canonical_cardmarket_pages,2);c.close()
 })
+test('incremental Bindex feeds page through modification-time indexes instead of sorting whole tables',async()=>{
+ const {bindexExportPage:page}=await import('../src/server/turso-read-rpcs.mjs')
+ const c=await catalogFixture({set_carte:[{sigla:'SV02',numero:1,variante:'normal',nome:'A',codice:'SV02',tag:[],aggiornato_il:'2026-11-17T12:00:00+00:00',eliminata:false,manual_overrides:{}}]})
+ const plans=[],spy={execute:async input=>{const {sql,args=[]}=typeof input==='string'?{sql:input}:input;plans.push(...(await c.execute({sql:'EXPLAIN QUERY PLAN '+sql,args})).rows.map(r=>r.detail));return c.execute(input)}}
+ const now=Date.parse('2026-11-17T14:00:00Z')
+ for(const kind of ['cards','sets','photos'])await page(spy,{kind,page_size:10},now)
+ await bindexPrintingPage(spy,{page_size:10},now)
+ for(const index of ['_catalog_feed_set_carte','_catalog_feed_set_espansioni','_catalog_feed_set_carte_immagini','_catalog_feed_printing_inventory'])assert.ok(plans.some(d=>d.includes(index)),index+' non usato: '+plans.join(' | '))
+ assert.ok(!plans.some(d=>/TEMP B-TREE FOR ORDER BY/.test(d)),'nessun ordinamento completo: '+plans.join(' | '))
+ c.close()
+})
