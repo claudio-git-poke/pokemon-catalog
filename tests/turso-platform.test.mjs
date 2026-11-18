@@ -28,3 +28,8 @@ test('a missing group is created next to the Vercel functions',async()=>{
  assert.equal(await ensureGroup(platform),'default');assert.deepEqual(created,[['default','aws-us-east-1']])
  assert.equal(await ensureGroup({async groups(){return [{name:'altro'}]}}),'altro')
 })
+test('usage per database accepts reports keyed by database id',async()=>{
+ const fetchImpl=async url=>{const path=new URL(url).pathname;const body=path.endsWith('/usage')?{organization:{usage:{rows_read:1,rows_written:2,storage_bytes:3}},databases:{'id-1':{total:{rows_written:7,rows_read:8,storage_bytes:9}}}}:{databases:[{DbId:'id-1',Name:'pokemon-catalog'}]};return {ok:true,async text(){return JSON.stringify(body)}}}
+ const platform=createPlatform({token:'t',organization:'demo'},{fetchImpl})
+ assert.deepEqual(await platform.databaseUsage(),[{database:'pokemon-catalog',rows_written:7,rows_read:8,storage_bytes:9}])
+})
