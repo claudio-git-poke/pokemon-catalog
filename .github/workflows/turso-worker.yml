@@ -4,6 +4,9 @@ name: Worker catalogo su Turso
 # rows to Turso, within the free-plan budget. Group A: imports and sources.
 # Group B: retroactive repairs and audits.
 on:
+  schedule:
+    - cron: '41 3 * * *'
+    - cron: '41 15 * * *'
   workflow_dispatch:
     inputs:
       group:
@@ -41,7 +44,8 @@ jobs:
       TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
       TURSO_DATABASE_NAME: pokemon-catalog
       WORKER_PG_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
-      GROUP: ${{ inputs.group || 'A' }}
+      # Scheduled runs alternate: imports at night, repairs and audits in the afternoon.
+      GROUP: ${{ inputs.group || (github.event.schedule == '41 15 * * *' && 'B' || 'A') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -106,7 +110,7 @@ jobs:
         timeout-minutes: 120
         run: node --experimental-strip-types scripts/run-catalog-sync.mjs
         env:
-          CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '60' }}
+          CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '30' }}
           ATLAS_DATA_DIR: .catalog-data
       - name: "A · Fonti aggiuntive EN TH ID"
         if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
