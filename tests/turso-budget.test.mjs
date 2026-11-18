@@ -44,3 +44,17 @@ test('front-loaded spending finishes the month quota by the chosen date, then fa
  assert.equal(after.spend_days,1);assert.equal(after.writes,500_000,'dopo la data resta disponibile il residuo, entro il tetto')
  assert.throws(()=>planBudget(usage(0),{now,maxRunWrites:5_000_000}),/Tetto/)
 })
+test('write budget is proportional to the time since the previous run, so skipped runs are recovered',()=>{
+ const now=Date.parse('2026-11-18T18:41:00Z'),spendBy=Date.parse('2026-11-25T00:00:00Z'),options={now,stopRatio:0.9,maxRunWrites:900_000,spendBy,runsPerDay:8}
+ const remaining=9_000_000-2_000_000
+ const regular=planBudget(usage(2_000_000),{...options,previousRunAt:now-3*3600000})
+ const skipped=planBudget(usage(2_000_000),{...options,previousRunAt:now-9*3600000})
+ const share=h=>h*3600000/(spendBy-(now-h*3600000))
+ assert.equal(regular.writes,Math.floor(remaining*share(3)))
+ assert.equal(skipped.writes,Math.floor(remaining*share(9)),'tre turni saltati: il successivo recupera')
+ assert.ok(skipped.writes>2.5*regular.writes)
+ const late=planBudget(usage(8_500_000),{...options,now:Date.parse('2026-11-26T00:00:00Z'),previousRunAt:Date.parse('2026-11-25T21:00:00Z')})
+ assert.equal(late.share,1);assert.equal(late.writes,500_000,'dopo la data, il residuo resta disponibile')
+ const unknown=planBudget(usage(2_000_000),{...options,previousRunAt:null})
+ assert.equal(unknown.writes,Math.floor(remaining/(7*8)),'senza dati sul turno precedente: quota divisa per esecuzione')
+})

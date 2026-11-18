@@ -204,3 +204,9 @@ Spesa anticipata di novembre 2026: la quota gratuita si azzera il 1° del mese, 
 - Fino al 1° dicembre il freno distribuisce il residuo, fino al 90%, sui giorni che mancano al 25 novembre invece che a fine mese (`TURSO_SPEND_BY`).
 - Il tetto per esecuzione sale a 900.000 scritture stimate (`TURSO_MAX_RUN_WRITES`).
 - Dopo il 25 resta disponibile solo il residuo; dal 1° dicembre (`TURSO_FRONT_LOAD_UNTIL`) tornano la distribuzione su tutto il mese, il tetto di 400.000 e la soglia dell'80%.
+
+Pianificazione robusta (18 novembre 2026): lo scheduler di GitHub ha ritardato o saltato molti avvii. Quel giorno il turno delle 15:41 UTC non è partito e il controllo orario dei consumi è partito una volta sola.
+
+- Il worker si avvia otto volte al giorno: gruppo A alle 00:41, 06:41, 12:41 e 18:41 UTC; gruppo B alle 03:41, 09:41, 15:41 e 21:41 UTC.
+- Il budget di scrittura di ogni esecuzione è proporzionale al tempo trascorso dall'avvio dell'ultima esecuzione riuscita, letto dall'API di GitHub (`actions: read`). Il calcolo è la quota residua moltiplicata per il tempo trascorso dall'esecuzione precedente, diviso il tempo tra quell'esecuzione e la scadenza (il 25 novembre durante la spesa anticipata, altrimenti il rinnovo).
+- Un turno saltato rende più grande il successivo, quindi il ritmo complessivo non dipende da quanti avvii partono davvero. Senza il dato sull'esecuzione precedente la quota viene divisa per otto esecuzioni al giorno.
