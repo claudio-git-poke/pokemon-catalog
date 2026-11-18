@@ -80,9 +80,11 @@ jobs:
           echo "SUPABASE_SERVICE_ROLE_KEY=$KEY" >> "$GITHUB_ENV"
           echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> "$GITHUB_ENV"
           for i in $(seq 1 30); do
-            if curl -sf -H "apikey: $KEY" -H "Authorization: Bearer $KEY" "http://127.0.0.1:54321/rest/v1/catalog_releases?select=release_code&limit=1" > /dev/null; then echo "PostgREST pronto"; exit 0; fi
-            sleep 2
+            CODE=$(curl -s -o /tmp/rest-check.json -w '%{http_code}' -H "apikey: $KEY" -H "Authorization: Bearer $KEY" "http://127.0.0.1:54321/rest/v1/catalog_releases?select=code&limit=1" || true)
+            if [ "$CODE" = "200" ]; then echo "PostgREST pronto"; exit 0; fi
+            echo "PostgREST non ancora pronto: HTTP $CODE"; sleep 2
           done
+          cat /tmp/rest-check.json
           docker logs postgrest | tail -40; exit 1
       - name: Archivio Card Atlas
         if: steps.prepare.outputs.mode == 'work'
