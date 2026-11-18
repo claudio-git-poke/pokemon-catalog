@@ -144,3 +144,21 @@ Prove del 18 novembre 2026:
 - **Letture.** Circa 1 milione per ripristino e circa 1,7 milioni per pubblicare 6.592 differenze, perché i controlli delle protezioni rileggono le righe. Con due esecuzioni al giorno restano sotto un terzo del limite mensile di 500 milioni.
 
 Pianificazione: alle 03:41 UTC gira il gruppo A con 30 minuti di importazione principale, alle 15:41 UTC il gruppo B. Un'esecuzione che trova pacchetti in coda li pubblica senza avviare nuovo lavoro.
+
+## Ricerche di ricercaDB su Turso
+
+Il workflow **Controllo ricerche su Turso** esegue le ricerche tipiche di ricercaDB sul database vero. Usa un token di sola lettura e lo stesso adattatore del sito, e riporta per ogni ricerca le righe lette (dichiarate dal server), il tempo e il piano di esecuzione.
+
+Primo controllo (18 novembre 2026):
+
+| Ricerca | Righe lette | Tempo | Esito |
+|---|---|---|---|
+| Per nome, anche con lingua o timbro | 2.000–23.000 | 0,2–6,7 s | indice di ricerca a testo |
+| Per espansione, anche con numero | 2.700–5.700 | 0,1–0,3 s | indice |
+| Per solo numero o solo totale | circa 361.000 | 18–27 s | scansione completa |
+| Lingua più finitura | 177.000 | 3 s | lettura dei tag di ogni stampa |
+
+Correzioni:
+
+- Nuovi indici su `collector_number` e `denominator` delle stampe. Su un database già caricato si creano una volta con l'opzione `indexes` del workflow, che richiede almeno un milione di scritture di margine; le costruzioni future li includono già.
+- I filtri `cs` e `ov` sui tag delle stampe usano la tabella indicizzata `_catalog_entry_tags` invece di aprire l'elenco dei tag di ogni riga.
