@@ -1,4 +1,4 @@
-import {CatalogRestError,qid} from './turso-rest.mjs'
+import {CatalogRestError,qid,sourceTable} from './turso-rest.mjs'
 import {normalizeCatalog,catalogNumber,utcTimestamp,utcSortSql} from './turso-values.mjs'
 export async function identifyCards(client,{tokens=[],required_tags=[],card_number=null,card_denominator=null,wanted_year=null,wanted_language=null,observations={},page_offset=0,page_size=24}={}){
  if(!Array.isArray(tokens)||tokens.length>20||tokens.some(t=>typeof t!=='string')||!Array.isArray(required_tags)||required_tags.length>100||required_tags.some(t=>typeof t!=='string'))throw new CatalogRestError('Filtri non validi.')
@@ -29,17 +29,16 @@ const FEEDS={cards:{table:'set_carte',keys:['sigla','numero','variante'],fields:
 export async function bindexExportPage(client,{kind='cards',after_time='1970-01-01',after_key=[],until_time=null,page_size=1000}={},now=Date.now()){
  const feed=FEEDS[kind];if(!feed||!Array.isArray(after_key)||![0,feed.keys.length].includes(after_key.length))throw new CatalogRestError('Tipo o cursore di esportazione non valido.')
  const after=utcTimestamp(after_time),cutoff=utcTimestamp(new Date(now-60000).toISOString()),until=until_time?utcTimestamp(until_time)<cutoff?utcTimestamp(until_time):cutoff:cutoff
- const limit=Math.min(Math.max(Number(page_size)||1000,1),1000),time=utcSortSql('aggiornato_il'),keys=feed.keys.map(k=>qid(k)),cursor=feed.keys.map((k,i)=>k==='numero'?Number(after_key[i]??0):String(after_key[i]??''))
+ const limit=Math.min(Math.max(Number(page_size)||1000,1),1000),time=utcSortSql("json_extract(_row,'$.aggiornato_il')"),keys=feed.keys.map(k=>`json_extract(_row,'$.${k}')`),cursor=feed.keys.map((k,i)=>k==='numero'?Number(after_key[i]??0):String(after_key[i]??''))
  if(cursor.some(v=>typeof v==='number'&&!Number.isSafeInteger(v)))throw new CatalogRestError('Chiave del cursore non valida.')
- const tuple=keys.length===1?keys[0]:'('+keys.join(',')+')',values=keys.length===1?'?':'('+keys.map(()=>'?').join(',')+')'
- const rows=(await client.execute({sql:`SELECT _row FROM ${qid(feed.table)} WHERE (${time}>? OR (${time}=? AND ${tuple}>${values})) AND ${time}<=? ORDER BY ${time},${keys.join(',')} LIMIT ?`,args:[after,after,...cursor,until,limit]})).rows.map(r=>JSON.parse(r._row))
+ const rows=(await client.execute({sql:`SELECT _row FROM ${sourceTable(feed.table)} WHERE (${time},${keys.join(',')})>(?,${keys.map(()=>'?').join(',')}) AND ${time}<=? ORDER BY ${time},${keys.join(',')} LIMIT ?`,args:[after,...cursor,until,limit]})).rows.map(r=>JSON.parse(r._row))
  const items=rows.map(r=>Object.fromEntries(feed.fields.map(k=>[k,r[k]??null]))),last=rows.at(-1)
  return {contract:'bindex-v1',kind,until,items,next_cursor:last?{time:last.aggiornato_il,key:feed.keys.map(k=>last[k])}:null,complete:rows.length<limit}
 }
 export async function bindexPrintingPage(client,{after_time='1970-01-01',after_key='',until_time=null,page_size=200}={},now=Date.now()){
- const after=utcTimestamp(after_time),cutoff=utcTimestamp(new Date(now-60000).toISOString()),until=until_time?utcTimestamp(until_time)<cutoff?utcTimestamp(until_time):cutoff:cutoff,limit=Math.min(Math.max(Number(page_size)||200,1),500),time=utcSortSql('updated_at')
+ const after=utcTimestamp(after_time),cutoff=utcTimestamp(new Date(now-60000).toISOString()),until=until_time?utcTimestamp(until_time)<cutoff?utcTimestamp(until_time):cutoff:cutoff,limit=Math.min(Math.max(Number(page_size)||200,1),500),time=utcSortSql("json_extract(_row,'$.updated_at')")
  if(typeof after_key!=='string')throw new CatalogRestError('Cursore inventario non valido.')
- const rows=(await client.execute({sql:`SELECT _row FROM catalog_printing_inventory WHERE (${time}>? OR (${time}=? AND record_key>?)) AND ${time}<=? ORDER BY ${time},record_key LIMIT ?`,args:[after,after,after_key,until,limit]})).rows.map(r=>JSON.parse(r._row))
+ const rows=(await client.execute({sql:`SELECT _row FROM _copy_catalog_printing_inventory WHERE (${time},json_extract(_row,'$.record_key'))>(?,?) AND ${time}<=? ORDER BY ${time},json_extract(_row,'$.record_key') LIMIT ?`,args:[after,after_key,until,limit]})).rows.map(r=>JSON.parse(r._row))
  const items=rows.map(r=>{const {canonical_sigla,canonical_numero,canonical_variante,source_entry_key,...item}=r;return {...item,canonical_key:canonical_sigla!=null?{sigla:canonical_sigla,numero:canonical_numero,variante:canonical_variante}:null,canonical_mapping_status:r.canonical_mapping_status}}),last=rows.at(-1)
  return {contract:'bindex-printings-v1',record_type:'source_evidence',until,items,next_cursor:last?{time:last.updated_at,key:last.record_key}:null,complete:rows.length<limit}
 }

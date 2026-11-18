@@ -162,3 +162,9 @@ Correzioni:
 
 - Nuovi indici su `collector_number` e `denominator` delle stampe. Su un database già caricato si creano una volta con l'opzione `indexes` del workflow, che richiede almeno un milione di scritture di margine; le costruzioni future li includono già.
 - I filtri `cs` e `ov` sui tag delle stampe usano la tabella indicizzata `_catalog_entry_tags` invece di aprire l'elenco dei tag di ogni riga.
+
+Feed incrementali per Bindex (`/api/bindex/changes`, `/api/bindex/printings`): ogni pagina ordinava l'intera tabella per data di modifica, e `printings` superava i 100 secondi sulle 152.000 righe dell'inventario. Correzioni:
+
+- indici su data di modifica più chiave per `set_carte`, `set_espansioni`, `set_carte_immagini` e `catalog_printing_inventory`, creati con lo stesso workflow `indexes`;
+- paginazione con confronto per tuple `(tempo, chiave) > (?, ?)`;
+- query dirette sulle tabelle `_copy_`, perché SQLite non riconosce un indice di espressione attraverso una vista.

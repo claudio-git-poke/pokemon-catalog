@@ -1,6 +1,7 @@
 import {createHash} from 'node:crypto'
 import {qid,sourceTable} from './turso-rest.mjs'
 import {installManualGuards} from './turso-manual.mjs'
+import {utcSortSql} from './turso-values.mjs'
 export function visualGroupKey(asset){return createHash('md5').update('['+[asset.kind,asset.scope,asset.image_sha256??'missing:'+asset.asset_key].map(JSON.stringify).join(', ')+']').digest('hex')}
 export function publicCatalogSchema(schema){
  const asset=schema.tables.find(t=>t.table_name==='catalog_visual_assets')
@@ -33,8 +34,9 @@ export async function prepareCatalogSchema(client,schema,{log=()=>{}}={}){
   // expression index duplicates its existing stored-key uniqueness and consumes quota.
   if(table.table_name!=='catalog_sync_events')await client.execute(`CREATE UNIQUE INDEX IF NOT EXISTS ${qid('_catalog_pk_'+table.table_name)} ON ${sourceTable(table.table_name)}(${table.primary_key.map(c=>`json_extract(_row,'$.${c}')`).join(',')})`)
  }
- const indexes=[['cards','source_uid'],['cards','sigla','lingua','numero'],['cards','image_status'],['catalog_search_entries','card_id'],['catalog_search_entries','set_code','card_id'],['catalog_search_entries','language'],['catalog_search_entries','collector_number'],['catalog_search_entries','denominator'],['catalog_printing_inventory','card_id'],['catalog_visual_links','asset_key'],['catalog_packaging_links','card_id'],['catalog_sync_events','run_id','id']]
+ const indexes=[['cards','source_uid'],['cards','sigla','lingua','numero'],['cards','image_status'],['catalog_search_entries','card_id'],['catalog_search_entries','set_code','card_id'],['catalog_search_entries','language'],['catalog_printing_inventory','card_id'],['catalog_visual_links','asset_key'],['catalog_packaging_links','card_id'],['catalog_sync_events','run_id','id']]
  for(const [name,...fields]of indexes)await client.execute(`CREATE INDEX IF NOT EXISTS ${qid('_catalog_idx_'+name+'_'+fields.join('_'))} ON ${sourceTable(name)}(${fields.map(f=>`json_extract(_row,'$.${f}')`).join(',')})`)
+ await ensureReadIndexes(client)
  await client.execute("INSERT INTO _catalog_api_build(task) VALUES('search-index') ON CONFLICT(task) DO NOTHING")
  let saved=(await client.execute("SELECT * FROM _catalog_api_build WHERE task='search-index'")).rows[0]
  while(!Number(saved.complete)){
@@ -76,14 +78,23 @@ export async function prepareCatalogSchema(client,schema,{log=()=>{}}={}){
 }
 
 // Read indexes added after the first upload: searches by number or by total
-// alone scanned all 349,530 printings (about 360,000 rows read each).
-export const READ_INDEXES=[['catalog_search_entries','collector_number'],['catalog_search_entries','denominator']]
+// alone scanned all 349,530 printings (about 360,000 rows read each), and the
+// incremental Bindex feeds sorted whole tables by modification time on every
+// page (152,000 inventory rows per page of 500).
+const field=f=>`json_extract(_row,'$.${f}')`
+export const READ_INDEXES=[
+ ['_catalog_idx_catalog_search_entries_collector_number','catalog_search_entries',[field('collector_number')]],
+ ['_catalog_idx_catalog_search_entries_denominator','catalog_search_entries',[field('denominator')]],
+ ['_catalog_feed_set_carte','set_carte',[utcSortSql(field('aggiornato_il')),field('sigla'),field('numero'),field('variante')]],
+ ['_catalog_feed_set_espansioni','set_espansioni',[utcSortSql(field('aggiornato_il')),field('sigla')]],
+ ['_catalog_feed_set_carte_immagini','set_carte_immagini',[utcSortSql(field('aggiornato_il')),field('sigla'),field('numero'),field('variante'),field('lingua')]],
+ ['_catalog_feed_printing_inventory','catalog_printing_inventory',[utcSortSql(field('updated_at')),field('record_key')]]
+]
 export async function ensureReadIndexes(client,{log=()=>{}}={}){
  const created=[]
- for(const [name,...fields]of READ_INDEXES){
-  const index='_catalog_idx_'+name+'_'+fields.join('_')
+ for(const [index,name,expressions]of READ_INDEXES){
   if((await client.execute({sql:"SELECT 1 FROM sqlite_master WHERE type='index' AND name=?",args:[index]})).rows.length)continue
-  await client.execute(`CREATE INDEX IF NOT EXISTS ${qid(index)} ON ${sourceTable(name)}(${fields.map(f=>`json_extract(_row,'$.${f}')`).join(',')})`)
+  await client.execute(`CREATE INDEX IF NOT EXISTS ${qid(index)} ON ${sourceTable(name)}(${expressions.join(',')})`)
   created.push(index);log({phase:'read-index',index})
  }
  return created
