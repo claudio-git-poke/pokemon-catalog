@@ -35,11 +35,17 @@ function daysLeftInPeriod(now,resetDay){
 
 // Spread what is left below the stop ratio over the remaining days and runs,
 // so a single large backlog cannot spend the whole month at once.
-export function planBudget(usage,{limits=FREE_LIMITS,stopRatio=0.8,now=Date.now(),resetDay=1,runsPerDay=2,maxRunWrites=400_000,maxRunReads=8_000_000}={}){
+// spendBy (optional, within the current period) spends what is left by that
+// date instead of by the end of the period; after it, what remains is
+// available run by run. The free quota resets at the start of each period,
+// so spending earlier loses nothing.
+export function planBudget(usage,{limits=FREE_LIMITS,stopRatio=0.8,now=Date.now(),resetDay=1,runsPerDay=2,maxRunWrites=400_000,maxRunReads=8_000_000,spendBy=null}={}){
  if(!(stopRatio>0&&stopRatio<1))throw Error('Soglia di sicurezza non valida.')
+ if(!(Number.isSafeInteger(maxRunWrites)&&maxRunWrites>0&&maxRunWrites<=1_000_000))throw Error('Tetto per esecuzione non valido.')
  const safe=key=>Math.floor(limits[key]*stopRatio)-usage[key]
- const days=daysLeftInPeriod(now,resetDay),runs=days*runsPerDay
- const plan={days_left:days,usage,limits,stop_ratio:stopRatio,writes:0,reads:0,allowed:false,reason:''}
+ const left=daysLeftInPeriod(now,resetDay)
+ const days=Number.isFinite(spendBy)?Math.min(left,Math.max(1,Math.ceil((spendBy-now)/86400000))):left,runs=days*runsPerDay
+ const plan={days_left:left,spend_days:days,usage,limits,stop_ratio:stopRatio,writes:0,reads:0,allowed:false,reason:''}
  if(safe('storage_bytes')<=0)return {...plan,reason:'Spazio Turso oltre la soglia di sicurezza.'}
  if(safe('rows_written')<=0)return {...plan,reason:'Scritture Turso del mese oltre la soglia di sicurezza: riprendo dopo il rinnovo.'}
  if(safe('rows_read')<=0)return {...plan,reason:'Letture Turso del mese oltre la soglia di sicurezza: riprendo dopo il rinnovo.'}

@@ -198,3 +198,9 @@ Il workflow **Controllo ricerche su Turso** installa la nuova versione con l'opz
 Soglia di arresto: 90% fino al rinnovo del 1° dicembre 2026 (`TURSO_STOP_RATIO`, `TURSO_STOP_RATIO_UNTIL`), poi di nuovo 80%. Il valore massimo ammesso è 90%.
 
 Misura sul contatore ufficiale con le protezioni v3: un'esecuzione del gruppo A (30 minuti) ha raccolto 46.121 differenze, divise in 5 pacchetti. Le prime 14.300, tutte carte, sono costate 145.124 righe scritte contro 286.000 stimate, circa 10,1 per carta. I fattori diventano: carta 13, stampa 30 (riduzione misurata nei test, da ricalibrare sul contatore), inventario 10, altre 8.
+
+Spesa anticipata di novembre 2026: la quota gratuita si azzera il 1° del mese, quindi spenderla prima non toglie nulla.
+
+- Fino al 1° dicembre il freno distribuisce il residuo, fino al 90%, sui giorni che mancano al 25 novembre invece che a fine mese (`TURSO_SPEND_BY`).
+- Il tetto per esecuzione sale a 900.000 scritture stimate (`TURSO_MAX_RUN_WRITES`).
+- Dopo il 25 resta disponibile solo il residuo; dal 1° dicembre (`TURSO_FRONT_LOAD_UNTIL`) tornano la distribuzione su tutto il mese, il tetto di 400.000 e la soglia dell'80%.

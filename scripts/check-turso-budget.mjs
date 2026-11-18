@@ -7,13 +7,21 @@ import {createPlatform,platformConfiguration} from './turso-platform.mjs'
 let plan
 // A higher stop ratio can be granted until a given date (for example the end of
 // a month with quota left); afterwards the default 80% applies again.
+// Faster spending of the current month, valid only until the given date (the
+// quota reset): afterwards the default even spread and run cap apply again.
+function frontLoad(env=process.env,now=Date.now()){
+ const until=Date.parse(env.TURSO_FRONT_LOAD_UNTIL||''),spendBy=Date.parse(env.TURSO_SPEND_BY||'')
+ if(!Number.isFinite(until)||now>=until||!Number.isFinite(spendBy)||spendBy>=until)return {}
+ const cap=Number(env.TURSO_MAX_RUN_WRITES)
+ return {spendBy,...(Number.isSafeInteger(cap)&&cap>0&&cap<=1_000_000?{maxRunWrites:cap}:{})}
+}
 function stopRatio(env=process.env,now=Date.now()){
  const ratio=Number(env.TURSO_STOP_RATIO),until=Date.parse(env.TURSO_STOP_RATIO_UNTIL||'')
  return ratio>0&&ratio<=0.9&&Number.isFinite(until)&&now<until?ratio:0.8
 }
 try{
  const usage=await readTursoUsage({token:process.env.TURSO_API_TOKEN?.trim(),organization:process.env.TURSO_ORGANIZATION?.trim()})
- plan=planBudget(usage,{resetDay:Number(process.env.TURSO_RESET_DAY||1),runsPerDay:Number(process.env.TURSO_RUNS_PER_DAY||2),stopRatio:stopRatio()})
+ plan=planBudget(usage,{resetDay:Number(process.env.TURSO_RESET_DAY||1),runsPerDay:Number(process.env.TURSO_RUNS_PER_DAY||2),stopRatio:stopRatio(),...frontLoad()})
 }catch(error){plan={allowed:false,writes:0,reads:0,reason:safeTursoError(error)}}
 console.log(JSON.stringify({check:'turso-budget',...plan}))
 try{for(const entry of await createPlatform(platformConfiguration()).databaseUsage())console.log(JSON.stringify({check:'turso-database-usage',...entry}))}catch(error){console.log('Dettaglio per database non disponibile: '+safeTursoError(error))}
