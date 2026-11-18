@@ -216,3 +216,5 @@ Misura delle stampe con le protezioni v3: la pubblicazione della coda delle 15:4
 Copertura su Turso: il ricalcolo del 18 novembre alle 16:57 UTC conta 199.674 carte importate. I riepiloghi di copertura e qualità vengono pubblicati prima delle altre differenze.
 
 Chiusura di novembre 2026: la scadenza della spesa anticipata è anticipata al 23 novembre. Dal 23 al 30 la soglia sale al 95% (`TURSO_ENDGAME_RATIO`, `TURSO_ENDGAME_FROM`) con turni di al massimo 300.000 scritture stimate (`TURSO_ENDGAME_MAX_RUN_WRITES`): anche con il contatore in ritardo di un turno, l'account resta sotto il limite. Il valore massimo ammesso è 95%; dal 1° dicembre tornano 80% e il tetto di 400.000.
+
+Pianificatore a catena (18 novembre 2026): lo scheduler di GitHub non ha avviato il worker nemmeno una volta, e il controllo orario dei consumi è partito due volte in un giorno. Il workflow **Pianificatore worker Turso** aspetta il prossimo turno (ogni 3 ore alle :41 UTC), avvia il worker se non ce n'è già uno in corso e poi riavvia se stesso. Gli avvii manuali funzionano sempre. Un cron ogni 6 ore lo riattiva se la catena si interrompe, e gli orari del worker restano come riserva.
