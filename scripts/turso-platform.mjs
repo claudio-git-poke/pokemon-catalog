@@ -28,8 +28,11 @@ export function createPlatform({token,organization},{fetchImpl=fetch}={}){
   },
   async databaseUsage(){
    const [report,list]=await Promise.all([call('GET','/usage'),call('GET','/databases')])
-   const names=new Map((list.databases||[]).map(d=>[d.DbId,d.Name]))
-   return (report.databases||[]).map(d=>({database:names.get(d.uuid)||'eliminato:'+String(d.uuid).slice(0,8),rows_written:Number(d.total?.rows_written||0),rows_read:Number(d.total?.rows_read||0),storage_bytes:Number(d.total?.storage_bytes||0)}))
+   const items=value=>Array.isArray(value)?value:Object.values(value||{})
+   const names=new Map(items(list.databases).map(d=>[d.DbId,d.Name]))
+   const entries=items(report.databases).map(d=>({database:names.get(d.uuid)||'non elencato:'+String(d.uuid).slice(0,8),rows_written:Number(d.total?.rows_written||0),rows_read:Number(d.total?.rows_read||0),storage_bytes:Number(d.total?.storage_bytes||0)}))
+   for(const name of names.values())if(!entries.some(e=>e.database===name))entries.push({database:name,rows_written:0,rows_read:0,storage_bytes:0})
+   return entries
   },
   async groups(){return (await call('GET','/groups')).groups||[]},
   async locations(){
@@ -41,7 +44,7 @@ export function createPlatform({token,organization},{fetchImpl=fetch}={}){
    if(!/^[a-z0-9-]{1,40}$/.test(name)||!/^[a-z0-9-]{2,40}$/.test(location))throw Error('Gruppo o località non validi.')
    return (await call('POST','/groups',{name,location})).group
   },
-  async databases(){return (await call('GET','/databases')).databases||[]},
+  async databases(){const value=(await call('GET','/databases')).databases;return Array.isArray(value)?value:Object.values(value||{})},
   async createUploadDatabase(name,group){
    const database=(await call('POST','/databases',{name:validDatabaseName(name),group,seed:{type:'database_upload'}})).database
    if(!database?.Hostname)throw Error('Risposta di creazione del database senza indirizzo.')
