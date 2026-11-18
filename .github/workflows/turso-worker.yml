@@ -58,6 +58,10 @@ jobs:
       - name: Budget Turso di questa esecuzione
         id: budget
         run: node scripts/check-turso-budget.mjs
+        env:
+          # 90% fino al rinnovo del 1° dicembre 2026, poi di nuovo 80%.
+          TURSO_STOP_RATIO: '0.9'
+          TURSO_STOP_RATIO_UNTIL: '2026-12-01T00:00:00Z'
       - name: Segreti locali dell'esecuzione
         if: steps.budget.outputs.allowed == 'true'
         run: |

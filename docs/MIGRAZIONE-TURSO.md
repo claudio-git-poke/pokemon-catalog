@@ -174,3 +174,25 @@ Pagina `/carte` (18 novembre 2026): i conteggi "con foto" e "senza foto" superav
 - indice `_catalog_idx_cards_catalog_order` (sigla, numero, id) per l'ordine della pagina;
 - indice `_catalog_idx_cards_photo` (stato, foto), con cui entrambi i conteggi si risolvono dentro l'indice;
 - conteggi esatti memorizzati in `_catalog_count_cache`, condivisa fra le istanze del server, oltre che in memoria. Valgono finché non cambia la revisione del catalogo, che le protezioni incrementano a ogni scrittura, e comunque al massimo 6 ore. Riguarda solo le tabelle protette; senza la tabella di memoria il conteggio viene calcolato.
+
+## Scritture più leggere (protezioni versione 3, 18 novembre 2026)
+
+Le protezioni delle correzioni manuali eseguivano scritture che non cambiavano nulla. Con la versione 3:
+
+- una scrittura automatica senza correzioni manuali, né prima né dopo, non riscrive la riga una seconda volta;
+- il worker incrementa la revisione del catalogo una sola volta per lotto, mentre le modifiche manuali dal sito la incrementano a ogni riga come prima;
+- per le stampe aggiornate, ricerca a testo e tag si riscrivono solo se cambiano;
+- il pubblicatore riscrive l'hash solo delle righe modificate dalle protezioni.
+
+Righe modificate per riga pubblicata, misurate in `tests/turso-write-cost.test.mjs` (gli indici vanno aggiunti a parte):
+
+| Caso | Prima | Dopo |
+|---|---|---|
+| Stampa aggiornata con tag invariati | 26,6 | 3,3 |
+| Stampa aggiornata con tag cambiati | 27,6 | 20,3 |
+| Stampa nuova | 16,5 | 13,5 |
+| Carta aggiornata o nuova | 6,3 | 3,3 |
+
+Il workflow **Controllo ricerche su Turso** installa la nuova versione con l'opzione `guards`. Usa lo stesso gruppo di concorrenza del worker e segna l'API come non pronta durante la sostituzione dei trigger.
+
+Soglia di arresto: 90% fino al rinnovo del 1° dicembre 2026 (`TURSO_STOP_RATIO`, `TURSO_STOP_RATIO_UNTIL`), poi di nuovo 80%. Il valore massimo ammesso è 90%.
