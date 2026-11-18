@@ -196,3 +196,5 @@ Righe modificate per riga pubblicata, misurate in `tests/turso-write-cost.test.m
 Il workflow **Controllo ricerche su Turso** installa la nuova versione con l'opzione `guards`. Usa lo stesso gruppo di concorrenza del worker e segna l'API come non pronta durante la sostituzione dei trigger.
 
 Soglia di arresto: 90% fino al rinnovo del 1° dicembre 2026 (`TURSO_STOP_RATIO`, `TURSO_STOP_RATIO_UNTIL`), poi di nuovo 80%. Il valore massimo ammesso è 90%.
+
+Misura sul contatore ufficiale con le protezioni v3: un'esecuzione del gruppo A (30 minuti) ha raccolto 46.121 differenze, divise in 5 pacchetti. Le prime 14.300, tutte carte, sono costate 145.124 righe scritte contro 286.000 stimate, circa 10,1 per carta. I fattori diventano: carta 13, stampa 30 (riduzione misurata nei test, da ricalibrare sul contatore), inventario 10, altre 8.

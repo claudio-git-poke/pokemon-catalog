@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises'
 import {PGlite} from '@electric-sql/pglite'
 import {catalogFixture,schema} from './helpers/turso-fixture.mjs'
 import {canonicalJson} from '../scripts/turso-snapshot.mjs'
+import {estimateWrites} from '../scripts/turso-budget.mjs'
 import {prepareWorkerDatabase,collectWorkerChanges,summarizeChanges,packWorkerChanges,stageWorkerRun,publishPendingWork,pendingWorkerJournals,signServiceRoleToken,UNPUBLISHED_TABLES} from '../scripts/turso-worker-runtime.mjs'
 const snapshot=JSON.parse(await readFile(new URL('../data/turso-worker-pg-schema.json',import.meta.url),'utf8'))
 const read=async(c,name,key)=>{const r=(await c.execute({sql:'SELECT _row FROM "_copy_'+name+'" WHERE _key=?',args:[canonicalJson(key)]})).rows[0];return r?JSON.parse(r._row):null}
@@ -45,7 +46,7 @@ test('large runs are split in ordered packets and resume across budgets',async()
  assert.equal(packWorkerChanges(schema,changes,{maxChanges:4}).length,2)
  const staged=await stageWorkerRun(turso,schema,{runId:'77',changes:changes.slice(0,6)})
  assert.equal(staged.length,1)
- const partial=await publishPendingWork(turso,schema,{writeBudget:40*2})
+ const partial=await publishPendingWork(turso,schema,{writeBudget:estimateWrites('cards',2)})
  assert.equal(partial.complete,false)
  await assert.rejects(stageWorkerRun(turso,schema,{runId:'78',changes}),/Riprendere prima/)
  const rest=await publishPendingWork(turso,schema,{writeBudget:1_000_000})
