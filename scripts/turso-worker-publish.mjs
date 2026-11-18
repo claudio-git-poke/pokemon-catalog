@@ -11,12 +11,20 @@ export async function initializeWorkerJournal(client){
   'CREATE TABLE IF NOT EXISTS _catalog_worker_chunks(run_id TEXT NOT NULL,part INTEGER NOT NULL,data BLOB NOT NULL,PRIMARY KEY(run_id,part)) WITHOUT ROWID'
  ],'write')
 }
+// Small, independent report tables (no foreign keys either way) go first, so
+// the coverage and quality pages are updated even when a budget-limited
+// publication leaves thousands of rows queued.
+const REPORTS_FIRST=new Set(['catalog_coverage_snapshots','catalog_quality_cache'])
 export function orderWorkerChanges(schema,changes){
  const done=new Set(),pending=new Map(schema.tables.map(t=>[t.table_name,t])),rank=new Map()
  while(pending.size){
   const available=[...pending.values()].filter(t=>(t.foreign_keys||[]).every(f=>{const name=f.target.replace(/^public\./,'');return name===t.table_name||done.has(name)}))
   if(!available.length)throw Error('Dipendenze circolari fra tabelle del worker.')
   for(const table of available){rank.set(table.table_name,rank.size);done.add(table.table_name);pending.delete(table.table_name)}
+ }
+ for(const name of REPORTS_FIRST){
+  const table=schema.tables.find(t=>t.table_name===name)
+  if(table&&!(table.foreign_keys||[]).length&&!schema.tables.some(t=>(t.foreign_keys||[]).some(f=>f.target.replace(/^public\./,'')===name)))rank.set(name,-1)
  }
  const seen=new Set()
  for(const change of changes){

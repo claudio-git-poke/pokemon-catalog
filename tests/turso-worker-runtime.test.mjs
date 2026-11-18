@@ -60,3 +60,10 @@ test('local PostgREST token is a service-role HS256 JWT',()=>{
  assert.equal(header.alg,'HS256');assert.equal(body.role,'service_role');assert.equal(body.exp-body.iat,12*3600)
  assert.throws(()=>signServiceRoleToken('short'),/non valido/)
 })
+test('coverage and quality reports are published before large card batches',async()=>{
+ const {orderWorkerChanges}=await import('../scripts/turso-worker-publish.mjs')
+ const report={scope:'latest',report:{},updated_at:'2026-11-18T00:00:00+00:00'}
+ const changes=[...Array.from({length:3},(_,i)=>({table_name:'cards',record_key:[i+1],first_old:null,last_new:{id:i+1}})),{table_name:'catalog_coverage_snapshots',record_key:['latest'],first_old:null,last_new:report},{table_name:'catalog_quality_cache',record_key:['catalog'],first_old:null,last_new:{...report,scope:'catalog'}}]
+ const ordered=orderWorkerChanges(schema,changes).map(c=>c.table_name)
+ assert.deepEqual(ordered.slice(0,2).sort(),['catalog_coverage_snapshots','catalog_quality_cache'])
+})

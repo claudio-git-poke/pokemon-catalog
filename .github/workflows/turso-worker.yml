@@ -185,8 +185,9 @@ jobs:
         run: node --experimental-strip-types scripts/run-source-manifest-audit.mjs
         env:
           ATLAS_DATA_DIR: .catalog-data
-      - name: "B · Copertura"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+      # Runs in every work run, last, so the coverage page reflects this run.
+      - name: "A e B · Copertura"
+        if: steps.prepare.outputs.mode == 'work'
         continue-on-error: true
         timeout-minutes: 12
         run: node --experimental-strip-types scripts/run-coverage-audit.mjs
