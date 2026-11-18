@@ -33,7 +33,7 @@ export async function prepareCatalogSchema(client,schema,{log=()=>{}}={}){
   // expression index duplicates its existing stored-key uniqueness and consumes quota.
   if(table.table_name!=='catalog_sync_events')await client.execute(`CREATE UNIQUE INDEX IF NOT EXISTS ${qid('_catalog_pk_'+table.table_name)} ON ${sourceTable(table.table_name)}(${table.primary_key.map(c=>`json_extract(_row,'$.${c}')`).join(',')})`)
  }
- const indexes=[['cards','source_uid'],['cards','sigla','lingua','numero'],['cards','image_status'],['catalog_search_entries','card_id'],['catalog_search_entries','set_code','card_id'],['catalog_search_entries','language'],['catalog_printing_inventory','card_id'],['catalog_visual_links','asset_key'],['catalog_packaging_links','card_id'],['catalog_sync_events','run_id','id']]
+ const indexes=[['cards','source_uid'],['cards','sigla','lingua','numero'],['cards','image_status'],['catalog_search_entries','card_id'],['catalog_search_entries','set_code','card_id'],['catalog_search_entries','language'],['catalog_search_entries','collector_number'],['catalog_search_entries','denominator'],['catalog_printing_inventory','card_id'],['catalog_visual_links','asset_key'],['catalog_packaging_links','card_id'],['catalog_sync_events','run_id','id']]
  for(const [name,...fields]of indexes)await client.execute(`CREATE INDEX IF NOT EXISTS ${qid('_catalog_idx_'+name+'_'+fields.join('_'))} ON ${sourceTable(name)}(${fields.map(f=>`json_extract(_row,'$.${f}')`).join(',')})`)
  await client.execute("INSERT INTO _catalog_api_build(task) VALUES('search-index') ON CONFLICT(task) DO NOTHING")
  let saved=(await client.execute("SELECT * FROM _catalog_api_build WHERE task='search-index'")).rows[0]
@@ -73,4 +73,18 @@ export async function prepareCatalogSchema(client,schema,{log=()=>{}}={}){
  await installManualGuards(client,schema)
  await client.execute({sql:'UPDATE _catalog_api_state SET ready=1,prepared_at=? WHERE id=1',args:[new Date().toISOString()]})
  return {ready:true,groups:groups.size}
+}
+
+// Read indexes added after the first upload: searches by number or by total
+// alone scanned all 349,530 printings (about 360,000 rows read each).
+export const READ_INDEXES=[['catalog_search_entries','collector_number'],['catalog_search_entries','denominator']]
+export async function ensureReadIndexes(client,{log=()=>{}}={}){
+ const created=[]
+ for(const [name,...fields]of READ_INDEXES){
+  const index='_catalog_idx_'+name+'_'+fields.join('_')
+  if((await client.execute({sql:"SELECT 1 FROM sqlite_master WHERE type='index' AND name=?",args:[index]})).rows.length)continue
+  await client.execute(`CREATE INDEX IF NOT EXISTS ${qid(index)} ON ${sourceTable(name)}(${fields.map(f=>`json_extract(_row,'$.${f}')`).join(',')})`)
+  created.push(index);log({phase:'read-index',index})
+ }
+ return created
 }

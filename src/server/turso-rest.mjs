@@ -75,6 +75,14 @@ export class ReadCompiler{
    result=values.length?sql+' IN ('+values.map(v=>this.bind(v)).join(',')+')':'0'
   }else if(['cs','cd','ov'].includes(op)){
    const values=arrayValues(value)
+   // Printing tags have their own indexed table (kept in sync by the Turso
+   // guards): use it instead of opening the JSON array of every printing.
+   if(table.table_name==='catalog_search_entries'&&field==='tags'&&op!=='cd'){
+    if(values.length>100)throw new CatalogRestError('Troppi valori nel filtro.')
+    const lookup=list=>`${alias}.rowid IN(SELECT entry_rowid FROM _catalog_entry_tags WHERE tag IN (${list.map(v=>this.bind(String(v))).join(',')}))`
+    result=op==='ov'?(values.length?lookup(values):'0'):(values.length?values.map(v=>lookup([v])).join(' AND '):'1')
+    return negative?'NOT ('+result+')':'('+result+')'
+   }
    if(op==='cs')result=values.length?values.map(v=>`EXISTS(SELECT 1 FROM json_each(${sql}) j WHERE j.value=${this.bind(v)})`).join(' AND '):'1'
    if(op==='ov')result=values.length?`EXISTS(SELECT 1 FROM json_each(${sql}) j WHERE j.value IN (${values.map(v=>this.bind(v)).join(',')}))`:'0'
    if(op==='cd')result=`NOT EXISTS(SELECT 1 FROM json_each(${sql}) j WHERE j.value NOT IN (SELECT value FROM json_each(${this.bind(JSON.stringify(values))})))`

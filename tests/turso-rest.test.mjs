@@ -13,6 +13,8 @@ async function fixture(){
  for(const table of tables){const rows=data[table.table_name];await copyTable({client:c,table,source:{async count(){return rows.length},async page(){return rows}}})}
  await c.execute(`CREATE VIRTUAL TABLE _catalog_entry_fts USING fts5(search_text,content='')`)
  await c.execute(`INSERT INTO _catalog_entry_fts(rowid,search_text) SELECT rowid,json_extract(_row,'$.search_text') FROM _copy_catalog_search_entries`)
+ await c.execute('CREATE TABLE _catalog_entry_tags(tag TEXT NOT NULL,entry_rowid INTEGER NOT NULL,PRIMARY KEY(tag,entry_rowid)) WITHOUT ROWID')
+ await c.execute(`INSERT OR IGNORE INTO _catalog_entry_tags(tag,entry_rowid) SELECT j.value,e.rowid FROM _copy_catalog_search_entries e,json_each(e._row,'$.tags') j WHERE typeof(j.value)='text'`)
  return c
 }
 test('Turso reads preserve ricercaDB fields, embedded cards, translated JSON and exact counts',async()=>{
@@ -38,5 +40,15 @@ test('public query parsing cannot select private tables, unknown fields or injec
  const result=await readCatalogRows(c,schema,'cards',new URLSearchParams({nome:'eq.\' OR 1=1 --'}));assert.equal(result.rows.length,0)
  assert.equal((await readCatalogRows(c,schema,'cards',new URLSearchParams(),{head:true,count:true})).count,2)
  const original=await readCatalogRows(c,schema,'cards',new URLSearchParams({id:'eq.1'}));assert.deepEqual(original.rows[0].manual_overrides,{image_url:'https://example.test/iono.png'})
+ c.close()
+})
+test('tag filters on printings use the indexed tag table and keep their meaning',async()=>{
+ const c=await fixture(),sql=[]
+ const spy={execute:async input=>{sql.push(typeof input==='string'?input:input.sql);return c.execute(input)}}
+ for(const [filter,expected]of [['ov.{type:water,type:fire}',['card:1']],['cs.{rarity:special-illustration-rare,type:fire}',['card:1']],['cs.{type:fire,type:water}',[]],['not.ov.{type:fire}',['card:2']]]){
+  const rows=(await readCatalogRows(spy,schema,'catalog_search_entries',new URLSearchParams({select:'entry_key',tags:filter,order:'entry_key.asc'}))).rows.map(r=>r.entry_key)
+  assert.deepEqual(rows,expected,filter)
+ }
+ assert.ok(sql.every(q=>q.includes('_catalog_entry_tags')&&!q.includes('json_each(json_extract(e._row')))
  c.close()
 })
