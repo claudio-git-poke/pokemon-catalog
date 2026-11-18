@@ -8,11 +8,14 @@ export const FREE_LIMITS=Object.freeze({rows_written:10_000_000,rows_read:500_00
 // - 18 Nov 2026, guards v2: 6,592 changes (cards and printings) cost 115,390
 //   rows written, 38% of the first estimate;
 // - 18 Nov 2026, guards v3: 14,300 card changes cost 145,124 rows written,
-//   about 10.1 per card (factor 13). Printings are scaled by the reduction
-//   measured in tests/turso-write-cost.test.mjs until a real measurement.
+//   about 10.1 per card (factor 13);
+// - 18 Nov 2026, guards v3: 31,821 changes (10,435 cards, 9,310 printings,
+//   12,076 queue and report rows) plus a small run cost 333,781 rows written
+//   against 528,495 estimated; net of the cards, about 17-20 per printing
+//   (factor 25).
 // The guard rereads the official counter before every run and stops at the
 // configured ratio, so an underestimate cannot exhaust the free quota.
-export const WRITE_FACTORS=Object.freeze({catalog_search_entries:30,cards:13,catalog_printing_inventory:10,default:8})
+export const WRITE_FACTORS=Object.freeze({catalog_search_entries:25,cards:13,catalog_printing_inventory:10,default:8})
 export const estimateWrites=(table,rows=1)=>rows*(WRITE_FACTORS[table]??WRITE_FACTORS.default)
 
 export async function readTursoUsage({token,organization,fetchImpl=fetch}){
