@@ -4,13 +4,15 @@
 export const FREE_LIMITS=Object.freeze({rows_written:10_000_000,rows_read:500_000_000,storage_bytes:5*1024**3})
 
 // Turso counts every index entry and every row touched by triggers.
-// Calibrated on the first real publication (18 November 2026): 6,592 worker
-// changes, mostly cards and printings, cost 115,390 rows written on the
-// official counter, 38% of the first local estimate (70 per printing, 40 per
-// card, 15 otherwise). Factors below are that measurement plus a 30% margin.
-// The guard rereads the official counter before every run and stops at 80% of
-// the monthly limit, so an underestimate cannot exhaust the free quota.
-export const WRITE_FACTORS=Object.freeze({catalog_search_entries:35,cards:20,catalog_printing_inventory:10,default:8})
+// Calibration on the official counter, with a 30% margin:
+// - 18 Nov 2026, guards v2: 6,592 changes (cards and printings) cost 115,390
+//   rows written, 38% of the first estimate;
+// - 18 Nov 2026, guards v3: 14,300 card changes cost 145,124 rows written,
+//   about 10.1 per card (factor 13). Printings are scaled by the reduction
+//   measured in tests/turso-write-cost.test.mjs until a real measurement.
+// The guard rereads the official counter before every run and stops at the
+// configured ratio, so an underestimate cannot exhaust the free quota.
+export const WRITE_FACTORS=Object.freeze({catalog_search_entries:30,cards:13,catalog_printing_inventory:10,default:8})
 export const estimateWrites=(table,rows=1)=>rows*(WRITE_FACTORS[table]??WRITE_FACTORS.default)
 
 export async function readTursoUsage({token,organization,fetchImpl=fetch}){
