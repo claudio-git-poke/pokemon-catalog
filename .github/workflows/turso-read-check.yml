@@ -6,8 +6,16 @@ on:
         description: 'Creare prima gli indici di lettura mancanti (costo una tantum di circa 700.000 scritture)'
         type: boolean
         default: false
+      guards:
+        description: 'Installare la nuova versione delle protezioni manuali (sito non disponibile per pochi secondi)'
+        type: boolean
+        default: false
 permissions:
   contents: read
+# Same group as the worker: maintenance never runs during a publication.
+concurrency:
+  group: turso-catalog-worker
+  cancel-in-progress: false
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -24,6 +32,13 @@ jobs:
       - name: Indici di lettura mancanti
         if: inputs.indexes
         run: node --experimental-strip-types scripts/turso-add-read-indexes.mjs
+        env:
+          TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+          TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
+          TURSO_DATABASE_NAME: pokemon-catalog
+      - name: Nuova versione delle protezioni manuali
+        if: inputs.guards
+        run: node --experimental-strip-types scripts/turso-upgrade-guards.mjs
         env:
           TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
           TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}

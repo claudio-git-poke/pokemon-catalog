@@ -43,10 +43,26 @@ function projectedChildren(parent,oldParent){
  UPDATE _copy_catalog_search_entries SET _row=json_set(_row,'$.search_text',${searchText('_row')}) WHERE ${plain};
  INSERT INTO _catalog_entry_fts(rowid,search_text) SELECT e.rowid,coalesce(json_extract(e._row,'$.search_text'),'') FROM _copy_catalog_search_entries e WHERE ${affected};`
 }
+// Version 3 avoids writes that change nothing (fewer rows written on Turso):
+// automatic writes without manual locks keep the published row as is, the
+// worker publisher bumps the catalog revision once per batch, and printing
+// updates rewrite search text and tags only when they actually change.
+export const GUARD_VERSION=3
+const PUBLISHER=`(SELECT coalesce(reason,'') FROM _catalog_write_context WHERE id=1)='turso_worker_publish'`
+function searchMaintenance(storage,op){
+ const current=field=>`(SELECT json_extract(_row,'$.${field}') FROM ${storage} WHERE _key=new._key)`
+ const text=`coalesce(${current('search_text')},'')`,oldText=`coalesce(json_extract(old._row,'$.search_text'),'')`
+ if(op==='INSERT')return `INSERT INTO _catalog_entry_fts(rowid,search_text) SELECT rowid,coalesce(json_extract(_row,'$.search_text'),'') FROM ${storage} WHERE _key=new._key; DELETE FROM _catalog_entry_tags WHERE entry_rowid=new.rowid; INSERT OR IGNORE INTO _catalog_entry_tags(tag,entry_rowid) SELECT j.value,new.rowid FROM ${storage} e,json_each(e._row,'$.tags')j WHERE e._key=new._key AND typeof(j.value)='text';`
+ const tagsChanged=`json_extract(old._row,'$.tags') IS NOT ${current('tags')}`
+ return `INSERT INTO _catalog_entry_fts(_catalog_entry_fts,rowid,search_text) SELECT 'delete',old.rowid,${oldText} WHERE ${oldText} IS NOT ${text};
+    INSERT INTO _catalog_entry_fts(rowid,search_text) SELECT rowid,coalesce(json_extract(_row,'$.search_text'),'') FROM ${storage} WHERE _key=new._key AND coalesce(json_extract(_row,'$.search_text'),'') IS NOT ${oldText};
+    DELETE FROM _catalog_entry_tags WHERE entry_rowid=new.rowid AND ${tagsChanged};
+    INSERT OR IGNORE INTO _catalog_entry_tags(tag,entry_rowid) SELECT j.value,new.rowid FROM ${storage} e,json_each(e._row,'$.tags')j WHERE e._key=new._key AND typeof(j.value)='text' AND ${tagsChanged};`
+}
 export async function installManualGuards(client,schema){
  await client.execute('CREATE TABLE IF NOT EXISTS _catalog_guard_version(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL)')
  const version=Number((await client.execute('SELECT version FROM _catalog_guard_version WHERE id=1')).rows[0]?.version||0)
- if(version>=2)return
+ if(version>=GUARD_VERSION)return
  // Installing a new version is resumable: the ready flag is cleared by the
  // caller, and the version is committed only after every trigger exists.
  for(const table of schema.tables.filter(t=>t.columns.some(c=>c.name==='manual_overrides'))){
@@ -68,17 +84,16 @@ export async function installManualGuards(client,schema){
    await client.execute(`CREATE TRIGGER IF NOT EXISTS ${qid('_catalog_manual_'+name+'_'+op.toLowerCase())} AFTER ${op==='UPDATE'?'UPDATE OF _row':'INSERT'} ON ${storage}
    WHEN (SELECT depth FROM _catalog_write_context WHERE id=1)=0 BEGIN
     UPDATE _catalog_write_context SET depth=1 WHERE id=1;
-    ${name==='catalog_search_entries'&&op==='UPDATE'?"INSERT INTO _catalog_entry_fts(_catalog_entry_fts,rowid,search_text) VALUES('delete',old.rowid,coalesce(json_extract(old._row,'$.search_text'),''));":''}
-    UPDATE ${storage} SET _row=${result},_hash='pending' WHERE _key=new._key;
+    UPDATE ${storage} SET _row=${result},_hash='pending' WHERE _key=new._key AND NOT ((SELECT mode FROM _catalog_write_context WHERE id=1)='automatic' AND coalesce(json_extract(${oldRow},'$.manual_overrides'),'{}')='{}' AND coalesce(json_extract(new._row,'$.manual_overrides'),'{}')='{}');
     ${name==='catalog_search_entries'?`UPDATE ${storage} SET _row=json_set(_row,'$.search_text',${searchText('_row')}) WHERE _key=new._key AND json_extract(_row,'$.manual_overrides')<>'{}';`:''}
     ${required?`SELECT CASE WHEN ${required} THEN raise(ABORT,'Campo obbligatorio mancante') END;`:''}
     ${historyInsert(table,oldRow,finalRow)};
     INSERT INTO _catalog_manual_outbox(table_name,record_key,version,updated_at)
     SELECT '${name}',new._key,1,strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE (SELECT mode FROM _catalog_write_context WHERE id=1)<>'automatic'
     ON CONFLICT(table_name,record_key) DO UPDATE SET version=version+1,updated_at=excluded.updated_at;
-    UPDATE _copy_catalog_live_updates SET _row=json_set(_row,'$.revision',coalesce(json_extract(_row,'$.revision'),0)+1,'$.updated_at',strftime('%Y-%m-%dT%H:%M:%fZ','now')),_hash='pending' WHERE json_extract(_row,'$.scope')='catalog';
+    UPDATE _copy_catalog_live_updates SET _row=json_set(_row,'$.revision',coalesce(json_extract(_row,'$.revision'),0)+1,'$.updated_at',strftime('%Y-%m-%dT%H:%M:%fZ','now')),_hash='pending' WHERE json_extract(_row,'$.scope')='catalog' AND NOT ${PUBLISHER};
     ${name==='cards'?projectedChildren(finalRow,oldRow):''}
-    ${name==='catalog_search_entries'?`INSERT INTO _catalog_entry_fts(rowid,search_text) SELECT rowid,coalesce(json_extract(_row,'$.search_text'),'') FROM ${storage} WHERE _key=new._key; DELETE FROM _catalog_entry_tags WHERE entry_rowid=new.rowid; INSERT OR IGNORE INTO _catalog_entry_tags(tag,entry_rowid) SELECT j.value,new.rowid FROM ${storage} e,json_each(e._row,'$.tags')j WHERE e._key=new._key AND typeof(j.value)='text';`:''}
+    ${name==='catalog_search_entries'?searchMaintenance(storage,op):''}
     UPDATE _catalog_write_context SET depth=0 WHERE id=1;
    END`)
   }
@@ -92,5 +107,5 @@ export async function installManualGuards(client,schema){
   }).join(',')
   await client.execute(`CREATE TRIGGER IF NOT EXISTS ${qid('_catalog_edit_'+name)} INSTEAD OF UPDATE ON ${qid(name)} BEGIN UPDATE ${storage} SET _row=json_object(${fields}) WHERE _key=old._key; END`)
  }
- await client.execute('INSERT INTO _catalog_guard_version(id,version) VALUES(1,2) ON CONFLICT(id) DO UPDATE SET version=excluded.version')
+ await client.execute({sql:'INSERT INTO _catalog_guard_version(id,version) VALUES(1,?) ON CONFLICT(id) DO UPDATE SET version=excluded.version',args:[GUARD_VERSION]})
 }

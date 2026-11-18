@@ -77,8 +77,8 @@ async function readPacket(client,runId){
 }
 async function readRows(tx,name,keys){
  if(!keys.length)return new Map()
- const rows=(await tx.execute({sql:'SELECT _key,_row,_position FROM '+storage(name)+' WHERE _key IN ('+keys.map(()=>'?').join(',')+')',args:keys})).rows
- return new Map(rows.map(r=>[r._key,{row:JSON.parse(r._row),position:Number(r._position)}]))
+ const rows=(await tx.execute({sql:'SELECT _key,_row,_position,_hash FROM '+storage(name)+' WHERE _key IN ('+keys.map(()=>'?').join(',')+')',args:keys})).rows
+ return new Map(rows.map(r=>[r._key,{row:JSON.parse(r._row),position:Number(r._position),hash:r._hash}]))
 }
 export async function publishWorkerDelta(client,schema,runId,{batchSize=100,log=()=>{},maxBatches=Infinity,clock=Date.now,writeBudget=Infinity}={}){
  if(!Number.isSafeInteger(batchSize)||batchSize<1||batchSize>200||maxBatches!==Infinity&&(!Number.isSafeInteger(maxBatches)||maxBatches<0))throw Error('Lotto di pubblicazione non valido.')
@@ -136,9 +136,12 @@ export async function publishWorkerDelta(client,schema,runId,{batchSize=100,log=
    if(writes.length)statements.push({sql:'INSERT INTO '+storage(name)+"(_key,_row,_hash,_position) SELECT json_extract(value,'$.key'),json_extract(value,'$.row'),json_extract(value,'$.digest'),json_extract(value,'$.position') FROM json_each(?) WHERE 1 ON CONFLICT(_key) DO UPDATE SET _row=excluded._row,_hash=excluded._hash",args:[JSON.stringify(writes)]})
    if(deletes.length)statements.push({sql:'DELETE FROM '+storage(name)+' WHERE _key IN('+deletes.map(()=>'?').join(',')+')',args:deletes})
    await tx.batch(statements)
-   const finalRows=await readRows(tx,name,writes.map(w=>w.key)),hashes=[...finalRows].map(([key,r])=>({key,digest:hash(canonicalJson(r.row))}))
+   // Only rows changed by the Turso guards need their digest rewritten.
+   const finalRows=await readRows(tx,name,writes.map(w=>w.key)),hashes=[...finalRows].map(([key,r])=>({key,digest:hash(canonicalJson(r.row)),stored:r.hash})).filter(h=>h.stored!==h.digest).map(({key,digest})=>({key,digest}))
    const finish=[]
    if(hashes.length)finish.push({sql:'UPDATE '+storage(name)+" SET _hash=(SELECT json_extract(value,'$.digest') FROM json_each(?) WHERE json_extract(value,'$.key')=_key) WHERE _key IN (SELECT json_extract(value,'$.key') FROM json_each(?))",args:[JSON.stringify(hashes),JSON.stringify(hashes)]})
+   // One catalog revision per batch: pages and count caches see the change.
+   if(writes.length||deletes.length)finish.push("UPDATE _copy_catalog_live_updates SET _row=json_set(_row,'$.revision',coalesce(json_extract(_row,'$.revision'),0)+1,'$.updated_at',strftime('%Y-%m-%dT%H:%M:%fZ','now')),_hash='pending' WHERE json_extract(_row,'$.scope')='catalog'")
    finish.push({sql:"UPDATE _catalog_worker_journal SET cursor=?,state='publishing' WHERE run_id=?",args:[end,runId]},"UPDATE _catalog_write_context SET mode='manual',reason=NULL WHERE id=1")
    await tx.batch(finish)
    return end

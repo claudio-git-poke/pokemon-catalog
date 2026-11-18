@@ -24,3 +24,5 @@ jobs:
         env:
           TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
           TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
+          TURSO_STOP_RATIO: '0.9'
+          TURSO_STOP_RATIO_UNTIL: '2026-12-01T00:00:00Z'
