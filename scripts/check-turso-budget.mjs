@@ -19,9 +19,22 @@ function stopRatio(env=process.env,now=Date.now()){
  const ratio=Number(env.TURSO_STOP_RATIO),until=Date.parse(env.TURSO_STOP_RATIO_UNTIL||'')
  return ratio>0&&ratio<=0.9&&Number.isFinite(until)&&now<until?ratio:0.8
 }
+// Start of the previous completed worker run, from the GitHub API (the
+// scheduler may delay or skip runs). Unknown means an even split per run.
+async function previousRunAt(env=process.env){
+ const repo=env.GITHUB_REPOSITORY,token=env.GITHUB_TOKEN,workflow=env.TURSO_WORKER_WORKFLOW
+ if(!repo||!token||!workflow||!/^[\w.-]+\/[\w.-]+$/.test(repo)||!/^[\w.-]+\.ya?ml$/.test(workflow))return null
+ try{
+  const response=await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${workflow}/runs?status=completed&per_page=10`,{headers:{authorization:'Bearer '+token,accept:'application/vnd.github+json'}})
+  if(!response.ok)return null
+  const run=(await response.json()).workflow_runs?.find(r=>String(r.id)!==String(env.GITHUB_RUN_ID)&&r.conclusion==='success')
+  const at=Date.parse(run?.run_started_at||'')
+  return Number.isFinite(at)?at:null
+ }catch{return null}
+}
 try{
  const usage=await readTursoUsage({token:process.env.TURSO_API_TOKEN?.trim(),organization:process.env.TURSO_ORGANIZATION?.trim()})
- plan=planBudget(usage,{resetDay:Number(process.env.TURSO_RESET_DAY||1),runsPerDay:Number(process.env.TURSO_RUNS_PER_DAY||2),stopRatio:stopRatio(),...frontLoad()})
+ plan=planBudget(usage,{resetDay:Number(process.env.TURSO_RESET_DAY||1),runsPerDay:Number(process.env.TURSO_RUNS_PER_DAY||2),stopRatio:stopRatio(),...frontLoad(),previousRunAt:await previousRunAt()})
 }catch(error){plan={allowed:false,writes:0,reads:0,reason:safeTursoError(error)}}
 console.log(JSON.stringify({check:'turso-budget',...plan}))
 try{for(const entry of await createPlatform(platformConfiguration()).databaseUsage())console.log(JSON.stringify({check:'turso-database-usage',...entry}))}catch(error){console.log('Dettaglio per database non disponibile: '+safeTursoError(error))}

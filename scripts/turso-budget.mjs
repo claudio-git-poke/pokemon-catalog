@@ -26,12 +26,13 @@ export async function readTursoUsage({token,organization,fetchImpl=fetch}){
  return values
 }
 
-function daysLeftInPeriod(now,resetDay){
+function nextReset(now,resetDay){
  const date=new Date(now),year=date.getUTCFullYear(),month=date.getUTCMonth()
  let next=Date.UTC(year,month,resetDay)
  if(next<=now)next=Date.UTC(year,month+1,resetDay)
- return Math.max(1,Math.ceil((next-now)/86400000))
+ return next
 }
+function daysLeftInPeriod(now,resetDay){return Math.max(1,Math.ceil((nextReset(now,resetDay)-now)/86400000))}
 
 // Spread what is left below the stop ratio over the remaining days and runs,
 // so a single large backlog cannot spend the whole month at once.
@@ -39,7 +40,12 @@ function daysLeftInPeriod(now,resetDay){
 // date instead of by the end of the period; after it, what remains is
 // available run by run. The free quota resets at the start of each period,
 // so spending earlier loses nothing.
-export function planBudget(usage,{limits=FREE_LIMITS,stopRatio=0.8,now=Date.now(),resetDay=1,runsPerDay=2,maxRunWrites=400_000,maxRunReads=8_000_000,spendBy=null}={}){
+// previousRunAt (start of the previous worker run), when known, makes the
+// write budget proportional to time: this run gets the share of the remaining
+// quota for the time elapsed since then, out of the time from then to the
+// deadline. A run the scheduler skips makes the next one larger, so the pace
+// does not depend on how many scheduled runs actually start.
+export function planBudget(usage,{limits=FREE_LIMITS,stopRatio=0.8,now=Date.now(),resetDay=1,runsPerDay=2,maxRunWrites=400_000,maxRunReads=8_000_000,spendBy=null,previousRunAt=null}={}){
  if(!(stopRatio>0&&stopRatio<1))throw Error('Soglia di sicurezza non valida.')
  if(!(Number.isSafeInteger(maxRunWrites)&&maxRunWrites>0&&maxRunWrites<=1_000_000))throw Error('Tetto per esecuzione non valido.')
  const safe=key=>Math.floor(limits[key]*stopRatio)-usage[key]
@@ -49,7 +55,13 @@ export function planBudget(usage,{limits=FREE_LIMITS,stopRatio=0.8,now=Date.now(
  if(safe('storage_bytes')<=0)return {...plan,reason:'Spazio Turso oltre la soglia di sicurezza.'}
  if(safe('rows_written')<=0)return {...plan,reason:'Scritture Turso del mese oltre la soglia di sicurezza: riprendo dopo il rinnovo.'}
  if(safe('rows_read')<=0)return {...plan,reason:'Letture Turso del mese oltre la soglia di sicurezza: riprendo dopo il rinnovo.'}
- const writes=Math.min(maxRunWrites,Math.floor(safe('rows_written')/runs)),reads=Math.min(maxRunReads,Math.floor(safe('rows_read')/runs))
- if(writes<estimateWrites('catalog_search_entries',200))return {...plan,writes,reads,reason:'Quota residua per questa esecuzione troppo piccola: salto il turno.'}
- return {...plan,writes,reads,allowed:true,reason:'Budget disponibile.'}
+ let share=1/runs
+ if(Number.isFinite(previousRunAt)&&previousRunAt<now){
+  const deadline=Number.isFinite(spendBy)?Math.min(spendBy,nextReset(now,resetDay)):nextReset(now,resetDay)
+  share=deadline<=now?1:Math.min(1,(now-previousRunAt)/(deadline-previousRunAt))
+ }
+ const writes=Math.min(maxRunWrites,Math.floor(safe('rows_written')*share)),reads=Math.min(maxRunReads,Math.floor(safe('rows_read')/runs))
+ const result={...plan,share:Math.round(share*10000)/10000,writes,reads}
+ if(writes<estimateWrites('catalog_search_entries',200))return {...result,reason:'Quota residua per questa esecuzione troppo piccola: salto il turno.'}
+ return {...result,allowed:true,reason:'Budget disponibile.'}
 }
