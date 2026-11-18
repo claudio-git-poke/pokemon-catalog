@@ -17,6 +17,7 @@ export async function prepareCatalogSchema(client,schema,{log=()=>{}}={}){
   'CREATE TABLE IF NOT EXISTS _catalog_visual_groups(group_key TEXT PRIMARY KEY,_row TEXT NOT NULL,kind TEXT NOT NULL,has_links INTEGER NOT NULL,languages TEXT NOT NULL)',
   "CREATE VIRTUAL TABLE IF NOT EXISTS _catalog_entry_fts USING fts5(search_text,content='',tokenize='unicode61 remove_diacritics 2')",
   'CREATE TABLE IF NOT EXISTS _catalog_entry_tags(tag TEXT NOT NULL,entry_rowid INTEGER NOT NULL,PRIMARY KEY(tag,entry_rowid)) WITHOUT ROWID',
+  COUNT_CACHE_TABLE,
   'CREATE INDEX IF NOT EXISTS _catalog_entry_tags_row ON _catalog_entry_tags(entry_rowid)'
  ],'write')
  await client.execute("CREATE UNIQUE INDEX IF NOT EXISTS _catalog_cards_file_unique ON _copy_cards(json_extract(_row,'$.file_name'))")
@@ -82,7 +83,12 @@ export async function prepareCatalogSchema(client,schema,{log=()=>{}}={}){
 // incremental Bindex feeds sorted whole tables by modification time on every
 // page (152,000 inventory rows per page of 500).
 const field=f=>`json_extract(_row,'$.${f}')`
+// Exact counts of large tables are reused until the catalog revision changes.
+export const COUNT_CACHE_TABLE='CREATE TABLE IF NOT EXISTS _catalog_count_cache(key TEXT PRIMARY KEY,revision TEXT NOT NULL,n INTEGER NOT NULL,at TEXT NOT NULL) WITHOUT ROWID'
 export const READ_INDEXES=[
+ // /carte: page order and photo counters over about 195,000 cards.
+ ['_catalog_idx_cards_catalog_order','cards',[field('sigla'),field('numero'),field('id')]],
+ ['_catalog_idx_cards_photo','cards',[field('image_status'),field('image_url')]],
  ['_catalog_idx_catalog_search_entries_collector_number','catalog_search_entries',[field('collector_number')]],
  ['_catalog_idx_catalog_search_entries_denominator','catalog_search_entries',[field('denominator')]],
  ['_catalog_feed_set_carte','set_carte',[utcSortSql(field('aggiornato_il')),field('sigla'),field('numero'),field('variante')]],
@@ -92,6 +98,7 @@ export const READ_INDEXES=[
 ]
 export async function ensureReadIndexes(client,{log=()=>{}}={}){
  const created=[]
+ await client.execute(COUNT_CACHE_TABLE)
  for(const [index,name,expressions]of READ_INDEXES){
   if((await client.execute({sql:"SELECT 1 FROM sqlite_master WHERE type='index' AND name=?",args:[index]})).rows.length)continue
   await client.execute(`CREATE INDEX IF NOT EXISTS ${qid(index)} ON ${sourceTable(name)}(${expressions.join(',')})`)

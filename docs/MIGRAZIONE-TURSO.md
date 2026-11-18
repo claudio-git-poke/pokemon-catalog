@@ -168,3 +168,9 @@ Feed incrementali per Bindex (`/api/bindex/changes`, `/api/bindex/printings`): o
 - indici su data di modifica più chiave per `set_carte`, `set_espansioni`, `set_carte_immagini` e `catalog_printing_inventory`, creati con lo stesso workflow `indexes`;
 - paginazione con confronto per tuple `(tempo, chiave) > (?, ?)`;
 - query dirette sulle tabelle `_copy_`, perché SQLite non riconosce un indice di espressione attraverso una vista.
+
+Pagina `/carte` (18 novembre 2026): i conteggi "con foto" e "senza foto" superavano i 30 secondi di Vercel. La prima pagina ordinava tutte le 195.247 carte, e ogni apertura leggeva circa un milione di righe. Correzioni:
+
+- indice `_catalog_idx_cards_catalog_order` (sigla, numero, id) per l'ordine della pagina;
+- indice `_catalog_idx_cards_photo` (stato, foto), con cui entrambi i conteggi si risolvono dentro l'indice;
+- conteggi esatti memorizzati in `_catalog_count_cache`, condivisa fra le istanze del server, oltre che in memoria. Valgono finché non cambia la revisione del catalogo, che le protezioni incrementano a ogni scrittura, e comunque al massimo 6 ore. Riguarda solo le tabelle protette; senza la tabella di memoria il conteggio viene calcolato.
