@@ -3,11 +3,14 @@
 // from the Turso Platform API; when they are unavailable the guard fails closed.
 export const FREE_LIMITS=Object.freeze({rows_written:10_000_000,rows_read:500_000_000,storage_bytes:5*1024**3})
 
-// Turso counts every index entry and every row touched by triggers. Factors
-// measured on the real schema (tests/helpers/turso-fixture.mjs): a printing row
-// changes ~27 rows (document, manual guard, FTS, tags) across 6 indexes; a card
-// ~5 rows across 7 indexes. Values include a safety margin.
-export const WRITE_FACTORS=Object.freeze({catalog_search_entries:70,cards:40,catalog_printing_inventory:20,default:15})
+// Turso counts every index entry and every row touched by triggers.
+// Calibrated on the first real publication (18 November 2026): 6,592 worker
+// changes, mostly cards and printings, cost 115,390 rows written on the
+// official counter, 38% of the first local estimate (70 per printing, 40 per
+// card, 15 otherwise). Factors below are that measurement plus a 30% margin.
+// The guard rereads the official counter before every run and stops at 80% of
+// the monthly limit, so an underestimate cannot exhaust the free quota.
+export const WRITE_FACTORS=Object.freeze({catalog_search_entries:35,cards:20,catalog_printing_inventory:10,default:8})
 export const estimateWrites=(table,rows=1)=>rows*(WRITE_FACTORS[table]??WRITE_FACTORS.default)
 
 export async function readTursoUsage({token,organization,fetchImpl=fetch}){
@@ -39,6 +42,6 @@ export function planBudget(usage,{limits=FREE_LIMITS,stopRatio=0.8,now=Date.now(
  if(safe('rows_written')<=0)return {...plan,reason:'Scritture Turso del mese oltre la soglia di sicurezza: riprendo dopo il rinnovo.'}
  if(safe('rows_read')<=0)return {...plan,reason:'Letture Turso del mese oltre la soglia di sicurezza: riprendo dopo il rinnovo.'}
  const writes=Math.min(maxRunWrites,Math.floor(safe('rows_written')/runs)),reads=Math.min(maxRunReads,Math.floor(safe('rows_read')/runs))
- if(writes<estimateWrites('catalog_search_entries',100))return {...plan,writes,reads,reason:'Quota residua per questa esecuzione troppo piccola: salto il turno.'}
+ if(writes<estimateWrites('catalog_search_entries',200))return {...plan,writes,reads,reason:'Quota residua per questa esecuzione troppo piccola: salto il turno.'}
  return {...plan,writes,reads,allowed:true,reason:'Budget disponibile.'}
 }

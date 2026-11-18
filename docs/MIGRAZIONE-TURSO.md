@@ -92,9 +92,11 @@ Costi misurati sullo schema reale (`tests/helpers/turso-fixture.mjs`):
 
 | Tabella | Righe modificate per riga pubblicata | Stima in scritture Turso, con margine |
 |---|---|---|
-| Stampa (`catalog_search_entries`) | circa 27 | 70 |
-| Carta (`cards`) | circa 5 | 40 |
-| Altre tabelle | — | 15 |
+| Stampa (`catalog_search_entries`) | circa 27 | 35 |
+| Carta (`cards`) | circa 5 | 20 |
+| Altre tabelle | — | 8 |
+
+Stime ricalibrate il 18 novembre 2026 sul contatore ufficiale (vedi sotto).
 
 Un aggiornamento di massa delle 349.530 stampe costerebbe quindi più del doppio dell'intera quota mensile gratuita. I recuperi retroattivi devono procedere a rate, entro il budget di ogni esecuzione.
 
@@ -133,4 +135,12 @@ Il workflow **Worker catalogo su Turso** sostituisce i 13 workflow Supabase. Ogn
 
 Le correzioni manuali fatte su Turso durante l'esecuzione prevalgono campo per campo (`mergeWorkerChange`). La coda `_catalog_manual_outbox` non viene confermata dal worker.
 
-Con `publish=false` il workflow esegue tutto tranne la scrittura su Turso e riporta le differenze con la stima delle scritture. La pianificazione automatica si attiva solo dopo una prova senza scritture riuscita.
+Con `publish=false` il workflow esegue tutto tranne la scrittura su Turso e riporta le differenze con la stima delle scritture.
+
+Prove del 18 novembre 2026:
+
+- **Prova senza scritture (gruppo A, 8 minuti).** Ripristino in 6 minuti; PostgREST e importatori invariati funzionanti; 15.888 differenze raccolte.
+- **Prima pubblicazione vera.** 15.969 differenze in 2 pacchetti; 6.592 pubblicate entro il budget, il resto in coda. Il contatore ufficiale ha registrato 115.390 righe scritte, contro una stima di 304.905: il 38%. I fattori di `turso-budget.mjs` sono stati ricalibrati sul costo misurato più un margine del 30%.
+- **Letture.** Circa 1 milione per ripristino e circa 1,7 milioni per pubblicare 6.592 differenze, perché i controlli delle protezioni rileggono le righe. Con due esecuzioni al giorno restano sotto un terzo del limite mensile di 500 milioni.
+
+Pianificazione: alle 03:41 UTC gira il gruppo A con 30 minuti di importazione principale, alle 15:41 UTC il gruppo B. Un'esecuzione che trova pacchetti in coda li pubblica senza avviare nuovo lavoro.
