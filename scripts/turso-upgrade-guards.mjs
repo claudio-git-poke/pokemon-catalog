@@ -1,6 +1,5 @@
 import schemaSource from '../data/turso-source-schema.json' with {type:'json'}
 import {connectCatalogDatabase} from './turso-worker-runtime.mjs'
-import {publicCatalogSchema} from '../src/server/turso-schema.mjs'
 import {installManualGuards,GUARD_VERSION} from '../src/server/turso-manual.mjs'
 import {safeTursoError} from './turso-client.mjs'
 // Installs a new version of the manual-edit guards on the live database.
@@ -16,7 +15,9 @@ try{
  else{
   await client.execute('UPDATE _catalog_api_state SET ready=0 WHERE id=1')
   const started=Date.now()
-  await installManualGuards(client,publicCatalogSchema(schemaSource))
+  // The stored tables only: the public schema also lists derived views,
+  // which cannot carry triggers (same schema as the original preparation).
+  await installManualGuards(client,schemaSource)
   const after=Number((await client.execute('SELECT version FROM _catalog_guard_version WHERE id=1')).rows[0]?.version||0)
   if(after!==GUARD_VERSION)throw Error('Versione delle protezioni non registrata: il catalogo resta non pronto.')
   await client.execute('UPDATE _catalog_api_state SET ready=1 WHERE id=1')
