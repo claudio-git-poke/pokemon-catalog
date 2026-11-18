@@ -17,14 +17,14 @@ import {createPlatform,platformConfiguration,validDatabaseName} from './turso-pl
 // history (written only by manual edits on Turso).
 export const UNPUBLISHED_TABLES=new Set(['catalog_sync_events','catalog_live_updates','catalog_manual_history'])
 
-export async function connectCatalogDatabase(env=process.env,{expiration='8h',fetchImpl=fetch}={}){
+export async function connectCatalogDatabase(env=process.env,{expiration='8h',fetchImpl=fetch,clientFetch,authorization='full-access'}={}){
  const platform=createPlatform(platformConfiguration(env),{fetchImpl})
  const name=validDatabaseName(env.TURSO_DATABASE_NAME||'pokemon-catalog')
  const database=(await platform.databases()).find(d=>d.Name===name)
  if(!database?.Hostname)throw Error('Database Turso '+name+' non trovato sull’account configurato.')
- const authToken=await platform.databaseToken(name,{expiration})
+ const authToken=await platform.databaseToken(name,{expiration,authorization})
  const {createClient}=await import('@libsql/client/web')
- return {client:createClient({url:'libsql://'+database.Hostname,authToken}),name}
+ return {client:createClient({url:'libsql://'+database.Hostname,authToken,...(clientFetch?{fetch:clientFetch}:{})}),name}
 }
 
 export async function pendingWorkerJournals(client){
