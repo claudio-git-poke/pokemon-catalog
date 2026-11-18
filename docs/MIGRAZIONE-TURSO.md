@@ -210,3 +210,7 @@ Pianificazione robusta (18 novembre 2026): lo scheduler di GitHub ha ritardato o
 - Il worker si avvia otto volte al giorno: gruppo A alle 00:41, 06:41, 12:41 e 18:41 UTC; gruppo B alle 03:41, 09:41, 15:41 e 21:41 UTC.
 - Il budget di scrittura di ogni esecuzione è proporzionale al tempo trascorso dall'avvio dell'ultima esecuzione riuscita, letto dall'API di GitHub (`actions: read`). Il calcolo è la quota residua moltiplicata per il tempo trascorso dall'esecuzione precedente, diviso il tempo tra quell'esecuzione e la scadenza (il 25 novembre durante la spesa anticipata, altrimenti il rinnovo).
 - Un turno saltato rende più grande il successivo, quindi il ritmo complessivo non dipende da quanti avvii partono davvero. Senza il dato sull'esecuzione precedente la quota viene divisa per otto esecuzioni al giorno.
+
+Misura delle stampe con le protezioni v3: la pubblicazione della coda delle 15:48 UTC (31.821 differenze: 10.435 carte, 9.310 stampe, 12.076 righe di code e riepiloghi), insieme a una piccola esecuzione successiva, è costata 333.781 righe scritte contro 528.495 stimate. Al netto delle carte, ogni stampa costa circa 17–20 righe scritte: il fattore passa da 30 a 25.
+
+Copertura su Turso: il ricalcolo del 18 novembre alle 16:57 UTC conta 199.674 carte importate. I riepiloghi di copertura e qualità vengono pubblicati prima delle altre differenze.
