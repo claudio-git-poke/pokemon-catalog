@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto'
 // A bounded, parameterized subset of the public PostgREST read contract.
 // SQL identifiers come from the captured schema; user values are always bound.
 export class CatalogRestError extends Error{
@@ -176,13 +177,42 @@ export class ReadCompiler{
   }).join(',')
  }
 }
+// Exact counts over the large catalog tables read every row (about 195,000
+// cards). Tables guarded on Turso bump the catalog revision on every write,
+// so a count stays valid while the revision is unchanged; a 6-hour limit
+// covers any write path that does not bump it. Memory first, then a small
+// table shared by all server instances; without it the count is computed.
+const COUNT_TTL=6*3600000,countMemory=new Map()
+async function catalogRevision(client){
+ try{return String((await client.execute("SELECT json_extract(_row,'$.revision') r FROM _copy_catalog_live_updates WHERE json_extract(_row,'$.scope')='catalog' LIMIT 1")).rows[0]?.r??'')}catch{return ''}
+}
+export async function cachedCount(client,table,sql,args,{now=Date.now()}={}){
+ const compute=async()=>Number((await client.execute({sql,args})).rows[0].n)
+ if(!table.columns.some(c=>c.name==='manual_overrides'))return compute()
+ const revision=await catalogRevision(client)
+ if(!revision)return compute()
+ const key=createHash('sha256').update(sql+'\u0000'+JSON.stringify(args)).digest('hex')
+ const fresh=entry=>entry&&String(entry.revision)===revision&&now-Date.parse(entry.at)<COUNT_TTL
+ const memory=countMemory.get(key)
+ if(fresh(memory))return memory.n
+ try{
+  const stored=(await client.execute({sql:'SELECT revision,n,at FROM _catalog_count_cache WHERE key=?',args:[key]})).rows[0]
+  if(fresh(stored)){countMemory.set(key,{revision,n:Number(stored.n),at:stored.at});return Number(stored.n)}
+ }catch{}
+ const n=await compute(),at=new Date(now).toISOString()
+ if(countMemory.size>=500)countMemory.delete(countMemory.keys().next().value)
+ countMemory.set(key,{revision,n,at})
+ try{await client.execute({sql:'INSERT INTO _catalog_count_cache(key,revision,n,at) VALUES(?,?,?,?) ON CONFLICT(key) DO UPDATE SET revision=excluded.revision,n=excluded.n,at=excluded.at',args:[key,revision,n,at]})}catch{}
+ return n
+}
+export function clearCountMemory(){countMemory.clear()}
 export async function readCatalogRows(client,schema,name,params=new URLSearchParams(),options={}){
  const table=tableSchema(schema,name,options.privileged),compiler=new ReadCompiler(schema,table,options.privileged)
  const where=compiler.where(params),projection=compiler.projection(params.get('select')||'*'),order=compiler.order(params.get('order'))
  const requested=Number(params.get('limit')??1000),offset=Number(params.get('offset')??0)
  if(!Number.isSafeInteger(requested)||requested<0||!Number.isSafeInteger(offset)||offset<0||offset>2000000)throw new CatalogRestError('Paginazione non valida.')
  const limit=Math.min(requested,1000)
- const count=options.count?Number((await client.execute({sql:`SELECT count(*) n FROM ${sourceTable(name)} e WHERE ${where}`,args:compiler.args})).rows[0].n):null
+ const count=options.count?await cachedCount(client,table,`SELECT count(*) n FROM ${sourceTable(name)} e WHERE ${where}`,compiler.args):null
  const rows=options.head?[]:(await client.execute({sql:`SELECT ${projection} AS document FROM ${sourceTable(name)} e WHERE ${where} ORDER BY ${order} LIMIT ? OFFSET ?`,args:[...compiler.args,limit,offset]})).rows.map(r=>JSON.parse(r.document))
  return {rows,count,offset,limit}
 }
