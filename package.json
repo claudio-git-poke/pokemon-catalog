@@ -16,6 +16,7 @@
     "@tursodatabase/serverless": "1.4.1",
     "lucide-react": "^0.460.0",
     "next": "14.2.35",
+    "pg": "^8.23.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

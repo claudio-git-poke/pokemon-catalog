@@ -1,0 +1,181 @@
+name: Worker catalogo su Turso
+# Restores the catalog from Turso into a disposable PostgreSQL, runs the
+# unchanged importers through a local PostgREST and publishes only the changed
+# rows to Turso, within the free-plan budget. Group A: imports and sources.
+# Group B: retroactive repairs and audits.
+on:
+  workflow_dispatch:
+    inputs:
+      group:
+        description: 'Gruppo di importatori (A = importazioni e fonti, B = recuperi e controlli)'
+        type: choice
+        options: ['A','B']
+        default: 'A'
+      publish:
+        description: 'Pubblicare su Turso (false = prova senza scritture)'
+        type: boolean
+        default: false
+      sync_minutes:
+        description: 'Durata della sessione di importazione principale (minuti, 8-330)'
+        type: string
+        default: '60'
+permissions:
+  contents: read
+concurrency:
+  group: turso-catalog-worker
+  cancel-in-progress: false
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 30
+    env:
+      TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+      TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
+      TURSO_DATABASE_NAME: pokemon-catalog
+      WORKER_PG_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
+      GROUP: ${{ inputs.group || 'A' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Budget Turso di questa esecuzione
+        id: budget
+        run: node scripts/check-turso-budget.mjs
+      - name: Segreti locali dell'esecuzione
+        if: steps.budget.outputs.allowed == 'true'
+        run: |
+          JWT_SECRET=$(openssl rand -hex 32); PASSWORD=$(openssl rand -hex 16)
+          echo "::add-mask::$JWT_SECRET"; echo "::add-mask::$PASSWORD"
+          echo "WORKER_JWT_SECRET=$JWT_SECRET" >> "$GITHUB_ENV"
+          echo "WORKER_AUTHENTICATOR_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+      - name: Ripristina il catalogo nel PostgreSQL temporaneo
+        id: prepare
+        if: steps.budget.outputs.allowed == 'true'
+        run: node scripts/turso-worker-prepare.mjs
+        env:
+          READ_BUDGET: ${{ steps.budget.outputs.reads }}
+      - name: Avvia PostgREST locale
+        if: steps.prepare.outputs.mode == 'work'
+        run: |
+          docker run -d --name postgrest --network host \
+            -e PGRST_DB_URI="postgres://authenticator:${WORKER_AUTHENTICATOR_PASSWORD}@127.0.0.1:5432/postgres" \
+            -e PGRST_DB_SCHEMAS=public -e PGRST_DB_ANON_ROLE=anon -e PGRST_DB_MAX_ROWS=1000 \
+            -e PGRST_JWT_SECRET="$WORKER_JWT_SECRET" -e PGRST_SERVER_PORT=3000 postgrest/postgrest:v12.2.8
+          nohup node scripts/rest-prefix-proxy.mjs > /tmp/rest-proxy.log 2>&1 &
+          KEY=$(node -e "import('./scripts/turso-worker-runtime.mjs').then(m=>process.stdout.write(m.signServiceRoleToken(process.env.WORKER_JWT_SECRET)))")
+          echo "::add-mask::$KEY"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$KEY" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> "$GITHUB_ENV"
+          for i in $(seq 1 30); do
+            if curl -sf -H "apikey: $KEY" -H "Authorization: Bearer $KEY" "http://127.0.0.1:54321/rest/v1/catalog_releases?select=release_code&limit=1" > /dev/null; then echo "PostgREST pronto"; exit 0; fi
+            sleep 2
+          done
+          docker logs postgrest | tail -40; exit 1
+      - name: Archivio Card Atlas
+        if: steps.prepare.outputs.mode == 'work'
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: type-null/PTCG-database
+          path: .catalog-data
+          persist-credentials: false
+          sparse-checkout: |
+            data_en
+            data_jp
+            data_ko
+            data_tc
+      # Group A: imports and sources
+      - name: "A · Importazione catalogo e immagini"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
+        continue-on-error: true
+        timeout-minutes: 120
+        run: node --experimental-strip-types scripts/run-catalog-sync.mjs
+        env:
+          CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '60' }}
+          ATLAS_DATA_DIR: .catalog-data
+      - name: "A · Fonti aggiuntive EN TH ID"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
+        continue-on-error: true
+        timeout-minutes: 15
+        run: node --experimental-strip-types scripts/run-supplemental-sources.mjs
+        env:
+          ATLAS_DATA_DIR: .catalog-data
+      - name: "A · Fonti promo e varianti"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
+        continue-on-error: true
+        timeout-minutes: 15
+        run: node --experimental-strip-types scripts/run-research-sources.mjs
+      - name: "A · Uscite speciali"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
+        continue-on-error: true
+        timeout-minutes: 25
+        run: node --experimental-strip-types scripts/run-special-release-audit.mjs
+      - name: "A · Archivio confezioni"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
+        continue-on-error: true
+        timeout-minutes: 10
+        run: node --experimental-strip-types scripts/import-packaging-catalog.mjs
+      # Group B: retroactive repairs and audits
+      - name: "B · Metadati carte asiatiche"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        continue-on-error: true
+        timeout-minutes: 40
+        run: node --experimental-strip-types scripts/backfill-atlas-tags.mjs
+        env:
+          ATLAS_DATA_DIR: .catalog-data
+      - name: "B · Recupero tag"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        continue-on-error: true
+        timeout-minutes: 40
+        run: node --experimental-strip-types scripts/backfill-catalog-tags.mjs
+      - name: "B · Ripristino rarità e metadati"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        continue-on-error: true
+        timeout-minutes: 40
+        run: node --experimental-strip-types scripts/repair-card-metadata.mjs
+      - name: "B · Confronto fonti"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        continue-on-error: true
+        timeout-minutes: 18
+        run: node --experimental-strip-types scripts/backfill-cross-source.mjs
+      - name: "B · Inventario versioni e lingue"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        continue-on-error: true
+        timeout-minutes: 15
+        run: node --experimental-strip-types scripts/run-printing-inventory.mjs
+      - name: "B · Confronto elenchi"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        continue-on-error: true
+        timeout-minutes: 18
+        run: node --experimental-strip-types scripts/run-source-manifest-audit.mjs
+        env:
+          ATLAS_DATA_DIR: .catalog-data
+      - name: "B · Copertura"
+        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        continue-on-error: true
+        timeout-minutes: 12
+        run: node --experimental-strip-types scripts/run-coverage-audit.mjs
+      - name: Pubblica le differenze su Turso
+        if: steps.prepare.outputs.mode == 'work' || steps.prepare.outputs.mode == 'resume'
+        run: node scripts/turso-worker-finish.mjs
+        env:
+          WORKER_MODE: ${{ steps.prepare.outputs.mode }}
+          WORKER_PUBLISH: ${{ github.event_name == 'schedule' || inputs.publish }}
+          WRITE_BUDGET: ${{ steps.budget.outputs.writes }}
+          PUBLISH_MINUTES: '45'
+      - name: Diagnostica PostgREST
+        if: failure() && steps.prepare.outputs.mode == 'work'
+        run: docker logs postgrest 2>&1 | tail -60; cat /tmp/rest-proxy.log
