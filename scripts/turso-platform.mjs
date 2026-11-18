@@ -30,7 +30,9 @@ export function createPlatform({token,organization},{fetchImpl=fetch}={}){
    const [report,list]=await Promise.all([call('GET','/usage'),call('GET','/databases')])
    const items=value=>Array.isArray(value)?value:Object.values(value||{})
    const names=new Map(items(list.databases).map(d=>[d.DbId,d.Name]))
-   const entries=items(report.databases).map(d=>({database:names.get(d.uuid)||'non elencato:'+String(d.uuid).slice(0,8),rows_written:Number(d.total?.rows_written||0),rows_read:Number(d.total?.rows_read||0),storage_bytes:Number(d.total?.storage_bytes||0)}))
+   // The report may be an array of {uuid,...} or an object keyed by uuid.
+   const reported=Array.isArray(report.databases)?report.databases:Object.entries(report.databases||{}).map(([uuid,value])=>({...value,uuid:value?.uuid||uuid}))
+   const entries=reported.map(d=>({database:names.get(d.uuid)||'non elencato:'+String(d.uuid).slice(0,8),rows_written:Number(d.total?.rows_written||0),rows_read:Number(d.total?.rows_read||0),storage_bytes:Number(d.total?.storage_bytes||0)}))
    for(const name of names.values())if(!entries.some(e=>e.database===name))entries.push({database:name,rows_written:0,rows_read:0,storage_bytes:0})
    return entries
   },
