@@ -117,3 +117,20 @@ La nuova migrazione non scrive righe su Turso con istruzioni SQL. Il workflow **
 Il registro tecnico è vuoto all'origine e resta vuoto. Il file temporaneo viene cancellato a fine esecuzione e non viene pubblicato come artifact.
 
 Prova del 18 novembre 2026 (`Prova caricamento file su Turso`): un file di 50.000 righe è stato caricato e letto correttamente. Il contatore ufficiale dei consumi non si era ancora aggiornato dopo sei minuti; il workflow orario **Consumi Turso** stabilisce se il caricamento conta tra le righe scritte. Il catalogo si carica solo dopo questa conferma.
+
+## Worker su Turso
+
+Il workflow **Worker catalogo su Turso** sostituisce i 13 workflow Supabase. Ogni esecuzione segue questi passi:
+
+1. **Budget.** Legge i consumi ufficiali e calcola il budget dell'esecuzione (`check-turso-budget.mjs`). Senza budget non fa nulla.
+2. **Pubblicazioni sospese.** Se una pubblicazione precedente è rimasta a metà, riprende solo quella (`resume`).
+3. **Ripristino.** Altrimenti ripristina il catalogo da Turso in un PostgreSQL 17 temporaneo, il servizio del job, con lo schema originale. Questo legge circa una riga Turso per riga del catalogo. Poi installa i trigger che registrano le differenze.
+4. **Importatori.** Avvia PostgREST in locale con un segreto JWT casuale; il proxy `rest-prefix-proxy.mjs` espone `/rest/v1`. Gli importatori girano senza modifiche, convinti di parlare con Supabase.
+   - Gruppo A: importazione principale, fonti aggiuntive, fonti promo, uscite speciali, confezioni.
+   - Gruppo B: recuperi retroattivi, inventario, confronti, copertura.
+5. **Raccolta.** Raccoglie le righe modificate, escluse le tabelle mai pubblicate (registro tecnico, contatore realtime, cronologia manuale).
+6. **Pubblicazione.** Le divide in pacchetti cifrati ordinati (al massimo 10.000 differenze ciascuno) e le pubblica entro il budget. Quello che non entra resta in coda: l'esecuzione successiva lo pubblica prima di fare nuovo lavoro.
+
+Le correzioni manuali fatte su Turso durante l'esecuzione prevalgono campo per campo (`mergeWorkerChange`). La coda `_catalog_manual_outbox` non viene confermata dal worker.
+
+Con `publish=false` il workflow esegue tutto tranne la scrittura su Turso e riporta le differenze con la stima delle scritture. La pianificazione automatica si attiva solo dopo una prova senza scritture riuscita.

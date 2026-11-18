@@ -30,7 +30,7 @@ export function orderWorkerChanges(schema,changes){
  // Parents are created first; child deletions happen before parent deletions.
  return [...changes].sort((a,b)=>Number(a.last_new===null)-Number(b.last_new===null)||(a.last_new===null?rank.get(b.table_name)-rank.get(a.table_name):rank.get(a.table_name)-rank.get(b.table_name))||(canonicalJson(a.record_key)<canonicalJson(b.record_key)?-1:canonicalJson(a.record_key)>canonicalJson(b.record_key)?1:0))
 }
-export async function stageWorkerDelta(client,schema,packet,{chunkSize=250000}={}){
+export async function stageWorkerDelta(client,schema,packet,{chunkSize=250000,allowPending=false}={}){
  await initializeWorkerJournal(client)
  if(!Number.isSafeInteger(chunkSize)||chunkSize<128||chunkSize>500000)throw Error('Dimensione del blocco non valida.')
  if(packet?.manual_versions?.length&&!packet.changes?.length)throw Error('Una coda manuale non può essere confermata senza differenze pubblicabili.')
@@ -40,7 +40,10 @@ export async function stageWorkerDelta(client,schema,packet,{chunkSize=250000}={
  packet={...packet,changes:orderWorkerChanges(schema,packet.changes)}
  const sealed=sealWorkerDelta(packet),parts=Math.ceil(sealed.bytes.length/chunkSize)
  await transaction(client,async tx=>{
-  if((await tx.execute("SELECT run_id FROM _catalog_worker_journal WHERE state<>'applied' LIMIT 1")).rows.length)throw Error('Riprendere prima il worker precedente.')
+  // Later packets of the same worker run may queue behind the first one;
+  // a new run never starts while an earlier one is still unpublished.
+  if(!allowPending&&(await tx.execute("SELECT run_id FROM _catalog_worker_journal WHERE state<>'applied' LIMIT 1")).rows.length)throw Error('Riprendere prima il worker precedente.')
+  if(allowPending&&(await tx.execute("SELECT run_id FROM _catalog_worker_journal WHERE state='staging' LIMIT 1")).rows.length)throw Error('Un archivio precedente non è completo.')
   await tx.execute({sql:"INSERT INTO _catalog_worker_journal(run_id,source_id,digest,data_key,state,total,chunk_count,byte_length,created_at) VALUES(?,?,?,?,'staging',?,?,?,?)",args:[packet.run_id,packet.source_id,sealed.digest,sealed.key,packet.changes.length,parts,sealed.bytes.length,new Date().toISOString()]})
  })
  for(let i=0;i<parts;i++)await client.execute({sql:'INSERT INTO _catalog_worker_chunks(run_id,part,data) VALUES(?,?,?)',args:[packet.run_id,i,sealed.bytes.subarray(i*chunkSize,(i+1)*chunkSize)]})
