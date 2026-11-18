@@ -12,6 +12,12 @@ const log=value=>console.log(JSON.stringify(value))
 let platform,name,created=false,exit=0
 try{
  platform=createPlatform(platformConfiguration())
+ if(process.env.PROBE_CLEANUP==='true'){
+  const present=(await platform.databases()).some(d=>d.Name==='upload-probe')
+  if(present)await platform.deleteDatabase('upload-probe')
+  log({phase:'cleanup',database:'upload-probe',deleted:present})
+  process.exit(0)
+ }
  const before=await platform.usage();log({phase:'usage-before',...before})
  const group=await ensureGroup(platform,log)
  log({phase:'group',group,databases:(await platform.databases()).length})
