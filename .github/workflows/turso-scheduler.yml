@@ -1,0 +1,51 @@
+name: Pianificatore worker Turso
+# GitHub's scheduler skipped almost every scheduled start of this repository.
+# This chain waits for the next worker slot (every 3 hours at :41 UTC), starts
+# the worker and then restarts itself. Manual dispatches always work, and
+# public repositories have free Actions minutes. The cron below only revives
+# the chain if it ever stops. Budgets are proportional to the time since the
+# previous worker run, so an extra or a missed start does not change spending.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+permissions:
+  actions: write
+  contents: read
+concurrency:
+  group: turso-scheduler
+  cancel-in-progress: false
+jobs:
+  next-slot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - name: Attende il prossimo turno e avvia il worker
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          now=$(date -u +%s)
+          # Slots: 00:41, 03:41, ... 21:41 UTC. Group A at 0,6,12,18; B otherwise.
+          best=""
+          for d in 0 1; do for h in 0 3 6 9 12 15 18 21; do
+            t=$(date -u -d "$(date -u -d "@$now" +%F) +$d day $h:41" +%s)
+            if [ "$t" -gt "$((now+60))" ] && [ -z "$best" ]; then best=$t; fi
+          done; done
+          wait=$((best-now)); echo "Prossimo turno: $(date -u -d "@$best" '+%F %H:%M UTC') tra $((wait/60)) minuti"
+          sleep "$wait"
+          hour=$(date -u -d "@$best" +%-H); group=A; case $hour in 3|9|15|21) group=B;; esac
+          # Skip if a worker run is already waiting or running: it will take the slot.
+          busy=$(gh api "repos/$REPO/actions/workflows/turso-worker.yml/runs?per_page=5" --jq '[.workflow_runs[]|select(.status=="queued" or .status=="in_progress" or .status=="pending" or .status=="waiting")]|length')
+          if [ "$busy" = "0" ]; then
+            gh workflow run turso-worker.yml -R "$REPO" -f group="$group" -f publish=true -f sync_minutes=30
+            echo "Worker avviato: gruppo $group"
+          else
+            echo "Worker già in corso o in attesa: turno lasciato a quello"
+          fi
+      - name: Riavvia la catena
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run turso-scheduler.yml -R "${{ github.repository }}"
