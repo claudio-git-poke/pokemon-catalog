@@ -19,6 +19,13 @@ function stopRatio(env=process.env,now=Date.now()){
  const ratio=Number(env.TURSO_STOP_RATIO),until=Date.parse(env.TURSO_STOP_RATIO_UNTIL||'')
  return ratio>0&&ratio<=0.9&&Number.isFinite(until)&&now<until?ratio:0.8
 }
+// Final days of a month: a higher stop (at most 95%) with smaller runs, so a
+// delayed usage counter can never push the account past the free limit.
+function endgame(env=process.env,now=Date.now()){
+ const ratio=Number(env.TURSO_ENDGAME_RATIO),from=Date.parse(env.TURSO_ENDGAME_FROM||''),until=Date.parse(env.TURSO_STOP_RATIO_UNTIL||''),cap=Number(env.TURSO_ENDGAME_MAX_RUN_WRITES)
+ if(!(ratio>0.8&&ratio<=0.95)||!Number.isFinite(from)||!Number.isFinite(until)||now<from||now>=until||!(Number.isSafeInteger(cap)&&cap>0&&cap<=300_000))return {}
+ return {stopRatio:ratio,maxRunWrites:cap}
+}
 // Start of the previous completed worker run, from the GitHub API (the
 // scheduler may delay or skip runs). Unknown means an even split per run.
 async function previousRunAt(env=process.env){
@@ -34,7 +41,7 @@ async function previousRunAt(env=process.env){
 }
 try{
  const usage=await readTursoUsage({token:process.env.TURSO_API_TOKEN?.trim(),organization:process.env.TURSO_ORGANIZATION?.trim()})
- plan=planBudget(usage,{resetDay:Number(process.env.TURSO_RESET_DAY||1),runsPerDay:Number(process.env.TURSO_RUNS_PER_DAY||2),stopRatio:stopRatio(),...frontLoad(),previousRunAt:await previousRunAt()})
+ plan=planBudget(usage,{resetDay:Number(process.env.TURSO_RESET_DAY||1),runsPerDay:Number(process.env.TURSO_RUNS_PER_DAY||2),stopRatio:stopRatio(),...frontLoad(),...endgame(),previousRunAt:await previousRunAt()})
 }catch(error){plan={allowed:false,writes:0,reads:0,reason:safeTursoError(error)}}
 console.log(JSON.stringify({check:'turso-budget',...plan}))
 try{for(const entry of await createPlatform(platformConfiguration()).databaseUsage())console.log(JSON.stringify({check:'turso-database-usage',...entry}))}catch(error){console.log('Dettaglio per database non disponibile: '+safeTursoError(error))}
