@@ -58,3 +58,9 @@ test('write budget is proportional to the time since the previous run, so skippe
  const unknown=planBudget(usage(2_000_000),{...options,previousRunAt:null})
  assert.equal(unknown.writes,Math.floor(remaining/(7*8)),'senza dati sul turno precedente: quota divisa per esecuzione')
 })
+test('the estimate ratio turns the real share into estimated writes',()=>{
+ const now=Date.parse('2026-11-19T20:00:00Z'),options={now,stopRatio:0.9,maxRunWrites:900_000,spendBy:Date.parse('2026-11-23T00:00:00Z'),previousRunAt:now-3*3600000}
+ const plain=planBudget(usage(3_000_000),options),scaled=planBudget(usage(3_000_000),{...options,estimateRatio:0.7})
+ assert.ok(Math.abs(scaled.writes-plain.writes/0.7)<=2)
+ assert.throws(()=>planBudget(usage(0),{now,estimateRatio:0.2}),/Rapporto/)
+})

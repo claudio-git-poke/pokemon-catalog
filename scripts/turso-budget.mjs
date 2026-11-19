@@ -48,7 +48,12 @@ function daysLeftInPeriod(now,resetDay){return Math.max(1,Math.ceil((nextReset(n
 // quota for the time elapsed since then, out of the time from then to the
 // deadline. A run the scheduler skips makes the next one larger, so the pace
 // does not depend on how many scheduled runs actually start.
-export function planBudget(usage,{limits=FREE_LIMITS,stopRatio=0.8,now=Date.now(),resetDay=1,runsPerDay=2,maxRunWrites=400_000,maxRunReads=8_000_000,spendBy=null,previousRunAt=null}={}){
+// estimateRatio: measured real rows written per estimated write (0.5-1). The
+// remaining quota is real rows; budgets are in estimated writes, so the share
+// is divided by this ratio to spend the real share. The stop ratio is still
+// checked against the official counter before every run.
+export function planBudget(usage,{limits=FREE_LIMITS,stopRatio=0.8,now=Date.now(),resetDay=1,runsPerDay=2,maxRunWrites=400_000,maxRunReads=8_000_000,spendBy=null,previousRunAt=null,estimateRatio=1}={}){
+ if(!(estimateRatio>=0.5&&estimateRatio<=1))throw Error('Rapporto fra stima e consumo reale non valido.')
  if(!(stopRatio>0&&stopRatio<1))throw Error('Soglia di sicurezza non valida.')
  if(!(Number.isSafeInteger(maxRunWrites)&&maxRunWrites>0&&maxRunWrites<=1_000_000))throw Error('Tetto per esecuzione non valido.')
  const safe=key=>Math.floor(limits[key]*stopRatio)-usage[key]
@@ -63,7 +68,7 @@ export function planBudget(usage,{limits=FREE_LIMITS,stopRatio=0.8,now=Date.now(
   const deadline=Number.isFinite(spendBy)?Math.min(spendBy,nextReset(now,resetDay)):nextReset(now,resetDay)
   share=deadline<=now?1:Math.min(1,(now-previousRunAt)/(deadline-previousRunAt))
  }
- const writes=Math.min(maxRunWrites,Math.floor(safe('rows_written')*share)),reads=Math.min(maxRunReads,Math.floor(safe('rows_read')/runs))
+ const writes=Math.min(maxRunWrites,Math.floor(safe('rows_written')*share/estimateRatio)),reads=Math.min(maxRunReads,Math.floor(safe('rows_read')/runs))
  const result={...plan,share:Math.round(share*10000)/10000,writes,reads}
  if(writes<estimateWrites('catalog_search_entries',200))return {...result,reason:'Quota residua per questa esecuzione troppo piccola: salto il turno.'}
  return {...result,allowed:true,reason:'Budget disponibile.'}
