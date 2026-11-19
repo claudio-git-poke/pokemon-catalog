@@ -19,6 +19,8 @@ function stopRatio(env=process.env,now=Date.now()){
  const ratio=Number(env.TURSO_STOP_RATIO),until=Date.parse(env.TURSO_STOP_RATIO_UNTIL||'')
  return ratio>0&&ratio<=0.9&&Number.isFinite(until)&&now<until?ratio:0.8
 }
+// Measured real rows written per estimated write (TURSO_ESTIMATE_RATIO).
+function estimateRatio(env=process.env){const r=Number(env.TURSO_ESTIMATE_RATIO);return r>=0.5&&r<=1?{estimateRatio:r}:{}}
 // Final days of a month: a higher stop (at most 95%) with smaller runs, so a
 // delayed usage counter can never push the account past the free limit.
 function endgame(env=process.env,now=Date.now()){
@@ -41,7 +43,7 @@ async function previousRunAt(env=process.env){
 }
 try{
  const usage=await readTursoUsage({token:process.env.TURSO_API_TOKEN?.trim(),organization:process.env.TURSO_ORGANIZATION?.trim()})
- plan=planBudget(usage,{resetDay:Number(process.env.TURSO_RESET_DAY||1),runsPerDay:Number(process.env.TURSO_RUNS_PER_DAY||2),stopRatio:stopRatio(),...frontLoad(),...endgame(),previousRunAt:await previousRunAt()})
+ plan=planBudget(usage,{resetDay:Number(process.env.TURSO_RESET_DAY||1),runsPerDay:Number(process.env.TURSO_RUNS_PER_DAY||2),stopRatio:stopRatio(),...frontLoad(),...endgame(),previousRunAt:await previousRunAt(),...estimateRatio()})
 }catch(error){plan={allowed:false,writes:0,reads:0,reason:safeTursoError(error)}}
 console.log(JSON.stringify({check:'turso-budget',...plan}))
 try{for(const entry of await createPlatform(platformConfiguration()).databaseUsage())console.log(JSON.stringify({check:'turso-database-usage',...entry}))}catch(error){console.log('Dettaglio per database non disponibile: '+safeTursoError(error))}

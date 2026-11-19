@@ -76,6 +76,8 @@ jobs:
           TURSO_ENDGAME_FROM: '2026-11-23T00:00:00Z'
           TURSO_ENDGAME_MAX_RUN_WRITES: '300000'
           TURSO_RUNS_PER_DAY: '8'
+          # Scritture reali per scrittura stimata, misurate il 19/11/2026 (0,64-0,74).
+          TURSO_ESTIMATE_RATIO: '0.7'
           TURSO_WORKER_WORKFLOW: turso-worker.yml
           GITHUB_TOKEN: ${{ github.token }}
       - name: Segreti locali dell'esecuzione
