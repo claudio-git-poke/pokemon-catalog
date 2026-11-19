@@ -1,5 +1,5 @@
 import {appendFile} from 'node:fs/promises'
-import {readTursoUsage,planBudget} from './turso-budget.mjs'
+import {readTursoUsage,planBudget,FREE_LIMITS} from './turso-budget.mjs'
 import {safeTursoError} from './turso-client.mjs'
 import {createPlatform,platformConfiguration} from './turso-platform.mjs'
 // Prints the budget of this run and exposes it to the following workflow steps.
@@ -21,29 +21,19 @@ function stopRatio(env=process.env,now=Date.now()){
 }
 // Measured real rows written per estimated write (TURSO_ESTIMATE_RATIO).
 function estimateRatio(env=process.env){const r=Number(env.TURSO_ESTIMATE_RATIO);return r>=0.5&&r<=1?{estimateRatio:r}:{}}
-// Final days of a month: a higher stop (at most 95%) with smaller runs, so a
-// delayed usage counter can never push the account past the free limit.
-function endgame(env=process.env,now=Date.now()){
- const ratio=Number(env.TURSO_ENDGAME_RATIO),from=Date.parse(env.TURSO_ENDGAME_FROM||''),until=Date.parse(env.TURSO_STOP_RATIO_UNTIL||''),cap=Number(env.TURSO_ENDGAME_MAX_RUN_WRITES)
- if(!(ratio>0.8&&ratio<=0.95)||!Number.isFinite(from)||!Number.isFinite(until)||now<from||now>=until||!(Number.isSafeInteger(cap)&&cap>0&&cap<=300_000))return {}
- return {stopRatio:ratio,maxRunWrites:cap}
-}
-// Start of the previous completed worker run, from the GitHub API (the
-// scheduler may delay or skip runs). Unknown means an even split per run.
-async function previousRunAt(env=process.env){
- const repo=env.GITHUB_REPOSITORY,token=env.GITHUB_TOKEN,workflow=env.TURSO_WORKER_WORKFLOW
- if(!repo||!token||!workflow||!/^[\w.-]+\/[\w.-]+$/.test(repo)||!/^[\w.-]+\.ya?ml$/.test(workflow))return null
- try{
-  const response=await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${workflow}/runs?status=completed&per_page=10`,{headers:{authorization:'Bearer '+token,accept:'application/vnd.github+json'}})
-  if(!response.ok)return null
-  const run=(await response.json()).workflow_runs?.find(r=>String(r.id)!==String(env.GITHUB_RUN_ID)&&r.conclusion==='success')
-  const at=Date.parse(run?.run_started_at||'')
-  return Number.isFinite(at)?at:null
- }catch{return null}
+// Last part of a month: once the main stop (90%) is reached, the remaining
+// margin up to at most 95% is spread over the days left until the reset, with
+// small runs so a delayed usage counter can never push the account past the
+// free limit.
+function endgame(usage,env=process.env,now=Date.now()){
+ const ratio=Number(env.TURSO_ENDGAME_RATIO),at=Number(env.TURSO_ENDGAME_AT),until=Date.parse(env.TURSO_STOP_RATIO_UNTIL||''),cap=Number(env.TURSO_ENDGAME_MAX_RUN_WRITES)
+ if(!(ratio>0.8&&ratio<=0.95)||!(at>0&&at<ratio)||!Number.isFinite(until)||now>=until||!(Number.isSafeInteger(cap)&&cap>0&&cap<=300_000))return {}
+ if(usage.rows_written<Math.floor(FREE_LIMITS.rows_written*at))return {}
+ return {stopRatio:ratio,maxRunWrites:cap,spendBy:undefined,endgame:true}
 }
 try{
  const usage=await readTursoUsage({token:process.env.TURSO_API_TOKEN?.trim(),organization:process.env.TURSO_ORGANIZATION?.trim()})
- plan=planBudget(usage,{resetDay:Number(process.env.TURSO_RESET_DAY||1),runsPerDay:Number(process.env.TURSO_RUNS_PER_DAY||2),stopRatio:stopRatio(),...frontLoad(),...endgame(),previousRunAt:await previousRunAt(),...estimateRatio()})
+ plan=planBudget(usage,{resetDay:Number(process.env.TURSO_RESET_DAY||1),runsPerDay:Number(process.env.TURSO_RUNS_PER_DAY||2),stopRatio:stopRatio(),...frontLoad(),...endgame(usage),previousRunAt:await previousRunAt(),...estimateRatio()})
 }catch(error){plan={allowed:false,writes:0,reads:0,reason:safeTursoError(error)}}
 console.log(JSON.stringify({check:'turso-budget',...plan}))
 try{for(const entry of await createPlatform(platformConfiguration()).databaseUsage())console.log(JSON.stringify({check:'turso-database-usage',...entry}))}catch(error){console.log('Dettaglio per database non disponibile: '+safeTursoError(error))}

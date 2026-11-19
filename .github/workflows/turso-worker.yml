@@ -66,14 +66,14 @@ jobs:
           # 90% fino al rinnovo del 1° dicembre 2026, poi di nuovo 80%.
           TURSO_STOP_RATIO: '0.9'
           TURSO_STOP_RATIO_UNTIL: '2026-12-01T00:00:00Z'
-          # Spesa anticipata della quota di novembre: entro il 23, al massimo
-          # 900.000 scritture stimate per esecuzione; dal 1° dicembre non vale più.
-          TURSO_SPEND_BY: '2026-11-23T00:00:00Z'
+          # Novembre: ogni turno pubblica il massimo (900.000 stimate) fino al 90%;
+          # poi il margine fino al 95% si distribuisce sui giorni rimasti, a turni
+          # di al massimo 300.000. Dal 1° dicembre tornano le regole normali.
+          TURSO_SPEND_BY: '2026-11-19T20:00:00Z'
           TURSO_MAX_RUN_WRITES: '900000'
           TURSO_FRONT_LOAD_UNTIL: '2026-12-01T00:00:00Z'
-          # Dal 23 al 30 novembre: soglia 95%, turni di al massimo 300.000.
           TURSO_ENDGAME_RATIO: '0.95'
-          TURSO_ENDGAME_FROM: '2026-11-23T00:00:00Z'
+          TURSO_ENDGAME_AT: '0.9'
           TURSO_ENDGAME_MAX_RUN_WRITES: '300000'
           TURSO_RUNS_PER_DAY: '8'
           # Scritture reali per scrittura stimata, misurate il 19/11/2026 (0,64-0,74).
