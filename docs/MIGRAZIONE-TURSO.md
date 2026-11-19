@@ -222,3 +222,9 @@ Pianificatore a catena (18 novembre 2026): lo scheduler di GitHub non ha avviato
 Correzione delle stime (19 novembre 2026): fra le 02:49 e le 18:41 UTC il contatore reale è salito di 708.560 righe scritte, contro 0,96–1,1 milioni stimate (rapporto 0,64–0,74). Con `TURSO_ESTIMATE_RATIO=0.7` il freno divide la quota reale spettante a ogni esecuzione per questo rapporto: ogni turno spende la sua parte effettiva invece di circa il 70%. La soglia resta verificata sul contatore ufficiale prima di ogni esecuzione.
 
 Popolamento rapido (19 novembre 2026, sera): ogni turno pubblica il massimo consentito (900.000 scritture stimate) finché il contatore non raggiunge il 90%. Raggiunto il 90% (`TURSO_ENDGAME_AT`), il margine fino al 95% si distribuisce in proporzione al tempo fino al rinnovo del 1° dicembre, con turni di al massimo 300.000.
+
+Turni ogni 30 minuti (19 novembre 2026, sera): il pianificatore avvia il worker a :11 e :41 di ogni ora.
+
+- Ogni turno pubblica la sua parte della coda, al massimo 250.000 scritture stimate fino al 90% e 100.000 dopo. Turni piccoli e frequenti tengono un ritardo di un'ora del contatore ufficiale lontano dal limite.
+- Un nuovo ripristino con giro di lavoro parte solo a coda vuota e almeno 150 minuti dopo il precedente (`WORK_INTERVAL_MINUTES`, tabella `_catalog_worker_state`), per non spendere un milione di letture a ogni turno.
+- Il gruppo dei turni di lavoro si alterna ogni 3 ore.
