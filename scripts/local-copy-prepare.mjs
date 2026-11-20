@@ -23,6 +23,10 @@ const restoreDump=container=>new Promise((resolve,reject)=>{
  child.on('close',code=>code===0?resolve():reject(Error('pg_restore terminato con codice '+code)))
 })
 let db,client,exit=0
+export async function catalogCounts(db){
+ const row=(await db.query('SELECT count(*)::int AS cards,count(image_url)::int AS photos FROM public.cards')).rows[0]
+ return {cards:row.cards,photos:row.photos}
+}
 try{
  const password=process.env.WORKER_AUTHENTICATOR_PASSWORD
  if(!/^[A-Za-z0-9]{16,64}$/.test(password||''))throw Error('Password del ruolo authenticator non valida.')
@@ -51,7 +55,9 @@ try{
  let state={}
  try{state=JSON.parse(await readFile(stateFile,'utf8'))}catch{}
  const group=state.last_group==='A'?'B':'A'
- state={...state,last_group:group,runs:Number(state.runs||0)+1,last_run_at:new Date().toISOString(),first_source:state.first_source||source}
+ // Counts before this run's work, compared at the end by local-copy-stats.
+ const start=await catalogCounts(db)
+ state={...state,last_group:group,runs:Number(state.runs||0)+1,last_run_at:new Date().toISOString(),first_source:state.first_source||source,start}
  await writeFile(stateFile,JSON.stringify(state))
  log({phase:'local-copy-ready',source,group,runs:state.runs,minutes:Math.round((Date.now()-started)/60000)})
  await output('mode','work');await output('group',group);await output('source',source)

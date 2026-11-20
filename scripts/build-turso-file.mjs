@@ -57,6 +57,7 @@ try{
 }catch(error){console.error(safeTursoError(error));exit=1}
 finally{
  try{client?.close()}catch{}
- await cleanup()
+ // KEEP_FILE=true leaves the built file for a following step (download copy).
+ if(exit||process.env.KEEP_FILE!=='true')await cleanup()
  process.exitCode=exit
 }

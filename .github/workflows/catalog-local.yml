@@ -167,6 +167,10 @@ jobs:
         continue-on-error: true
         timeout-minutes: 12
         run: node --experimental-strip-types scripts/run-coverage-audit.mjs
+      - name: Conteggio carte e foto del giro
+        id: stats
+        if: steps.prepare.outputs.mode == 'work' && !cancelled()
+        run: node scripts/local-copy-stats.mjs
       - name: Salva la copia locale
         if: steps.prepare.outputs.mode == 'work' && !cancelled()
         run: |
@@ -181,10 +185,17 @@ jobs:
           path: /tmp/local-copy
           key: catalog-local-copy-${{ github.run_id }}
       - name: Avvia il giro successivo
-        if: success() && inputs.chain
+        if: success() && inputs.chain && steps.stats.outputs.stop != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run catalog-local.yml --repo "$GITHUB_REPOSITORY" -f chain=true
+      # Two quiet group A runs in a row: the chain stops and the downloadable
+      # file is prepared (no upload: that is started by hand).
+      - name: Prepara il file da scaricare
+        if: success() && steps.stats.outputs.stop == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run catalog-local-upload.yml --repo "$GITHUB_REPOSITORY" -f upload=false -f artifact=true
       - name: Diagnostica PostgREST
         if: failure()
         run: docker logs postgrest 2>&1 | tail -60; cat /tmp/rest-proxy.log
