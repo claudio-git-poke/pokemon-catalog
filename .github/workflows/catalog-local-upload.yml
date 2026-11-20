@@ -34,7 +34,6 @@ jobs:
     env:
       WORKER_PG_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
       LOCAL_COPY_DIR: /tmp/local-copy
-      PG_CONTAINER: ${{ job.services.postgres.id }}
       REQUIRE_LOCAL_COPY: 'true'
     steps:
       - uses: actions/checkout@v4
@@ -59,6 +58,7 @@ jobs:
           echo "::add-mask::$PASSWORD"
           echo "WORKER_JWT_SECRET=$JWT_SECRET" >> "$GITHUB_ENV"
           echo "WORKER_AUTHENTICATOR_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+          echo "PG_CONTAINER=${{ job.services.postgres.id }}" >> "$GITHUB_ENV"
       - name: Ripristina la copia locale nel PostgreSQL temporaneo
         id: prepare
         run: node scripts/local-copy-prepare.mjs
