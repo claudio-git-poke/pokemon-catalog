@@ -11,6 +11,18 @@ on:
         description: 'Avviare automaticamente il giro successivo'
         type: boolean
         default: true
+      retries:
+        description: 'Tentativi falliti di fila (gestito dalla catena)'
+        type: number
+        default: 0
+      group:
+        description: 'Forza il gruppo di questo giro (A o B; vuoto = alternanza)'
+        type: string
+        default: ''
+      reset_quiet:
+        description: 'Azzera il conteggio dei giri A senza novità'
+        type: boolean
+        default: false
 permissions:
   contents: read
   actions: write
@@ -63,9 +75,13 @@ jobs:
       - name: Ripristina la copia locale nel PostgreSQL temporaneo
         id: prepare
         run: node scripts/local-copy-prepare.mjs
+        env:
+          FORCE_GROUP: ${{ inputs.group }}
+          RESET_QUIET: ${{ inputs.reset_quiet }}
       - name: Avvia PostgREST locale
         if: steps.prepare.outputs.mode == 'work'
         run: |
+          for i in 1 2 3 4 5 6; do docker pull -q postgrest/postgrest:v12.2.8 && break; echo "Download di PostgREST non riuscito, nuovo tentativo"; sleep $((i*15)); done
           docker run -d --name postgrest --network host \
             -e PGRST_DB_URI="postgres://authenticator:${WORKER_AUTHENTICATOR_PASSWORD}@127.0.0.1:5432/postgres" \
             -e PGRST_DB_SCHEMAS=public -e PGRST_DB_ANON_ROLE=anon -e PGRST_DB_MAX_ROWS=1000 \
@@ -169,17 +185,17 @@ jobs:
         run: node --experimental-strip-types scripts/run-coverage-audit.mjs
       - name: Conteggio carte e foto del giro
         id: stats
-        if: steps.prepare.outputs.mode == 'work' && !cancelled()
+        if: steps.prepare.outputs.mode == 'work' && success()
         run: node scripts/local-copy-stats.mjs
       - name: Salva la copia locale
-        if: steps.prepare.outputs.mode == 'work' && !cancelled()
+        if: steps.prepare.outputs.mode == 'work' && success()
         run: |
           docker exec "$PG_CONTAINER" psql -U postgres -d postgres -v ON_ERROR_STOP=1 -c 'TRUNCATE catalog_internal.turso_worker_delta' -c 'VACUUM ANALYZE'
           docker exec "$PG_CONTAINER" pg_dump -U postgres -d postgres -Fc --compress=zstd:3 > /tmp/local-copy/catalog.dump.new
           mv /tmp/local-copy/catalog.dump.new /tmp/local-copy/catalog.dump
           ls -l /tmp/local-copy; cat /tmp/local-copy/state.json; echo
       - name: Archivia la copia locale
-        if: steps.prepare.outputs.mode == 'work' && !cancelled()
+        if: steps.prepare.outputs.mode == 'work' && success()
         uses: actions/cache/save@v4
         with:
           path: /tmp/local-copy
@@ -189,6 +205,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run catalog-local.yml --repo "$GITHUB_REPOSITORY" -f chain=true
+      # A failed run (for example a network error while downloading PostgREST)
+      # saves nothing: the copy of the previous run stays as it is. The chain
+      # tries again, up to 3 failures in a row.
+      - name: Riprova dopo un errore
+        if: failure() && inputs.chain && inputs.retries < 3
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEXT: ${{ inputs.retries + 1 }}
+        run: sleep 60; gh workflow run catalog-local.yml --repo "$GITHUB_REPOSITORY" -f chain=true -f retries="$NEXT"
       # Two quiet group A runs in a row: the chain stops and the downloadable
       # file is prepared (no upload: that is started by hand).
       - name: Prepara il file da scaricare

@@ -242,3 +242,4 @@ Per non spendere le scritture di Turso, il lavoro continua su una copia del cata
 - **Arresto automatico.** A fine giro `local-copy-stats.mjs` conta carte e foto della copia. Quando due giri A di fila aggiungono ciascuno meno di 10 carte e meno di 10 foto, la catena si ferma e avvia la costruzione del file (senza caricamento).
 - **File da scaricare.** Con `artifact=true` il file SQLite costruito viene allegato al giro ("pokemon-catalog-sqlite", 90 giorni), senza la cronologia delle modifiche manuali, perché il repository è pubblico. Il database caricato su Turso invece la conserva.
 - **Dopo il caricamento** si torna al worker Turso con controllo periodico, puntato sul nuovo database.
+- **Errori.** Un giro fallito non salva niente, nemmeno i conteggi, e la catena riprova fino a 3 volte di fila. Il download di PostgREST viene ritentato. Gli input `group` e `reset_quiet` permettono di forzare il gruppo e azzerare il conteggio dei giri A senza novità.
