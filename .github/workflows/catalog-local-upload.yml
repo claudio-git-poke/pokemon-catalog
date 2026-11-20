@@ -1,0 +1,94 @@
+name: Carica la copia locale su Turso
+# Builds the Turso catalog file from the local copy (via the local PostgREST,
+# exactly like the original migration read Supabase) and, with upload=true,
+# uploads it as a NEW database. The site keeps using the current database until
+# its address is changed on Vercel.
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Caricare il file in un NUOVO database Turso (false = solo costruzione e verifica)'
+        type: boolean
+        default: false
+      database:
+        description: 'Nome del nuovo database'
+        type: string
+        default: 'pokemon-catalog-2'
+permissions:
+  contents: read
+concurrency:
+  group: catalog-local-copy
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 30
+    env:
+      WORKER_PG_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
+      LOCAL_COPY_DIR: /tmp/local-copy
+      PG_CONTAINER: ${{ job.services.postgres.id }}
+      REQUIRE_LOCAL_COPY: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Copia locale salvata
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/local-copy
+          key: catalog-local-copy-upload-${{ github.run_id }}
+          restore-keys: catalog-local-copy-
+      - name: Segreti locali dell'esecuzione
+        run: |
+          JWT_SECRET=$(openssl rand -hex 32)
+          PASSWORD=$(openssl rand -hex 24)
+          echo "::add-mask::$JWT_SECRET"
+          echo "::add-mask::$PASSWORD"
+          echo "WORKER_JWT_SECRET=$JWT_SECRET" >> "$GITHUB_ENV"
+          echo "WORKER_AUTHENTICATOR_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+      - name: Ripristina la copia locale nel PostgreSQL temporaneo
+        id: prepare
+        run: node scripts/local-copy-prepare.mjs
+      - name: Avvia PostgREST locale
+        if: steps.prepare.outputs.mode == 'work'
+        run: |
+          docker run -d --name postgrest --network host \
+            -e PGRST_DB_URI="postgres://authenticator:${WORKER_AUTHENTICATOR_PASSWORD}@127.0.0.1:5432/postgres" \
+            -e PGRST_DB_SCHEMAS=public -e PGRST_DB_ANON_ROLE=anon -e PGRST_DB_MAX_ROWS=1000 \
+            -e PGRST_JWT_SECRET="$WORKER_JWT_SECRET" -e PGRST_SERVER_PORT=3000 postgrest/postgrest:v12.2.8
+          nohup node scripts/rest-prefix-proxy.mjs > /tmp/rest-proxy.log 2>&1 &
+          KEY=$(node -e "import('./scripts/turso-worker-runtime.mjs').then(m=>process.stdout.write(m.signServiceRoleToken(process.env.WORKER_JWT_SECRET)))")
+          echo "::add-mask::$KEY"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$KEY" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> "$GITHUB_ENV"
+          for i in $(seq 1 30); do
+            CODE=$(curl -s -o /tmp/rest-check.json -w '%{http_code}' -H "apikey: $KEY" -H "Authorization: Bearer $KEY" "http://127.0.0.1:54321/rest/v1/catalog_releases?select=code&limit=1" || true)
+            if [ "$CODE" = "200" ]; then echo "PostgREST pronto"; exit 0; fi
+            echo "PostgREST non ancora pronto: HTTP $CODE"; sleep 2
+          done
+          cat /tmp/rest-check.json
+          docker logs postgrest | tail -40; exit 1
+      - name: Costruisce il file del catalogo e lo carica se richiesto
+        run: node scripts/build-turso-file.mjs
+        env:
+          UPLOAD: ${{ inputs.upload }}
+          TURSO_TARGET_DATABASE: ${{ inputs.database }}
+          TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+          TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
+          BUILD_MINUTES: '300'
+      - name: Diagnostica PostgREST
+        if: failure()
+        run: docker logs postgrest 2>&1 | tail -60; cat /tmp/rest-proxy.log

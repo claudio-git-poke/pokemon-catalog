@@ -1,0 +1,190 @@
+name: Catalogo locale
+# Works on a copy of the catalog kept in the Actions cache instead of Turso:
+# each run restores the copy saved by the previous one, runs one work group
+# (alternating A and B), saves the copy again and starts the next run. Turso is
+# neither read nor written (only the very first run restores from Turso). The
+# copy is later loaded into Turso as a file ("Carica la copia locale su Turso").
+on:
+  workflow_dispatch:
+    inputs:
+      chain:
+        description: 'Avviare automaticamente il giro successivo'
+        type: boolean
+        default: true
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: catalog-local-copy
+  cancel-in-progress: false
+jobs:
+  work:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 30
+    env:
+      TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+      TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
+      TURSO_DATABASE_NAME: pokemon-catalog
+      WORKER_PG_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
+      LOCAL_COPY_DIR: /tmp/local-copy
+      PG_CONTAINER: ${{ job.services.postgres.id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Copia locale salvata
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/local-copy
+          key: catalog-local-copy-${{ github.run_id }}
+          restore-keys: catalog-local-copy-
+      - name: Segreti locali dell'esecuzione
+        run: |
+          JWT_SECRET=$(openssl rand -hex 32)
+          PASSWORD=$(openssl rand -hex 24)
+          echo "::add-mask::$JWT_SECRET"
+          echo "::add-mask::$PASSWORD"
+          echo "WORKER_JWT_SECRET=$JWT_SECRET" >> "$GITHUB_ENV"
+          echo "WORKER_AUTHENTICATOR_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+          mkdir -p /tmp/local-copy
+      - name: Ripristina la copia locale nel PostgreSQL temporaneo
+        id: prepare
+        run: node scripts/local-copy-prepare.mjs
+      - name: Avvia PostgREST locale
+        if: steps.prepare.outputs.mode == 'work'
+        run: |
+          docker run -d --name postgrest --network host \
+            -e PGRST_DB_URI="postgres://authenticator:${WORKER_AUTHENTICATOR_PASSWORD}@127.0.0.1:5432/postgres" \
+            -e PGRST_DB_SCHEMAS=public -e PGRST_DB_ANON_ROLE=anon -e PGRST_DB_MAX_ROWS=1000 \
+            -e PGRST_JWT_SECRET="$WORKER_JWT_SECRET" -e PGRST_SERVER_PORT=3000 postgrest/postgrest:v12.2.8
+          nohup node scripts/rest-prefix-proxy.mjs > /tmp/rest-proxy.log 2>&1 &
+          KEY=$(node -e "import('./scripts/turso-worker-runtime.mjs').then(m=>process.stdout.write(m.signServiceRoleToken(process.env.WORKER_JWT_SECRET)))")
+          echo "::add-mask::$KEY"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$KEY" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> "$GITHUB_ENV"
+          for i in $(seq 1 30); do
+            CODE=$(curl -s -o /tmp/rest-check.json -w '%{http_code}' -H "apikey: $KEY" -H "Authorization: Bearer $KEY" "http://127.0.0.1:54321/rest/v1/catalog_releases?select=code&limit=1" || true)
+            if [ "$CODE" = "200" ]; then echo "PostgREST pronto"; exit 0; fi
+            echo "PostgREST non ancora pronto: HTTP $CODE"; sleep 2
+          done
+          cat /tmp/rest-check.json
+          docker logs postgrest | tail -40; exit 1
+      - name: Archivio Card Atlas
+        if: steps.prepare.outputs.mode == 'work'
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: type-null/PTCG-database
+          path: .catalog-data
+          persist-credentials: false
+          sparse-checkout: |
+            data_en
+            data_jp
+            data_ko
+            data_tc
+      # Group A: imports and sources
+      - name: "A · Importazione catalogo e immagini"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
+        continue-on-error: true
+        timeout-minutes: 120
+        run: node --experimental-strip-types scripts/run-catalog-sync.mjs
+        env:
+          CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '30' }}
+          ATLAS_DATA_DIR: .catalog-data
+      - name: "A · Fonti aggiuntive EN TH ID"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
+        continue-on-error: true
+        timeout-minutes: 15
+        run: node --experimental-strip-types scripts/run-supplemental-sources.mjs
+        env:
+          ATLAS_DATA_DIR: .catalog-data
+      - name: "A · Fonti promo e varianti"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
+        continue-on-error: true
+        timeout-minutes: 15
+        run: node --experimental-strip-types scripts/run-research-sources.mjs
+      - name: "A · Uscite speciali"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
+        continue-on-error: true
+        timeout-minutes: 25
+        run: node --experimental-strip-types scripts/run-special-release-audit.mjs
+      - name: "A · Archivio confezioni"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
+        continue-on-error: true
+        timeout-minutes: 10
+        run: node --experimental-strip-types scripts/import-packaging-catalog.mjs
+      # Group B: retroactive repairs and audits
+      - name: "B · Metadati carte asiatiche"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
+        continue-on-error: true
+        timeout-minutes: 40
+        run: node --experimental-strip-types scripts/backfill-atlas-tags.mjs
+        env:
+          ATLAS_DATA_DIR: .catalog-data
+      - name: "B · Recupero tag"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
+        continue-on-error: true
+        timeout-minutes: 40
+        run: node --experimental-strip-types scripts/backfill-catalog-tags.mjs
+      - name: "B · Ripristino rarità e metadati"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
+        continue-on-error: true
+        timeout-minutes: 40
+        run: node --experimental-strip-types scripts/repair-card-metadata.mjs
+      - name: "B · Confronto fonti"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
+        continue-on-error: true
+        timeout-minutes: 18
+        run: node --experimental-strip-types scripts/backfill-cross-source.mjs
+      - name: "B · Inventario versioni e lingue"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
+        continue-on-error: true
+        timeout-minutes: 15
+        run: node --experimental-strip-types scripts/run-printing-inventory.mjs
+      - name: "B · Confronto elenchi"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
+        continue-on-error: true
+        timeout-minutes: 18
+        run: node --experimental-strip-types scripts/run-source-manifest-audit.mjs
+        env:
+          ATLAS_DATA_DIR: .catalog-data
+      # Runs in every work run, last, so the coverage page reflects this run.
+      - name: "A e B · Copertura"
+        if: steps.prepare.outputs.mode == 'work'
+        continue-on-error: true
+        timeout-minutes: 12
+        run: node --experimental-strip-types scripts/run-coverage-audit.mjs
+      - name: Salva la copia locale
+        if: steps.prepare.outputs.mode == 'work' && !cancelled()
+        run: |
+          docker exec "$PG_CONTAINER" psql -U postgres -d postgres -v ON_ERROR_STOP=1 -c 'TRUNCATE catalog_internal.turso_worker_delta' -c 'VACUUM ANALYZE'
+          docker exec "$PG_CONTAINER" pg_dump -U postgres -d postgres -Fc --compress=zstd:3 > /tmp/local-copy/catalog.dump.new
+          mv /tmp/local-copy/catalog.dump.new /tmp/local-copy/catalog.dump
+          ls -l /tmp/local-copy; cat /tmp/local-copy/state.json; echo
+      - name: Archivia la copia locale
+        if: steps.prepare.outputs.mode == 'work' && !cancelled()
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/local-copy
+          key: catalog-local-copy-${{ github.run_id }}
+      - name: Avvia il giro successivo
+        if: success() && inputs.chain
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run catalog-local.yml --repo "$GITHUB_REPOSITORY" -f chain=true
+      - name: Diagnostica PostgREST
+        if: failure()
+        run: docker logs postgrest 2>&1 | tail -60; cat /tmp/rest-proxy.log

@@ -232,3 +232,10 @@ Turni ogni 30 minuti (19 novembre 2026, sera): il pianificatore avvia il worker 
 Correzione del 20 novembre 2026: sui pacchetti di tag e metadati le scritture reali sono state circa 1,3 volte la stima (non 0,7), quindi `TURSO_ESTIMATE_RATIO` torna a 1. L'intervallo minimo fra due giri di lavoro scende a 60 minuti: con la coda vuota il worker restava fermo più di un'ora. Le letture restano ampiamente nel limite (circa 10 letture per scrittura).
 
 Alternanza dei gruppi (20 novembre 2026): il gruppo di un giro di lavoro non dipende più dall'orario ma si alterna A, B, A… (colonna `last_group` di `_catalog_worker_state`). Prima un turno di riserva in ritardo poteva scegliere B più volte di fila: dal 18 al 20 novembre l'importazione del catalogo (A) non era mai ripartita.
+
+## Copia locale (dal 20 novembre 2026)
+
+Per non spendere le scritture di Turso, il lavoro continua su una copia del catalogo conservata nella cache di GitHub Actions.
+
+- **Workflow "Catalogo locale"** (`catalog-local.yml`). Ogni giro ripristina nel PostgreSQL temporaneo la copia salvata dal giro precedente (`pg_dump`, chiave `catalog-local-copy-<run>`). Esegue un gruppo di lavoro, alternando A e B (`state.json` nella copia), salva di nuovo la copia e avvia subito il giro successivo. Solo il primo giro, senza copia salvata, ripristina da Turso. Turso non viene né letto né scritto. Per fermare la catena basta disattivare il workflow.
+- **Workflow "Carica la copia locale su Turso"** (`catalog-local-upload.yml`). Costruisce il file del catalogo dalla copia locale, attraverso il PostgREST locale come nella migrazione da Supabase, e con `upload=true` lo carica in un database NUOVO (predefinito `pokemon-catalog-2`). Il sito passa al nuovo database cambiando l'indirizzo su Vercel. Il caricamento di un file è stato misurato a zero righe scritte.
