@@ -31,7 +31,15 @@ try{
   }else{
    // Remember when the catalog was last restored: frequent publishing turns
    // must not restore it (about one million reads) more often than needed.
-   await client.batch(['CREATE TABLE IF NOT EXISTS _catalog_worker_state(id INTEGER PRIMARY KEY CHECK(id=1),last_work_at TEXT NOT NULL)',{sql:'INSERT INTO _catalog_worker_state(id,last_work_at) VALUES(1,?) ON CONFLICT(id) DO UPDATE SET last_work_at=excluded.last_work_at',args:[new Date().toISOString()]}],'write')
+   // Work groups alternate A, B, A, ... whatever the slot or trigger, so a
+   // delayed or extra run can never starve one of the two groups.
+   await client.execute('CREATE TABLE IF NOT EXISTS _catalog_worker_state(id INTEGER PRIMARY KEY CHECK(id=1),last_work_at TEXT NOT NULL)')
+   await client.execute('ALTER TABLE _catalog_worker_state ADD COLUMN last_group TEXT').catch(()=>{})
+   const previous=(await client.execute('SELECT last_group FROM _catalog_worker_state WHERE id=1')).rows[0]?.last_group
+   const group=previous==='A'?'B':'A'
+   await client.execute({sql:'INSERT INTO _catalog_worker_state(id,last_work_at,last_group) VALUES(1,?,?) ON CONFLICT(id) DO UPDATE SET last_work_at=excluded.last_work_at,last_group=excluded.last_group',args:[new Date().toISOString(),group]})
+   log({phase:'group',group,previous:previous||null})
+   await output('group',group)
    await discardUnpublishedStages(client)
    const snapshot=JSON.parse(await readFile(new URL('../data/turso-worker-pg-schema.json',import.meta.url),'utf8'))
    db=new pg.Client({connectionString:process.env.WORKER_PG_URL})

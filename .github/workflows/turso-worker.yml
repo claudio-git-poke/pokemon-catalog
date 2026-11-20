@@ -129,7 +129,7 @@ jobs:
             data_tc
       # Group A: imports and sources
       - name: "A · Importazione catalogo e immagini"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
         continue-on-error: true
         timeout-minutes: 120
         run: node --experimental-strip-types scripts/run-catalog-sync.mjs
@@ -137,57 +137,57 @@ jobs:
           CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '30' }}
           ATLAS_DATA_DIR: .catalog-data
       - name: "A · Fonti aggiuntive EN TH ID"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
         continue-on-error: true
         timeout-minutes: 15
         run: node --experimental-strip-types scripts/run-supplemental-sources.mjs
         env:
           ATLAS_DATA_DIR: .catalog-data
       - name: "A · Fonti promo e varianti"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
         continue-on-error: true
         timeout-minutes: 15
         run: node --experimental-strip-types scripts/run-research-sources.mjs
       - name: "A · Uscite speciali"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
         continue-on-error: true
         timeout-minutes: 25
         run: node --experimental-strip-types scripts/run-special-release-audit.mjs
       - name: "A · Archivio confezioni"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'A'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
         continue-on-error: true
         timeout-minutes: 10
         run: node --experimental-strip-types scripts/import-packaging-catalog.mjs
       # Group B: retroactive repairs and audits
       - name: "B · Metadati carte asiatiche"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
         continue-on-error: true
         timeout-minutes: 40
         run: node --experimental-strip-types scripts/backfill-atlas-tags.mjs
         env:
           ATLAS_DATA_DIR: .catalog-data
       - name: "B · Recupero tag"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
         continue-on-error: true
         timeout-minutes: 40
         run: node --experimental-strip-types scripts/backfill-catalog-tags.mjs
       - name: "B · Ripristino rarità e metadati"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
         continue-on-error: true
         timeout-minutes: 40
         run: node --experimental-strip-types scripts/repair-card-metadata.mjs
       - name: "B · Confronto fonti"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
         continue-on-error: true
         timeout-minutes: 18
         run: node --experimental-strip-types scripts/backfill-cross-source.mjs
       - name: "B · Inventario versioni e lingue"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
         continue-on-error: true
         timeout-minutes: 15
         run: node --experimental-strip-types scripts/run-printing-inventory.mjs
       - name: "B · Confronto elenchi"
-        if: steps.prepare.outputs.mode == 'work' && env.GROUP == 'B'
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
         continue-on-error: true
         timeout-minutes: 18
         run: node --experimental-strip-types scripts/run-source-manifest-audit.mjs

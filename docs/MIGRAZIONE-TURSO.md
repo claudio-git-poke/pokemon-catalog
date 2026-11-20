@@ -230,3 +230,5 @@ Turni ogni 30 minuti (19 novembre 2026, sera): il pianificatore avvia il worker 
 - Il gruppo dei turni di lavoro si alterna ogni 3 ore.
 
 Correzione del 20 novembre 2026: sui pacchetti di tag e metadati le scritture reali sono state circa 1,3 volte la stima (non 0,7), quindi `TURSO_ESTIMATE_RATIO` torna a 1. L'intervallo minimo fra due giri di lavoro scende a 60 minuti: con la coda vuota il worker restava fermo più di un'ora. Le letture restano ampiamente nel limite (circa 10 letture per scrittura).
+
+Alternanza dei gruppi (20 novembre 2026): il gruppo di un giro di lavoro non dipende più dall'orario ma si alterna A, B, A… (colonna `last_group` di `_catalog_worker_state`). Prima un turno di riserva in ritardo poteva scegliere B più volte di fila: dal 18 al 20 novembre l'importazione del catalogo (A) non era mai ripartita.
