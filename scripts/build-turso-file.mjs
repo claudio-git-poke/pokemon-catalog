@@ -33,7 +33,7 @@ try{
  await cleanup()
  client=sqliteFileClient(file,{fast:true})
  const started=Date.now()
- const {report,groups}=await buildCatalogFile({client,source,schema,sourceId,deadline:started+170*60000,log})
+ const {report,groups}=await buildCatalogFile({client,source,schema,sourceId,deadline:started+Number(process.env.BUILD_MINUTES||170)*60000,log})
  client.exec('PRAGMA optimize;');client.checkpoint();client.close();client=null
  const size=(await stat(file)).size
  log({phase:'file-ready',bytes:size,groups,minutes:Math.round((Date.now()-started)/60000)})
