@@ -212,8 +212,8 @@ jobs:
         if: failure() && inputs.chain && inputs.retries < 3
         env:
           GH_TOKEN: ${{ github.token }}
-          NEXT: ${{ inputs.retries + 1 }}
-        run: sleep 60; gh workflow run catalog-local.yml --repo "$GITHUB_REPOSITORY" -f chain=true -f retries="$NEXT"
+          RETRIES: ${{ inputs.retries }}
+        run: sleep 60; gh workflow run catalog-local.yml --repo "$GITHUB_REPOSITORY" -f chain=true -f retries="$((RETRIES+1))"
       # Two quiet group A runs in a row: the chain stops and the downloadable
       # file is prepared (no upload: that is started by hand).
       - name: Prepara il file da scaricare
