@@ -228,3 +228,5 @@ Turni ogni 30 minuti (19 novembre 2026, sera): il pianificatore avvia il worker 
 - Ogni turno pubblica la sua parte della coda, al massimo 250.000 scritture stimate fino al 90% e 100.000 dopo. Turni piccoli e frequenti tengono un ritardo di un'ora del contatore ufficiale lontano dal limite.
 - Un nuovo ripristino con giro di lavoro parte solo a coda vuota e almeno 150 minuti dopo il precedente (`WORK_INTERVAL_MINUTES`, tabella `_catalog_worker_state`), per non spendere un milione di letture a ogni turno.
 - Il gruppo dei turni di lavoro si alterna ogni 3 ore.
+
+Correzione del 20 novembre 2026: sui pacchetti di tag e metadati le scritture reali sono state circa 1,3 volte la stima (non 0,7), quindi `TURSO_ESTIMATE_RATIO` torna a 1. L'intervallo minimo fra due giri di lavoro scende a 60 minuti: con la coda vuota il worker restava fermo più di un'ora. Le letture restano ampiamente nel limite (circa 10 letture per scrittura).

@@ -77,7 +77,7 @@ jobs:
           TURSO_ENDGAME_MAX_RUN_WRITES: '100000'
           TURSO_RUNS_PER_DAY: '48'
           # Scritture reali per scrittura stimata, misurate il 19/11/2026 (0,64-0,74).
-          TURSO_ESTIMATE_RATIO: '0.7'
+          TURSO_ESTIMATE_RATIO: '1'
           TURSO_WORKER_WORKFLOW: turso-worker.yml
           GITHUB_TOKEN: ${{ github.token }}
       - name: Segreti locali dell'esecuzione
@@ -93,8 +93,8 @@ jobs:
         run: node scripts/turso-worker-prepare.mjs
         env:
           READ_BUDGET: ${{ steps.budget.outputs.reads }}
-          # Publishing turns run every 30 minutes; new work at most every 150.
-          WORK_INTERVAL_MINUTES: '150'
+          # Publishing turns run every 30 minutes; new work at most every 60.
+          WORK_INTERVAL_MINUTES: '60'
       - name: Avvia PostgREST locale
         if: steps.prepare.outputs.mode == 'work'
         run: |
