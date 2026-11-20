@@ -69,6 +69,7 @@ jobs:
       - name: Avvia PostgREST locale
         if: steps.prepare.outputs.mode == 'work'
         run: |
+          for i in 1 2 3 4 5 6; do docker pull -q postgrest/postgrest:v12.2.8 && break; echo "Download di PostgREST non riuscito, nuovo tentativo"; sleep $((i*15)); done
           docker run -d --name postgrest --network host \
             -e PGRST_DB_URI="postgres://authenticator:${WORKER_AUTHENTICATOR_PASSWORD}@127.0.0.1:5432/postgres" \
             -e PGRST_DB_SCHEMAS=public -e PGRST_DB_ANON_ROLE=anon -e PGRST_DB_MAX_ROWS=1000 \

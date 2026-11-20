@@ -54,7 +54,8 @@ try{
  await db.query('TRUNCATE catalog_internal.turso_worker_delta')
  let state={}
  try{state=JSON.parse(await readFile(stateFile,'utf8'))}catch{}
- const group=state.last_group==='A'?'B':'A'
+ const group=['A','B'].includes(process.env.FORCE_GROUP)?process.env.FORCE_GROUP:state.last_group==='A'?'B':'A'
+ if(process.env.RESET_QUIET==='true')state.quiet_a=0
  // Counts before this run's work, compared at the end by local-copy-stats.
  const start=await catalogCounts(db)
  state={...state,last_group:group,runs:Number(state.runs||0)+1,last_run_at:new Date().toISOString(),first_source:state.first_source||source,start}
