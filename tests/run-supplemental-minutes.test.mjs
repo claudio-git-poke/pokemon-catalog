@@ -6,3 +6,7 @@ test('supplemental session length comes from SUPPLEMENTAL_MINUTES and is validat
  assert.match(source,/SUPPLEMENTAL_MINUTES\|\|8/)
  assert.match(source,/budgetMs:minutes\*60000/)
 })
+test('supplemental passes repeat until the budget ends or no page is due', async()=>{
+ const source=await readFile(new URL('../scripts/run-supplemental-sources.mjs',import.meta.url),'utf8')
+ assert.match(source,/result\.pages===0/)
+})
