@@ -9,6 +9,8 @@ const run=await check(db.from('catalog_sync_runs').insert({}).select('id').singl
 const summary={task:'supplemental-sources'},log=createCatalogLogger({db,runId:run.id,summary})
 try{
  await log('Fonti aggiuntive: inglese PkmnCards via Atlas, cataloghi ufficiali thailandese e indonesiano. Foto di riferimento; varianti non dedotte.',true)
- Object.assign(summary,await runSupplemental({db,root:process.env.ATLAS_DATA_DIR,log}))
+ const minutes=Number(process.env.SUPPLEMENTAL_MINUTES||8)
+ if(!Number.isFinite(minutes)||minutes<1||minutes>240)throw Error('SUPPLEMENTAL_MINUTES deve essere tra 1 e 240.')
+ Object.assign(summary,await runSupplemental({db,root:process.env.ATLAS_DATA_DIR,log,budgetMs:minutes*60000}))
  await check(db.from('catalog_sync_runs').update({finished_at:new Date().toISOString(),status:summary.errors||summary.deferred?'partial':'success',summary}).eq('id',run.id))
 }catch(error){await check(db.from('catalog_sync_runs').update({finished_at:new Date().toISOString(),status:'error',summary:{...summary,error:String(error)}}).eq('id',run.id));throw error}

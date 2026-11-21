@@ -118,15 +118,18 @@ jobs:
         timeout-minutes: 120
         run: node --experimental-strip-types scripts/run-catalog-sync.mjs
         env:
-          CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '30' }}
+          CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '8' }}
           ATLAS_DATA_DIR: .catalog-data
       - name: "A · Fonti aggiuntive EN TH ID"
         if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
         continue-on-error: true
-        timeout-minutes: 15
+        timeout-minutes: 140
         run: node --experimental-strip-types scripts/run-supplemental-sources.mjs
         env:
           ATLAS_DATA_DIR: .catalog-data
+          # The Thai and Indonesian official catalogues are where new cards come
+          # from (one card per second); the session stops by itself at the limit.
+          SUPPLEMENTAL_MINUTES: '120'
       - name: "A · Fonti promo e varianti"
         if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
         continue-on-error: true
