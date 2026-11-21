@@ -118,7 +118,7 @@ jobs:
         timeout-minutes: 120
         run: node --experimental-strip-types scripts/run-catalog-sync.mjs
         env:
-          CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '30' }}
+          CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '90' }}
           ATLAS_DATA_DIR: .catalog-data
       - name: "A · Fonti aggiuntive EN TH ID"
         if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
