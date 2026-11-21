@@ -32,7 +32,7 @@ concurrency:
 jobs:
   work:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 345
     services:
       postgres:
         image: postgres:17
@@ -115,10 +115,10 @@ jobs:
       - name: "A · Importazione catalogo e immagini"
         if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
         continue-on-error: true
-        timeout-minutes: 120
+        timeout-minutes: 215
         run: node --experimental-strip-types scripts/run-catalog-sync.mjs
         env:
-          CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '90' }}
+          CATALOG_RUN_MINUTES: ${{ inputs.sync_minutes || '180' }}
           ATLAS_DATA_DIR: .catalog-data
       - name: "A · Fonti aggiuntive EN TH ID"
         if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
