@@ -133,8 +133,10 @@ jobs:
       - name: "A · Fonti promo e varianti"
         if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
         continue-on-error: true
-        timeout-minutes: 15
+        timeout-minutes: 140
         run: node --experimental-strip-types scripts/run-research-sources.mjs
+        env:
+          RESEARCH_MINUTES: '120'
       - name: "A · Uscite speciali"
         if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'A'
         continue-on-error: true
