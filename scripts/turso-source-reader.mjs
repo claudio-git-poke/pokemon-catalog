@@ -23,9 +23,11 @@ export function sourcePageQuery(table,cursor=null,limit=400){
  }
  return q
 }
-export function createSourceReader({url,key,fetcher=fetch,attempts=3,wait=attempt=>new Promise(r=>setTimeout(r,1000*Math.min(30,2**attempt)))}){
+export function createSourceReader({url,key,fetcher=fetch,allowLoopback=false,attempts=3,wait=attempt=>new Promise(r=>setTimeout(r,1000*Math.min(30,2**attempt)))}){
  const parsed=new URL(url)
- if(parsed.protocol!=='https:'||parsed.username||parsed.password||!key)throw Error('Configurazione Supabase di origine non valida.')
+ // The local copy is read through a PostgREST on this machine (http, loopback only).
+ const loopback=allowLoopback&&parsed.protocol==='http:'&&parsed.hostname==='127.0.0.1'
+ if((parsed.protocol!=='https:'&&!loopback)||parsed.username||parsed.password||!key)throw Error('Configurazione Supabase di origine non valida.')
  const base=parsed.origin+'/rest/v1/',headers={apikey:key,Authorization:'Bearer '+key}
  async function request(table,query,method='GET',extraHeaders={}){
   validateTable(table)
