@@ -90,6 +90,7 @@ jobs:
         run: node scripts/build-turso-file.mjs
         env:
           UPLOAD: ${{ inputs.upload }}
+          LOCAL_SOURCE: 'true'
           TURSO_TARGET_DATABASE: ${{ inputs.database }}
           TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
           TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
