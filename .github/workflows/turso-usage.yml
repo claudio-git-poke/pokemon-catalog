@@ -35,6 +35,6 @@ jobs:
           TURSO_ENDGAME_RATIO: '0.95'
           TURSO_ENDGAME_AT: '0.9'
           TURSO_ENDGAME_MAX_RUN_WRITES: '100000'
-          TURSO_RUNS_PER_DAY: '48'
+          TURSO_RUNS_PER_DAY: '1'
           # Scritture reali per scrittura stimata, misurate il 19/11/2026 (0,64-0,74).
           TURSO_ESTIMATE_RATIO: '1'
