@@ -1,0 +1,81 @@
+name: Unisci i doppioni nella copia locale
+# Merges cards documented twice by different sources in the local copy (the
+# pg_dump in the Actions cache). apply=false is a dry run that saves nothing.
+# Turso is never touched.
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: 'Applicare e salvare la copia unita (false = prova a vuoto)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: catalog-local-copy
+  cancel-in-progress: false
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 30
+    env:
+      WORKER_PG_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
+      LOCAL_COPY_DIR: /tmp/local-copy
+      REQUIRE_LOCAL_COPY: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Copia locale salvata
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/local-copy
+          key: catalog-local-copy-merge-${{ github.run_id }}
+          restore-keys: catalog-local-copy-
+      - name: Segreti locali dell'esecuzione
+        run: |
+          JWT_SECRET=$(openssl rand -hex 32)
+          PASSWORD=$(openssl rand -hex 24)
+          echo "::add-mask::$JWT_SECRET"
+          echo "::add-mask::$PASSWORD"
+          echo "WORKER_JWT_SECRET=$JWT_SECRET" >> "$GITHUB_ENV"
+          echo "WORKER_AUTHENTICATOR_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+          echo "PG_CONTAINER=${{ job.services.postgres.id }}" >> "$GITHUB_ENV"
+          cp /tmp/local-copy/state.json /tmp/state-before.json
+      - name: Ripristina la copia locale nel PostgreSQL temporaneo
+        id: prepare
+        run: node scripts/local-copy-prepare.mjs
+      - name: Unisce i doppioni
+        if: steps.prepare.outputs.mode == 'work'
+        env:
+          APPLY: ${{ inputs.apply }}
+        run: |
+          docker exec -i "$PG_CONTAINER" psql -U postgres -d postgres -v apply="$APPLY" -f - < db/catalog-merge-duplicates.sql | tee /tmp/merge.txt
+          { echo '## Unione dei doppioni'; echo '```'; cat /tmp/merge.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Salva la copia unita
+        if: inputs.apply && steps.prepare.outputs.mode == 'work'
+        run: |
+          grep -q 'Unione APPLICATA' /tmp/merge.txt
+          cp /tmp/state-before.json /tmp/local-copy/state.json
+          docker exec "$PG_CONTAINER" pg_dump -U postgres -d postgres -Fc --compress=zstd:3 > /tmp/local-copy/catalog.dump.new
+          mv /tmp/local-copy/catalog.dump.new /tmp/local-copy/catalog.dump
+          ls -l /tmp/local-copy
+      - name: Salva nella cache
+        if: inputs.apply && steps.prepare.outputs.mode == 'work'
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/local-copy
+          key: catalog-local-copy-${{ github.run_id }}

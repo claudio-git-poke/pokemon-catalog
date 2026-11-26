@@ -39,10 +39,38 @@ export async function englishSets(root){
  for(const series of dirs.filter(x=>x.isDirectory()))for(const set of (await readdir(path.join(root,'data_en',series.name),{withFileTypes:true})).filter(x=>x.isDirectory()))rows.push({source_uid:`supplement:en:${series.name}:${set.name}`,provider:'supplement-en',source_language:'en',set_id:JSON.stringify([series.name,set.name]),name:`PkmnCards · ${series.name} · ${set.name}`})
  return rows
 }
+const provider=uid=>String(uid||'').split(':')[0]
+const sameName=(a,b)=>String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase()
+// Cards already in the catalog under another source are not created twice:
+// a source whose duplicate was merged keeps its search entry pointing to the
+// kept card, and a new source matching one card by set, language, number and
+// name (from a different provider) is attached to that card instead.
+export async function resolveMerged(db,records,known){
+ const open=records.filter(r=>!known.has(r.uid))
+ if(!open.length)return
+ for(const row of await check(db.from('catalog_search_entries').select('entry_key,card_id').in('entry_key',open.map(r=>r.uid))))if(row.card_id)known.set(row.entry_key,row.card_id)
+ const groups=new Map()
+ for(const r of open){if(known.has(r.uid))continue;const n=Number.parseInt(r.number,10);if(!(n>0))continue;const key=`${r.set.toUpperCase()}@${r.language}`;if(!groups.has(key))groups.set(key,{sigla:key,lingua:r.language,records:[]});groups.get(key).records.push({...r,n})}
+ for(const g of groups.values()){
+  const rows=await check(db.from('cards').select('id,nome,numero,variante,source_uid,image_status').eq('sigla',g.sigla).eq('lingua',g.lingua).in('numero',[...new Set(g.records.map(r=>r.n))]).limit(1000))
+  if(rows.length>=1000)continue
+  const photos=[]
+  for(const r of g.records){
+   const matches=rows.filter(c=>c.numero===r.n&&sameName(c.nome,r.name))
+   // Two cards from the same provider may be distinct printings: leave them apart.
+   if(!matches.length||matches.some(c=>provider(c.source_uid)===provider(r.uid)))continue
+   const target=matches.reduce((a,b)=>a.id<b.id?a:b)
+   known.set(r.uid,target.id)
+   if(r.image&&target.image_status!=='found'&&!photos.some(p=>p.id===target.id)){photos.push({id:target.id,image:r.image,provider:r.provider});target.image_status='found'}
+  }
+  for(const p of photos)await check(db.from('cards').update({image_url:p.image,image_status:'found',image_source:p.provider,image_last_error:null}).eq('id',p.id).neq('image_status','found'))
+ }
+}
 export async function persistEvidence(db,records){
  if(!records.length)return {added:0,changed:0}
  const existing=await check(db.from('cards').select('id,source_uid').in('source_uid',records.map(r=>r.uid)))
  const known=new Map(existing.map(r=>[r.source_uid,r.id]))
+ await resolveMerged(db,records,known)
  const missing=records.filter(r=>!known.has(r.uid))
  if(missing.length){const saved=await check(db.from('cards').upsert(missing.map(r=>({source_uid:r.uid,source_language:r.lang,source_local_id:r.number,source_card_id:null,nome:r.name,sigla:`${r.set.toUpperCase()}@${r.language}`,lingua:r.language,numero:Number.parseInt(r.number,10)||0,variante:'da-identificare',codice:`${r.set} ${r.number||''}`,file_name:r.uid.replace(/[^a-zA-Z0-9_-]/g,'_')+'.jpg',image_status:r.image?'found':'missing',image_url:r.image,image_source:r.provider,notes:`Immagine di riferimento della carta; finitura e stampini da verificare. Fonte: ${r.url}`})),{onConflict:'source_uid',ignoreDuplicates:true}).select('id,source_uid'))
  for(const row of saved)known.set(row.source_uid,row.id)

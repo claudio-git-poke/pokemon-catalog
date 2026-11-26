@@ -42,3 +42,23 @@ test('live Indonesian fixture stays Indonesian even for a shared expansion and c
  const r=asiaDetail(html,'id','19647');assert.equal(r.name,'Exeggcute');assert.equal(r.language,'ID');assert.equal(r.set,'MA6');assert.equal(r.number,'001')
  assert.notEqual(r.uid,asiaDetail(detail,'th','14720').uid)
 })
+test('a card already known from another source gets the new source and photo instead of a duplicate',async()=>{
+ const pg=new PGlite();try{
+  await pg.exec(`create table cards(id bigint generated always as identity primary key,source_uid text unique,source_language text,source_local_id text,source_card_id text,nome text,sigla text,lingua text,numero integer,variante text,codice text,file_name text,image_status text,image_url text,image_source text,image_last_error text,notes text);
+   create table catalog_search_entries(entry_key text primary key,card_id bigint references cards(id),name text,set_code text,language text,collector_number text,denominator text,tags text[],facts jsonb,source_url text,source_payload jsonb,verification text,image_url text,label text,search_text text,updated_at timestamptz default now());
+   insert into cards(source_uid,nome,sigla,lingua,numero,variante,file_name,image_status) values('atlas:30C:12','Ho-Oh','30C@EN','EN',12,'normale','a.jpg','placeholder'),('limitless:en:30C:99','Lugia','30C@EN','EN',13,'da-identificare','b.jpg','found');
+   insert into cards(source_uid,nome,sigla,lingua,numero,variante,file_name,image_status) values('atlas:30C:14','Mew','30C@EN','EN',14,'normale','c.jpg','found');
+   insert into catalog_search_entries(entry_key,card_id,verification) values('limitless:en:30C:14',3,'source');`)
+  const db=postgresClient(pg),base={lang:'en',language:'EN',set:'30C',denominator:null,url:'https://limitlesstcg.com/cards/en/30C/12',provider:'limitless'}
+  const hooh={...base,uid:'limitless:en:30C:12',number:'12',name:' ho-oh',image:'https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/tpci/30C/30C_012_R_EN_LG.png'}
+  const lugia={...base,uid:'limitless:en:30C:13',number:'13',name:'Lugia',image:null}
+  const mew={...base,uid:'limitless:en:30C:14',number:'14',name:'Mew',image:null}
+  assert.deepEqual(await persistEvidence(db,[hooh,lugia,mew]),{added:1,changed:3})
+  const cards=(await pg.query('select id,source_uid,image_status,image_url from cards order by id')).rows
+  assert.equal(cards.length,4,'only Lugia (same provider already there) becomes a new card')
+  assert.equal(cards[0].image_status,'found');assert.equal(cards[0].image_url,hooh.image)
+  const links=Object.fromEntries((await pg.query('select entry_key,card_id from catalog_search_entries')).rows.map(r=>[r.entry_key,Number(r.card_id)]))
+  assert.equal(links['limitless:en:30C:12'],1);assert.equal(links['limitless:en:30C:14'],3);assert.equal(links['limitless:en:30C:13'],4)
+  assert.deepEqual(await persistEvidence(db,[hooh,lugia,mew]),{added:0,changed:0})
+ }finally{await pg.close()}
+})
