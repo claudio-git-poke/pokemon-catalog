@@ -4,12 +4,10 @@ name: Worker catalogo su Turso
 # rows to Turso, within the free-plan budget. Group A: imports and sources.
 # Group B: retroactive repairs and audits.
 on:
-  # Eight starts a day: GitHub may delay or skip scheduled runs, and the write
-  # budget is proportional to the time since the previous run, so more starts
-  # do not mean more writes. A: imports; B: repairs and audits.
+  # One start a day (04:41 in Rome), alternating group A (imports and
+  # sources) and group B (repairs and audits).
   schedule:
-    - cron: '41 0,6,12,18 * * *'
-    - cron: '41 3,9,15,21 * * *'
+    - cron: '41 3 * * *'
   workflow_dispatch:
     inputs:
       group:
@@ -46,7 +44,7 @@ jobs:
     env:
       TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
       TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
-      TURSO_DATABASE_NAME: pokemon-catalog
+      TURSO_DATABASE_NAME: pokemon-catalog-2
       WORKER_PG_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
       # Scheduled runs alternate: imports at night, repairs and audits in the afternoon.
       GROUP: ${{ inputs.group || (github.event.schedule == '41 3,9,15,21 * * *' && 'B' || 'A') }}
@@ -75,7 +73,7 @@ jobs:
           TURSO_ENDGAME_RATIO: '0.95'
           TURSO_ENDGAME_AT: '0.9'
           TURSO_ENDGAME_MAX_RUN_WRITES: '100000'
-          TURSO_RUNS_PER_DAY: '48'
+          TURSO_RUNS_PER_DAY: '1'
           # Scritture reali per scrittura stimata, misurate il 19/11/2026 (0,64-0,74).
           TURSO_ESTIMATE_RATIO: '1'
           TURSO_WORKER_WORKFLOW: turso-worker.yml
@@ -94,7 +92,7 @@ jobs:
         env:
           READ_BUDGET: ${{ steps.budget.outputs.reads }}
           # Publishing turns run every 30 minutes; new work at most every 60.
-          WORK_INTERVAL_MINUTES: '60'
+          WORK_INTERVAL_MINUTES: '600'
       - name: Avvia PostgREST locale
         if: steps.prepare.outputs.mode == 'work'
         run: |
