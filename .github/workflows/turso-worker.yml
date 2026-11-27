@@ -189,6 +189,13 @@ jobs:
         continue-on-error: true
         timeout-minutes: 25
         run: node --experimental-strip-types scripts/run-twin-traits.mjs
+      - name: "B · Tag da Limitless"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
+        continue-on-error: true
+        timeout-minutes: 30
+        env:
+          LIMITLESS_TRAITS_MINUTES: '20'
+        run: node --experimental-strip-types scripts/limitless-traits.mjs
       - name: "B · Promo giapponesi vecchie"
         if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
         continue-on-error: true
