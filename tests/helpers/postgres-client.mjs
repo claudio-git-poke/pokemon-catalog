@@ -4,8 +4,8 @@ export function postgresClient(pg) {
  return { from(table) {
   let mode='select',payload,options={},conditions=[],orders=[],limit,offset=0,single=false,optional=false
   const q={
-   select(){return q},insert(p){mode='insert';payload=p;return q},upsert(p,o={}){mode='upsert';payload=p;options=o;return q},update(p){mode='update';payload=p;return q},
-   eq(k,v){conditions.push([k,'=',v]);return q},neq(k,v){conditions.push([k,'<>',v]);return q},lte(k,v){conditions.push([k,'<=',v]);return q},is(k,v){conditions.push([k,'is',v]);return q},in(k,v){conditions.push([k,'in',v]);return q},
+   select(){return q},insert(p){mode='insert';payload=p;return q},upsert(p,o={}){mode='upsert';payload=p;options=o;return q},update(p){mode='update';payload=p;return q},delete(){mode='delete';return q},
+   eq(k,v){conditions.push([k,'=',v]);return q},neq(k,v){conditions.push([k,'<>',v]);return q},lte(k,v){conditions.push([k,'<=',v]);return q},gt(k,v){conditions.push([k,'>',v]);return q},is(k,v){conditions.push([k,'is',v]);return q},in(k,v){conditions.push([k,'in',v]);return q},
    not(k,op,v){if(op!=='is'||v!==null)throw Error('Unsupported not');conditions.push([k,'is not',null]);return q},
    like(k,v){conditions.push([k,'like',v]);return q},
    order(k){orders.push(k);return q},limit(n){limit=n;return q},range(a,b){offset=a;limit=b-a+1;return q},single(){single=true;return q},maybeSingle(){single=true;optional=true;return q},
@@ -15,6 +15,7 @@ export function postgresClient(pg) {
      const where=()=>conditions.length ? ' where '+conditions.map(([k,op,v])=>op==='is not'?`${ident(k)} is not null`:op==='is'?`${ident(k)} is null`:op==='in'?`${ident(k)} in (${v.map(value).join(',')})`:`${ident(k)} ${op} ${value(v)}`).join(' and '):''
      let sql
      if(mode==='select')sql=`select * from ${ident(table)}${where()}${orders.length?' order by '+orders.map(ident).join(','):''}${limit!==undefined?' limit '+limit:''} offset ${offset}`
+     else if(mode==='delete')sql=`delete from ${ident(table)}${where()} returning *`
      else if(mode==='update')sql=`update ${ident(table)} set ${Object.entries(payload).map(([k,v])=>`${ident(k)}=${value(v)}`).join(',')}${where()} returning *`
      else {
       const rows=Array.isArray(payload)?payload:[payload], keys=Object.keys(rows[0])

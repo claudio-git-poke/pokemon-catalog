@@ -280,3 +280,22 @@ Una fonte meno preferita completa solo i campi vuoti, e solo se descrive lo stes
 Il 27 novembre il 95% delle carte ha una scheda (prima il 38%). Restano senza scheda soprattutto le stampe speciali di Pokumon, i set solo thailandesi e indonesiani (MA, AC, AS) e le carte senza numero.
 
 Il sito legge le schede da `/api/set-sheets`. Il catalogo mostra il nome del set sotto ogni carta e lo propone nel filtro Espansione; la scheda della carta ha un riquadro "Set". Il workflow **Schede dei set** rigenera il file ogni lunedì e lo salva su `main` solo se è cambiato e se le schede non calano di oltre il 5%, il che indicherebbe una fonte non raggiungibile.
+
+## Dati dalle gemelle (27 novembre)
+
+Circa 140.000 carte, aggiunte dalle fonti di supporto (Limitless, pkmncards, Pokumon, siti ufficiali asiatici), non avevano nessun tag: il recupero dei tag lavora solo sulle carte di TCGdex e Atlas. Molte sono però la stessa stampa di una carta già documentata in un'altra lingua.
+
+Il passo **B · Dati dalle gemelle** (`scripts/run-twin-traits.mjs`, logica in `scripts/twin-traits.mjs`) funziona così:
+- **Gemelle.** Cerca le carte con lo stesso set (riconosciuto tramite le schede dei set, anche con codici diversi come SSP e sv08) e lo stesso numero. Le edizioni occidentali e asiatiche restano separate, perché la numerazione è diversa.
+- **Cosa copia.** Sulle carte senza nessun tag copia solo i dati che non cambiano con la lingua: rarità, tipo, PS, stadio, illustratore, regolamento, categoria e tipo di carta. Preferisce l'edizione inglese, e copia una famiglia di tag solo se le gemelle sono d'accordo.
+- **Cosa non copia.** Finitura, timbri, formati e varianti.
+- **Controllo del Pokémon.** Il Pokémon deve coincidere (`data/species-names.json`, nomi delle specie in giapponese, coreano, cinese, inglese, francese, tedesco, italiano e spagnolo da PokeAPI). Nei set promo il Pokémon deve essere riconosciuto da entrambe le parti.
+- **Foto.** Copia la foto solo da una gemella della stessa lingua.
+
+I dati finiscono in una riga di ricerca `twin:<id carta>` con verifica `catalog`, così non entrano nella coda verso Bindex né nell'inventario delle stampe. La riga viene tolta quando la carta ottiene tag propri.
+
+La prova sul file del 26 novembre:
+- 100.076 carte completate su 137.651 senza tag, più 1.079 foto;
+- 6.887 gemelle scartate perché il Pokémon non coincideva.
+
+Tra le scartate ci sono le promo `SM-P@JP` del catalogo originale. Sono senza fonte e numerate come l'elenco inglese (Tsareena al n. 7, dove la 007/SM-P ufficiale è Vikavolt): vanno ripulite a parte.
