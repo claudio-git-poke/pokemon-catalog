@@ -1,0 +1,56 @@
+name: Schede dei set
+# Weekly refresh of data/set-sheets.json (names, series, release dates and
+# totals of the sets) from TCGdex, Card Atlas and Limitless. The file is
+# committed to main only when it changes and when no source went missing.
+on:
+  schedule:
+    - cron: '23 5 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: set-sheets
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Archivio Card Atlas
+        uses: actions/checkout@v4
+        with:
+          repository: type-null/PTCG-database
+          path: .catalog-data
+          persist-credentials: false
+          sparse-checkout: |
+            data_jp
+            data_ko
+            data_tc
+      - name: Genera le schede
+        env:
+          ATLAS_DATA_DIR: .catalog-data
+          SET_SHEETS_FILE: /tmp/set-sheets.json
+        run: node --experimental-strip-types scripts/build-set-sheets.mjs
+      - name: Controlla e salva
+        run: |
+          node -e "
+          const fs=require('fs');const now=Object.keys(JSON.parse(fs.readFileSync('/tmp/set-sheets.json','utf8')).sets).length
+          const before=Object.keys(JSON.parse(fs.readFileSync('data/set-sheets.json','utf8')).sets).length
+          console.log('Schede: prima',before,'ora',now)
+          if(now<before*0.95){console.error('Troppe schede in meno: una fonte non ha risposto. Nessun salvataggio.');process.exit(1)}"
+          node -e "
+          const fs=require('fs');const strip=f=>{const o=JSON.parse(fs.readFileSync(f,'utf8'));delete o.generated_at;return JSON.stringify(o)}
+          process.exit(strip('/tmp/set-sheets.json')===strip('data/set-sheets.json')?0:1)" && { echo 'Nessun cambiamento.'; exit 0; }
+          cp /tmp/set-sheets.json data/set-sheets.json
+          node --experimental-strip-types --test tests/set-sheets.test.mjs
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/set-sheets.json
+          git commit -m 'Schede dei set aggiornate'
+          git push

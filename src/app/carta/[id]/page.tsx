@@ -6,6 +6,7 @@ import { supabase, Card } from '@/lib/supabase'
 import Link from 'next/link'
 import PrintingTraits from '@/components/printing-traits'
 import CardPackagings from '@/components/card-packagings'
+import SetSheetPanel from '@/components/set-sheet-panel'
 import {MANUAL_CARD_FIELDS, protectionExpectedValues, type ManualCardField} from '@/lib/manual-fields'
 
 export default function CardDetailPage() {
@@ -214,7 +215,7 @@ export default function CardDetailPage() {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div><span className="text-gray-500">File:</span> <span className="font-mono">{card.file_name}</span></div>
           <div><span className="text-gray-500">Codice:</span> {card.codice || '—'}</div>
-          <div><span className="text-gray-500">Set:</span> {card.sigla}</div>
+          <div><span className="text-gray-500">Sigla del set:</span> {card.sigla}</div>
           <div><span className="text-gray-500">Lingua:</span> {card.lingua}</div>
           <div><span className="text-gray-500">Numero:</span> {card.numero}</div>
           <div><span className="text-gray-500">Variante:</span> {card.variante}</div>
@@ -226,6 +227,7 @@ export default function CardDetailPage() {
         )}
       </div>
 
+      <SetSheetPanel code={card.sigla}/>
       <PrintingTraits cardId={card.id}/>
       <CardPackagings cardId={card.id}/>
       <section className="bg-white rounded-xl shadow p-6 space-y-3">
