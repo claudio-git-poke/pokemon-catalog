@@ -1,0 +1,46 @@
+name: Completezza dei set
+# Weekly refresh of data/set-completeness.json from Turso (read-only token,
+# about 2 million reads), committed to main only when it changes.
+on:
+  schedule:
+    - cron: '53 5 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: set-completeness
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Budget Turso
+        id: budget
+        run: node scripts/check-turso-budget.mjs
+        env:
+          TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+          TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
+          TURSO_DATABASE_NAME: pokemon-catalog-2
+      - name: Calcola la completezza
+        if: steps.budget.outputs.allowed == 'true' && steps.budget.outputs.reads >= 2500000
+        env:
+          TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+          TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
+          TURSO_DATABASE_NAME: pokemon-catalog-2
+          SET_COMPLETENESS_FILE: /tmp/set-completeness.json
+        run: node --experimental-strip-types scripts/build-set-completeness.mjs
+      - name: Salva
+        if: steps.budget.outputs.allowed == 'true' && steps.budget.outputs.reads >= 2500000
+        run: |
+          node -e "const fs=require('fs');const s=f=>{const o=JSON.parse(fs.readFileSync(f,'utf8'));delete o.generated_at;return JSON.stringify(o)};process.exit(s('/tmp/set-completeness.json')===s('data/set-completeness.json')?0:1)" && { echo 'Nessun cambiamento.'; exit 0; }
+          cp /tmp/set-completeness.json data/set-completeness.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/set-completeness.json && git commit -m 'Completezza dei set aggiornata' && git push
