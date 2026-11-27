@@ -261,3 +261,22 @@ Il catalogo riempito sulla copia locale è stato caricato come file in un nuovo 
 **Lavoro periodico.** Il worker Turso punta a `pokemon-catalog-2` e parte una volta al giorno (04:41 ora di Roma), alternando il gruppo A e il gruppo B. Il controllo delle ricerche usa lo stesso database. Il workflow **Confronta modifiche manuali tra i database Turso** riassume la cronologia manuale in sola lettura.
 
 **Foto ufficiali delle promo giapponesi.** La fonte `research-pokemon-card-jp` (`scripts/pokemon-card-jp.mjs`) scorre la ricerca di www.pokemon-card.com e apre solo le schede delle promo, dove il numero è indicato come `007 / SM-P`. Aggiunge la foto ufficiale solo se nel catalogo esiste una sola carta con lo stesso set promo, numero e Pokémon. I nomi giapponesi sono tradotti con la tabella delle specie di PokeAPI (`data/species-names-ja.json`). La fonte non crea carte e non sostituisce foto esistenti; trainer ed energie senza nome di Pokémon restano escluse.
+
+## Schede dei set (27 novembre)
+
+`data/set-sheets.json` contiene una scheda per ogni codice di set del catalogo (la `sigla` delle carte, per esempio `SV08@INT`, `SV8A@JP`, `30C@EN`): nome, serie, data di uscita, carte ufficiali e totali, codice ufficiale, logo e fonte. È un file di dati statico, non una tabella: non costa scritture su Turso e non tocca `set_espansioni`, che resta la tabella esportata verso Bindex.
+
+`scripts/build-set-sheets.mjs` lo genera da tre fonti:
+- i dettagli dei set di TCGdex, in tutte le lingue del catalogo;
+- l'archivio Card Atlas, per i set ufficiali giapponesi, coreani e taiwanesi (il nome è preso solo se le prime carte vengono dallo stesso prodotto);
+- gli elenchi dei set di Limitless, in inglese e giapponese.
+
+Una fonte meno preferita completa solo i campi vuoti, e solo se descrive lo stesso set (totali compatibili). `src/lib/set-sheet-lookup.mjs` trova la scheda di una sigla:
+- prima per corrispondenza esatta;
+- poi senza separatori (`SM-P` = `SMP`);
+- poi tramite il codice ufficiale TCGdex (`AQ` = `ecard2`);
+- infine dall'edizione originale con lo stesso codice (giapponese per le edizioni asiatiche, inglese per le altre), segnalata con `derived_from` o `filled_from`.
+
+Il 27 novembre il 95% delle carte ha una scheda (prima il 38%). Restano senza scheda soprattutto le stampe speciali di Pokumon, i set solo thailandesi e indonesiani (MA, AC, AS) e le carte senza numero.
+
+Il sito legge le schede da `/api/set-sheets`. Il catalogo mostra il nome del set sotto ogni carta e lo propone nel filtro Espansione; la scheda della carta ha un riquadro "Set". Il workflow **Schede dei set** rigenera il file ogni lunedì e lo salva su `main` solo se è cambiato e se le schede non calano di oltre il 5%, il che indicherebbe una fonte non raggiungibile.
