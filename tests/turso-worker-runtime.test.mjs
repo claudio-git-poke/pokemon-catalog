@@ -67,3 +67,23 @@ test('coverage and quality reports are published before large card batches',asyn
  const ordered=orderWorkerChanges(schema,changes).map(c=>c.table_name)
  assert.deepEqual(ordered.slice(0,2).sort(),['catalog_coverage_snapshots','catalog_quality_cache'])
 })
+
+test('publishing stops at the read budget and fails fast when a published row costs too many reads',async()=>{
+ const turso=await catalogFixture({cards:Array.from({length:6},(_,i)=>card(i+1))})
+ const changes=[]
+ for(let i=1;i<=6;i++){const row=JSON.parse(canonicalJson((await read(turso,'cards',[i]))));changes.push({table_name:'cards',record_key:[i],first_old:row,last_new:{...row,image_status:'found'}})}
+ await stageWorkerRun(turso,schema,{runId:'90',changes})
+ let reads=0
+ const costly={execute:async input=>{const r=await turso.execute(input);if(String(input?.sql||input).includes('_copy_cards'))reads+=70_000;return r},batch:async(...a)=>{const r=await turso.batch(...a);reads+=70_000*6;return r},transaction:async(...a)=>{const tx=await turso.transaction(...a);return new Proxy(tx,{get(t,k){if(k==='execute')return async input=>{const r=await t.execute(input);reads+=70_000;return r};const v=t[k];return typeof v==='function'?v.bind(t):v}})}}
+ await assert.rejects(publishPendingWork(new Proxy(turso,{get(t,k){return k in costly?costly[k]:(typeof t[k]==='function'?t[k].bind(t):t[k])}}),schema,{writeBudget:1_000_000,readsUsed:()=>reads,maxReadsPerRow:500}),/righe lette per riga pubblicata/)
+ assert.equal((await read(turso,'cards',[1])).image_status,'found','the first batch was already applied when the alarm fired')
+ const again=[]
+ for(let i=1;i<=6;i++){const row=JSON.parse(canonicalJson((await read(turso,'cards',[i]))));again.push({table_name:'cards',record_key:[i],first_old:row,last_new:{...row,image_status:'missing'}})}
+ await stageWorkerRun(turso,schema,{runId:'91',changes:again})
+ reads=0
+ const limited=await publishPendingWork(turso,schema,{writeBudget:1_000_000,readBudget:0,readsUsed:()=>reads})
+ assert.equal(limited.complete,false,'no read budget: nothing published')
+ const fine=await publishPendingWork(turso,schema,{writeBudget:1_000_000,readBudget:10_000,readsUsed:()=>reads,maxReadsPerRow:500})
+ assert.equal(fine.complete,true)
+ for(let i=1;i<=6;i++)assert.equal((await read(turso,'cards',[i])).image_status,'missing')
+})

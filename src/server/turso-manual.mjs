@@ -26,7 +26,7 @@ function historyInsert(table,oldRow,newRow){
  'after_values',json((SELECT json_group_object(n.key,CASE json_type(${newRow},'$.'||json_quote(n.key)) WHEN 'object' THEN json(json_extract(${newRow},'$.'||json_quote(n.key))) WHEN 'array' THEN json(json_extract(${newRow},'$.'||json_quote(n.key))) WHEN 'true' THEN json('true') WHEN 'false' THEN json('false') ELSE json_extract(${newRow},'$.'||json_quote(n.key)) END) FROM json_each(${newRow},'$.manual_overrides') n LEFT JOIN json_each(${oldRow},'$.manual_overrides') o USING(key) WHERE n.value IS NOT o.value OR n.type IS NOT o.type)),
  'previous_overrides',json(coalesce(json_extract(${oldRow},'$.manual_overrides'),'{}')),'new_overrides',json(json_extract(${newRow},'$.manual_overrides')),
  'actor_role','manual','actor_subject',NULL,'reason',(SELECT reason FROM _catalog_write_context WHERE id=1)),
- 'pending',seed.position FROM(SELECT coalesce(max(json_extract(_row,'$.id')),0)+1 id,coalesce(max(_position),0)+1 position FROM _copy_catalog_manual_history WHERE (SELECT mode FROM _catalog_write_context WHERE id=1)<>'automatic')seed
+ 'pending',seed.position FROM(${HISTORY_SEED})seed
  WHERE (SELECT mode FROM _catalog_write_context WHERE id=1)<>'automatic' AND EXISTS(SELECT 1 FROM json_each(${newRow},'$.manual_overrides') n LEFT JOIN json_each(${oldRow},'$.manual_overrides') o USING(key) WHERE n.value IS NOT o.value OR n.type IS NOT o.type)`
 }
 const searchText=row=>`lower(coalesce(json_extract(${row},'$.name'),'')||' '||coalesce(json_extract(${row},'$.set_code'),'')||' '||coalesce(json_extract(${row},'$.collector_number'),'')||' '||coalesce(json_extract(${row},'$.label'),'')||' '||coalesce((SELECT group_concat(value,' ') FROM json_each(${row},'$.tags')),''))`
@@ -47,7 +47,13 @@ function projectedChildren(parent,oldParent){
 // automatic writes without manual locks keep the published row as is, the
 // worker publisher bumps the catalog revision once per batch, and printing
 // updates rewrite search text and tags only when they actually change.
-export const GUARD_VERSION=3
+export const GUARD_VERSION=4
+// Next id and position of the manual history. Both maxima are read through an
+// index, and only when the write is manual: a scan here runs on every
+// published row, and with a long history (72,987 rows on 27 November) it cost
+// 1.39 billion reads in two hours.
+export const HISTORY_ID_INDEX="CREATE INDEX IF NOT EXISTS _catalog_history_id ON _copy_catalog_manual_history(json_extract(_row,'$.id'))"
+export const HISTORY_SEED=`SELECT (SELECT coalesce(max(json_extract(_row,'$.id')),0)+1 FROM _copy_catalog_manual_history) id,(SELECT coalesce(max(_position),0)+1 FROM _copy_catalog_manual_history) position WHERE (SELECT mode FROM _catalog_write_context WHERE id=1)<>'automatic'`
 const PUBLISHER=`(SELECT coalesce(reason,'') FROM _catalog_write_context WHERE id=1)='turso_worker_publish'`
 function searchMaintenance(storage,op){
  const current=field=>`(SELECT json_extract(_row,'$.${field}') FROM ${storage} WHERE _key=new._key)`
@@ -71,6 +77,7 @@ export async function installManualGuards(client,schema){
  await client.batch([
   "CREATE TABLE IF NOT EXISTS _catalog_write_context(id INTEGER PRIMARY KEY CHECK(id=1),mode TEXT NOT NULL DEFAULT 'manual',depth INTEGER NOT NULL DEFAULT 0,reason TEXT)",
   "INSERT INTO _catalog_write_context(id) VALUES(1) ON CONFLICT(id) DO NOTHING",
+  HISTORY_ID_INDEX,
   "CREATE TABLE IF NOT EXISTS _catalog_manual_outbox(table_name TEXT NOT NULL,record_key TEXT NOT NULL,version INTEGER NOT NULL,updated_at TEXT NOT NULL,PRIMARY KEY(table_name,record_key)) WITHOUT ROWID",
   "CREATE TRIGGER IF NOT EXISTS _catalog_history_immutable BEFORE UPDATE OF _row ON _copy_catalog_manual_history BEGIN SELECT raise(ABORT,'La cronologia manuale è append-only'); END",
   "CREATE TRIGGER IF NOT EXISTS _catalog_history_no_delete BEFORE DELETE ON _copy_catalog_manual_history BEGIN SELECT raise(ABORT,'La cronologia manuale è append-only'); END"

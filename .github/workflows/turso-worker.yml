@@ -4,10 +4,13 @@ name: Worker catalogo su Turso
 # rows to Turso, within the free-plan budget. Group A: imports and sources.
 # Group B: retroactive repairs and audits.
 on:
-  # One start a day (04:41 in Rome), alternating group A (imports and
-  # sources) and group B (repairs and audits).
+  # Two starts a day (04:41 and 16:41 in Rome): new work at most once every
+  # 23 hours, alternating group A (imports and sources) and group B (repairs
+  # and audits); the other start only finishes a pending publication. GitHub
+  # sometimes drops a scheduled start (27 November): the second one covers it.
   schedule:
     - cron: '41 3 * * *'
+    - cron: '41 15 * * *'
   workflow_dispatch:
     inputs:
       group:
@@ -73,7 +76,7 @@ jobs:
           TURSO_ENDGAME_RATIO: '0.95'
           TURSO_ENDGAME_AT: '0.9'
           TURSO_ENDGAME_MAX_RUN_WRITES: '100000'
-          TURSO_RUNS_PER_DAY: '1'
+          TURSO_RUNS_PER_DAY: '2'
           # Scritture reali per scrittura stimata, misurate il 19/11/2026 (0,64-0,74).
           TURSO_ESTIMATE_RATIO: '1'
           TURSO_WORKER_WORKFLOW: turso-worker.yml
@@ -85,14 +88,20 @@ jobs:
           echo "::add-mask::$JWT_SECRET"; echo "::add-mask::$PASSWORD"
           echo "WORKER_JWT_SECRET=$JWT_SECRET" >> "$GITHUB_ENV"
           echo "WORKER_AUTHENTICATOR_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+      # Before any restore or publication: install the current guard version
+      # (no-op when already current). A failure stops the run, so nothing is
+      # published through outdated triggers.
+      - name: Protezioni di Turso aggiornate
+        if: steps.budget.outputs.allowed == 'true'
+        run: node --experimental-strip-types scripts/turso-upgrade-guards.mjs
       - name: Ripristina il catalogo nel PostgreSQL temporaneo
         id: prepare
         if: steps.budget.outputs.allowed == 'true'
         run: node scripts/turso-worker-prepare.mjs
         env:
           READ_BUDGET: ${{ steps.budget.outputs.reads }}
-          # Publishing turns run every 30 minutes; new work at most every 60.
-          WORK_INTERVAL_MINUTES: '600'
+          # New work at most once a day; the other start only publishes.
+          WORK_INTERVAL_MINUTES: '1380'
       - name: Avvia PostgREST locale
         if: steps.prepare.outputs.mode == 'work'
         run: |
@@ -210,6 +219,8 @@ jobs:
           WORKER_MODE: ${{ steps.prepare.outputs.mode }}
           WORKER_PUBLISH: ${{ github.event_name == 'schedule' || inputs.publish }}
           WRITE_BUDGET: ${{ steps.budget.outputs.writes }}
+          READ_BUDGET: ${{ steps.budget.outputs.reads }}
+          MAX_READS_PER_ROW: '500'
           PUBLISH_MINUTES: '45'
       - name: Diagnostica PostgREST
         if: failure() && steps.prepare.outputs.mode == 'work'

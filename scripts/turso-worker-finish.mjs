@@ -1,6 +1,6 @@
 import {readFile} from 'node:fs/promises'
 import pg from 'pg'
-import {connectCatalogDatabase,collectWorkerChanges,summarizeChanges,stageWorkerRun,publishPendingWork} from './turso-worker-runtime.mjs'
+import {connectCatalogDatabase,collectWorkerChanges,summarizeChanges,stageWorkerRun,publishPendingWork,createReadCounter} from './turso-worker-runtime.mjs'
 import {safeTursoError} from './turso-client.mjs'
 // Collects what the importers changed in the disposable PostgreSQL and
 // publishes it to Turso within the write budget of this run. With
@@ -13,7 +13,9 @@ try{
  if(!['work','resume'].includes(mode))throw Error('Modalità del worker non valida: '+mode)
  if(!Number.isSafeInteger(writeBudget)||writeBudget<0)throw Error('Budget di scrittura non valido.')
  const schema=JSON.parse(await readFile(new URL('../data/turso-source-schema.json',import.meta.url),'utf8'))
- ;({client}=await connectCatalogDatabase())
+ const reads=createReadCounter(),readBudget=Number(process.env.READ_BUDGET||0)
+ if(!Number.isSafeInteger(readBudget)||readBudget<=0)throw Error('Budget di lettura non valido.')
+ ;({client}=await connectCatalogDatabase(process.env,{clientFetch:reads.fetch}))
  if(mode==='work'){
   db=new pg.Client({connectionString:process.env.WORKER_PG_URL});await db.connect()
   const {changes,skipped,unchanged}=await collectWorkerChanges(async sql=>(await db.query(sql)).rows)
@@ -27,8 +29,8 @@ try{
  }
  if(publish){
   const deadline=Date.now()+Number(process.env.PUBLISH_MINUTES||45)*60000
-  const result=await publishPendingWork(client,schema,{writeBudget,deadline,log:value=>{if(value.rows%1000===0||value.rows===value.total)log(value)}})
-  log({phase:'published',...result,write_budget:writeBudget})
+  const result=await publishPendingWork(client,schema,{writeBudget,readBudget,readsUsed:reads.total,maxReadsPerRow:Number(process.env.MAX_READS_PER_ROW||500),deadline,log:value=>{if(value.rows%1000===0||value.rows===value.total)log(value)}})
+  log({phase:'published',...result,write_budget:writeBudget,read_budget:readBudget})
  }
 }catch(error){console.error(safeTursoError(error));exit=1}
 finally{client?.close();await db?.end().catch(()=>{});process.exitCode=exit}

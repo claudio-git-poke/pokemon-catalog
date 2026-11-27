@@ -93,22 +93,49 @@ export async function stageWorkerRun(client,schema,{runId,changes}){
  return staged
 }
 
-// Publishes pending packets in order until the write budget or the deadline.
-export async function publishPendingWork(client,schema,{writeBudget,deadline=Infinity,clock=Date.now,log=()=>{}}){
+// Counts the rows read by Turso from the Hrana responses (rows_read).
+export function createReadCounter(fetchImpl=fetch){
+ let total=0
+ const walk=value=>{
+  if(Array.isArray(value)){for(const item of value)walk(item);return}
+  if(!value||typeof value!=='object')return
+  for(const [key,item]of Object.entries(value)){if(key==='rows_read'&&typeof item==='number')total+=item;else walk(item)}
+ }
+ return {
+  total:()=>total,
+  async fetch(input,init){
+   const response=await fetchImpl(input,init),text=await response.text()
+   for(const line of text.split('\n')){if(!line.trim())continue;try{walk(JSON.parse(line))}catch{}}
+   return new Response(text,{status:response.status,statusText:response.statusText,headers:response.headers})
+  }
+ }
+}
+
+// Publishes pending packets in order until the write budget, the read budget
+// or the deadline. A publication that reads more than maxReadsPerRow rows per
+// published row stops with an error after its first batch: on 27 November a
+// trigger scanning the manual history read 70,000 rows per published row.
+export async function publishPendingWork(client,schema,{writeBudget,readBudget=Infinity,readsUsed=()=>0,maxReadsPerRow=Infinity,deadline=Infinity,clock=Date.now,log=()=>{}}){
  let remaining=writeBudget,published=0
  const result={journals:[],estimated_writes:0,complete:true}
+ const startReads=readsUsed()
  for(const runId of await pendingWorkerJournals(client)){
-  if(clock()>deadline||remaining<=0){result.complete=false;break}
-  let outcome
+  if(clock()>deadline||remaining<=0||readsUsed()-startReads>=readBudget){result.complete=false;break}
+  let outcome,stopped=false,lastRows=Number((await client.execute({sql:'SELECT cursor FROM _catalog_worker_journal WHERE run_id=?',args:[runId]})).rows[0]?.cursor||0)
   do{
-   outcome=await publishWorkerDelta(client,schema,runId,{writeBudget:remaining,maxBatches:20,log,clock})
+   const before=readsUsed()
+   outcome=await publishWorkerDelta(client,schema,runId,{writeBudget:remaining,maxBatches:1,log,clock})
    remaining-=outcome.estimated_writes||0;result.estimated_writes+=outcome.estimated_writes||0
-  }while(!outcome.complete&&!outcome.budget_reached&&clock()<=deadline&&(outcome.estimated_writes||0)>0)
+   const rows=Number(outcome.rows)-lastRows,reads=readsUsed()-before
+   if(rows>0&&reads/rows>maxReadsPerRow)throw Error(`Pubblicazione fermata: ${Math.round(reads/rows)} righe lette per riga pubblicata (limite ${maxReadsPerRow}).`)
+   lastRows=Number(outcome.rows)
+   if(readsUsed()-startReads>=readBudget){result.read_budget_reached=true;stopped=true}
+  }while(!stopped&&!outcome.complete&&!outcome.budget_reached&&clock()<=deadline&&(outcome.estimated_writes||0)>0)
   result.journals.push({run_id:runId,complete:outcome.complete,rows:outcome.rows,total:outcome.total})
   if(!outcome.complete){result.complete=false;break}
   published++
  }
- return {...result,published}
+ return {...result,published,rows_read:readsUsed()-startReads}
 }
 
 // Service-role token for the local PostgREST only (random secret per run).

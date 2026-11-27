@@ -60,7 +60,7 @@ test('manual edits on Turso still bump the revision on every row and keep their 
  assert.equal(after.nome,'Scelta a mano','la correzione manuale resta');assert.equal(after.image_status,'found','il resto della pubblicazione passa')
  c.close()
 })
-test('an existing database moves from guard version 2 to 3 and keeps every guard',async()=>{
+test('an existing database moves from guard version 2 to the current one and keeps every guard',async()=>{
  const {installManualGuards,GUARD_VERSION}=await import('../src/server/turso-manual.mjs')
  const {c,cards,publish,update,current}=await setup()
  const triggers=async()=>(await c.execute("SELECT name FROM sqlite_master WHERE type='trigger' ORDER BY name")).rows.map(r=>r.name)
@@ -71,5 +71,21 @@ test('an existing database moves from guard version 2 to 3 and keeps every guard
  assert.deepEqual(await triggers(),names,'stesse protezioni dopo l’aggiornamento')
  assert.ok((await publish(await update('cards',cards.map(x=>[x.id]),()=>({image_status:'found'}))))<5)
  assert.equal((await current('cards',[1])).image_status,'found')
+ c.close()
+})
+test('the manual history never scans its table on a write, and numbers new entries after the highest id',async()=>{
+ const {HISTORY_SEED}=await import('../src/server/turso-manual.mjs')
+ const {c,cards,publish,update}=await setup()
+ const plan=(await c.execute('EXPLAIN QUERY PLAN '+HISTORY_SEED)).rows.map(r=>r.detail).join(' / ')
+ assert.doesNotMatch(plan,/SCAN _copy_catalog_manual_history/,plan)
+ // Every guard trigger must use the indexed seed, not a full scan of the history.
+ for(const {sql} of (await c.execute("SELECT sql FROM sqlite_master WHERE type='trigger' AND sql LIKE '%_copy_catalog_manual_history%'")).rows)
+  assert.doesNotMatch(sql,/max\(json_extract\(_row,'\$\.id'\)\),0\)\+1 id,coalesce\(max\(_position\),0\)\+1 position FROM _copy_catalog_manual_history WHERE/)
+ // A history copied out of order: the highest id is not on the last position.
+ await c.execute({sql:'INSERT INTO _copy_catalog_manual_history(_key,_row,_hash,_position) VALUES(?,?,?,?)',args:['[500]',JSON.stringify({id:500,table_name:'cards',record_key:{id:1}}),'x',-1]})
+ assert.ok((await publish(await update('cards',cards.map(x=>[x.id]),()=>({image_status:'found'}))))<5,'automatic publications stay cheap')
+ await c.execute("UPDATE cards SET nome='A mano' WHERE id=2")
+ const ids=(await c.execute("SELECT json_extract(_row,'$.id') id FROM _copy_catalog_manual_history ORDER BY _position DESC LIMIT 1")).rows
+ assert.equal(Number(ids[0].id),501)
  c.close()
 })
