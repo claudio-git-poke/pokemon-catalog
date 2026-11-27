@@ -189,6 +189,14 @@ jobs:
         continue-on-error: true
         timeout-minutes: 25
         run: node --experimental-strip-types scripts/run-twin-traits.mjs
+      - name: "B · Promo giapponesi vecchie"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          # off, dry (conta soltanto) o apply.
+          LEGACY_PROMOS: 'off'
+        run: node --experimental-strip-types scripts/run-legacy-promos.mjs
       - name: "B · Confronto fonti"
         if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
         continue-on-error: true
