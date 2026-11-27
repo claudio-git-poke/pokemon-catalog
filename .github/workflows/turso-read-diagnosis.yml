@@ -1,0 +1,21 @@
+name: Diagnosi letture Turso
+# Read-only: top queries and hourly usage of the catalog database.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node scripts/turso-read-diagnosis.mjs
+        env:
+          TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+          TURSO_ORGANIZATION: ${{ secrets.TURSO_ORGANIZATION }}
