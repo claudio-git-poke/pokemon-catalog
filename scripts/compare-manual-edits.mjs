@@ -13,11 +13,11 @@ async function client(name){
   const {cols,rows}=res.response.result;return rows.map(row=>Object.fromEntries(row.map((v,i)=>[cols[i].name,v?.value??null])))
  }
 }
-const [oldDb,newDb]=[await client(oldName),await client(newName)]
+const newDb=await client(newName),oldDb=all.some(d=>d.Name===oldName)?await client(oldName):null
 const summary="SELECT count(*) n,max(json_extract(_row,'$.at')) ultima,max(CAST(json_extract(_row,'$.id') AS INTEGER)) max_id FROM _copy_catalog_manual_history"
-const [o,n]=[(await oldDb(summary))[0],(await newDb(summary))[0]]
-console.log(JSON.stringify({vecchio:o,nuovo:n}))
-const after=await oldDb(`SELECT json_extract(_row,'$.id') id,json_extract(_row,'$.at') at,json_extract(_row,'$.table_name') t,json_extract(_row,'$.record_key') k FROM _copy_catalog_manual_history WHERE CAST(json_extract(_row,'$.id') AS INTEGER)>${Number(n.max_id)||0} ORDER BY 1`)
+const n=(await newDb(summary))[0],o=oldDb?(await oldDb(summary))[0]:null
+console.log(JSON.stringify({vecchio:o||'non più presente',nuovo:n}))
+const after=!oldDb?[]:await oldDb(`SELECT json_extract(_row,'$.id') id,json_extract(_row,'$.at') at,json_extract(_row,'$.table_name') t,json_extract(_row,'$.record_key') k FROM _copy_catalog_manual_history WHERE CAST(json_extract(_row,'$.id') AS INTEGER)>${Number(n.max_id)||0} ORDER BY 1`)
 console.log(JSON.stringify({modifiche_mancanti:after.length,per_tabella:after.reduce((a,r)=>(a[r.t]=(a[r.t]||0)+1,a),{}),prima:after[0]?.at||null,ultima:after.at(-1)?.at||null}))
 for(const r of after.slice(0,50))console.log(JSON.stringify(r))
 // Who wrote the history of the new database, by role, table and day.
