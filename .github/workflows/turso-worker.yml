@@ -175,6 +175,11 @@ jobs:
         continue-on-error: true
         timeout-minutes: 40
         run: node --experimental-strip-types scripts/repair-card-metadata.mjs
+      - name: "B · Dati dalle gemelle"
+        if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
+        continue-on-error: true
+        timeout-minutes: 25
+        run: node --experimental-strip-types scripts/run-twin-traits.mjs
       - name: "B · Confronto fonti"
         if: steps.prepare.outputs.mode == 'work' && steps.prepare.outputs.group == 'B'
         continue-on-error: true
