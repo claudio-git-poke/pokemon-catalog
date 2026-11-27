@@ -4,23 +4,27 @@
 // (CATALOG_FILE) or Turso with a read-only token; weekly, about 2M reads.
 import {readFile,writeFile} from 'node:fs/promises'
 import {sheetLookup} from '../src/lib/set-sheet-lookup.mjs'
-import {cardNumber,FAMILIES} from './twin-traits.mjs'
+import {cardNumber,FAMILIES,printingKeys} from './twin-traits.mjs'
 
 export function completeness({cards,traitCards,sheets}){
- const find=sheetLookup(sheets),by=new Map()
- for(const c of cards){if(!by.has(c.sigla))by.set(c.sigla,[]);by.get(c.sigla).push(c)}
+ const find=sheetLookup(sheets),by=new Map(),keyOf=printingKeys(sheets),printed=new Set()
+ for(const c of cards){if(!by.has(c.sigla))by.set(c.sigla,[]);by.get(c.sigla).push(c);const k=keyOf(c);if(k)printed.add(`${k}|${c.lingua}|${c.sigla}`)}
+ // A number missing from one code may sit under another code of the same set
+ // in the same language (DP@FR and DP1@FR): it is present, not missing.
+ const elsewhere=(sigla,lingua,n)=>{const k=keyOf({sigla,numero:n});if(!k)return false;for(const s of by.keys())if(s!==sigla&&printed.has(`${k}|${lingua}|${s}`))return true;return false}
  const rows=[]
  for(const [sigla,list] of by){
   const sheet=find(sigla),expected=sheet&&!sheet.derived_from?(sheet.total||sheet.official||null):null
   const numbers=new Set(list.map(cardNumber).filter(Boolean))
-  let missing=null,missingNumbers=[]
+  let missing=null,missingNumbers=[],other=0
   if(expected){
    missing=Math.max(0,expected-Math.min(numbers.size,expected))
    // Numbers 1..official that no card carries (plain numbering only).
-   const official=sheet.official||expected
-   if(missing&&missing<=60)for(let n=1;n<=official&&missingNumbers.length<60;n++)if(!numbers.has(String(n)))missingNumbers.push(n)
+   const official=sheet.official||expected,lingua=list[0].lingua
+   if(missing)for(let n=1;n<=official;n++){if(numbers.has(String(n)))continue;if(elsewhere(sigla,lingua,n))other++;else if(missingNumbers.length<60)missingNumbers.push(n)}
+   missing=Math.max(0,missing-other)
   }
-  rows.push({sigla,lingua:list[0].lingua,cards:list.length,expected,missing,missing_numbers:missingNumbers.length?missingNumbers:undefined,with_photo:list.filter(c=>c.photo).length,with_traits:list.filter(c=>traitCards.has(c.id)).length})
+  rows.push({sigla,lingua:list[0].lingua,cards:list.length,expected,missing,elsewhere:other||undefined,missing_numbers:missing&&missingNumbers.length?missingNumbers:undefined,with_photo:list.filter(c=>c.photo).length,with_traits:list.filter(c=>traitCards.has(c.id)).length})
  }
  return rows.sort((a,b)=>a.sigla.localeCompare(b.sigla))
 }

@@ -3,7 +3,7 @@
 // metadata. Weekly data, no database reads.
 import {useEffect,useMemo,useState} from 'react'
 import Link from 'next/link'
-type Row={sigla:string,lingua:string,name:string|null,series:string|null,year:string|null,cards:number,expected:number|null,missing:number|null,missing_numbers?:number[],with_photo:number,with_traits:number}
+type Row={sigla:string,lingua:string,name:string|null,series:string|null,year:string|null,cards:number,expected:number|null,missing:number|null,missing_numbers?:number[],elsewhere?:number,with_photo:number,with_traits:number}
 const pct=(a:number,b:number)=>b?Math.round(a/b*100):0
 const SORTS:Record<string,[string,(a:Row,b:Row)=>number]>={
  missing:['Carte mancanti',(a,b)=>(b.missing||0)-(a.missing||0)],
@@ -36,7 +36,7 @@ export default function Completeness(){
     <td><Link className="underline" href={`/carte?set=${encodeURIComponent(r.sigla)}`}>{r.name||r.sigla}</Link><br/><small className="text-gray-500">{r.sigla}{r.series?` · ${r.series}`:''}</small></td>
     <td>{r.lingua}</td><td>{r.year||'—'}</td>
     <td>{r.cards.toLocaleString('it-IT')}{r.expected?` / ${r.expected}`:''}</td>
-    <td>{r.missing==null?<span className="text-gray-500">totale ignoto</span>:r.missing?<span title={r.missing_numbers?.length?'Numeri: '+r.missing_numbers.join(', '):undefined}>{r.missing}{r.missing_numbers?.length?<><br/><small className="text-gray-500">n. {r.missing_numbers.slice(0,12).join(', ')}{r.missing_numbers.length>12?'…':''}</small></>:null}</span>:'✓'}</td>
+    <td>{r.elsewhere?<small className="text-gray-500 block">{r.elsewhere} sotto un’altra sigla</small>:null}{r.missing==null?<span className="text-gray-500">totale ignoto</span>:r.missing?<span title={r.missing_numbers?.length?'Numeri: '+r.missing_numbers.join(', '):undefined}>{r.missing}{r.missing_numbers?.length?<><br/><small className="text-gray-500">n. {r.missing_numbers.slice(0,12).join(', ')}{r.missing_numbers.length>12?'…':''}</small></>:null}</span>:'✓'}</td>
     <td>{pct(r.with_photo,r.cards)}%<br/><Link className="text-xs underline" href={`/carte?set=${encodeURIComponent(r.sigla)}&foto=missing`}>{r.cards-r.with_photo?`${r.cards-r.with_photo} senza`:''}</Link></td>
     <td>{pct(r.with_traits,r.cards)}%</td></tr>)}
   </tbody></table>{shown.length===400&&<p className="text-xs text-gray-500 mt-2">Mostrati i primi 400 set: usa i filtri per restringere.</p>}</div>
