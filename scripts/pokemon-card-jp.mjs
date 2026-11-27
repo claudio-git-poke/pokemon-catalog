@@ -12,8 +12,10 @@ const JA_NAMES=Object.keys(SPECIES).sort((a,b)=>b.length-a.length)
 export const BASE='https://www.pokemon-card.com'
 export const resultUrl=page=>`${BASE}/card-search/resultAPI.php?keyword=&se_ta=&regulation_sidebar_form=all&pg=&illust=&sm_and_keyword=true&page=${page}`
 export const detailUrl=id=>`${BASE}/card-search/details.php/card/${id}/regu/all`
-// Promo images live in folders such as SMP, XYP, SP, SVP, MP.
-export const isPromoFolder=thumb=>/^[A-Z]{1,4}P$/.test(String(thumb||'').split('/').at(-2)||'')
+// Promo images live in folders such as SMP, SMP2, XYP, S-P, SV-P, M-P,
+// MMB-P, DPtP, SVP1 (seen in the Card Atlas copy of the official site). The
+// detail page confirms the promo number (007 / SM-P) anyway.
+export const isPromoFolder=thumb=>/^(?:[A-Z][A-Za-z0-9]*-P|[A-Z][A-Za-z]+P)\d*$/.test(String(thumb||'').split('/').at(-2)||'')
 const fold=s=>String(s||'').normalize('NFKD').replace(/[̀-ͯ]/g,'').toLowerCase()
 export function detailNumber(html){
  const text=String(html||'').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ')
