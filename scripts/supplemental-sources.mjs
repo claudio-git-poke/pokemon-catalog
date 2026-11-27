@@ -66,12 +66,14 @@ export async function resolveMerged(db,records,known){
   for(const p of photos)await check(db.from('cards').update({image_url:p.image,image_status:'found',image_source:p.provider,image_last_error:null}).eq('id',p.id).neq('image_status','found'))
  }
 }
-export async function persistEvidence(db,records){
+// linked: records already attached to catalog cards (uid -> card id); with it
+// no card is created and only the search entries are saved.
+export async function persistEvidence(db,records,{linked=null}={}){
+ if(linked)records=records.filter(r=>linked.has(r.uid))
  if(!records.length)return {added:0,changed:0}
- const existing=await check(db.from('cards').select('id,source_uid').in('source_uid',records.map(r=>r.uid)))
- const known=new Map(existing.map(r=>[r.source_uid,r.id]))
- await resolveMerged(db,records,known)
- const missing=records.filter(r=>!known.has(r.uid))
+ const known=linked?new Map(linked):new Map((await check(db.from('cards').select('id,source_uid').in('source_uid',records.map(r=>r.uid)))).map(r=>[r.source_uid,r.id]))
+ if(!linked)await resolveMerged(db,records,known)
+ const missing=linked?[]:records.filter(r=>!known.has(r.uid))
  if(missing.length){const saved=await check(db.from('cards').upsert(missing.map(r=>({source_uid:r.uid,source_language:r.lang,source_local_id:r.number,source_card_id:null,nome:r.name,sigla:`${r.set.toUpperCase()}@${r.language}`,lingua:r.language,numero:Number.parseInt(r.number,10)||0,variante:'da-identificare',codice:`${r.set} ${r.number||''}`,file_name:r.uid.replace(/[^a-zA-Z0-9_-]/g,'_')+'.jpg',image_status:r.image?'found':'missing',image_url:r.image,image_source:r.provider,notes:`Immagine di riferimento della carta; finitura e stampini da verificare. Fonte: ${r.url}`})),{onConflict:'source_uid',ignoreDuplicates:true}).select('id,source_uid'))
  for(const row of saved)known.set(row.source_uid,row.id)
  // Recover a concurrent insert without overwriting its data.

@@ -1,3 +1,4 @@
+import {resultUrl,detailUrl,isPromoFolder,officialRecord,persistOfficialPromos} from './pokemon-card-jp.mjs'
 import {TAXONOMY} from '../src/lib/catalog-taxonomy.ts'
 import {expandTags,printingFacts} from '../src/lib/catalog-identification.ts'
 import {persistEvidence} from './supplemental-sources.mjs'
@@ -57,7 +58,7 @@ export function bulbapediaRecord(page){
  const mentions=patterns.filter(p=>release.toLowerCase().includes(p.toLowerCase()))
  return {uid:`bulbapedia:${page.pageid}`,lang:'en',language:'EN',set:expansion,number,denominator:null,name,image:null,url:'https://bulbapedia.bulbagarden.net/wiki/'+encodeURIComponent(page.title.replaceAll(' ','_')),provider:'bulbapedia',payload:{...requiredReview,revision_id:page.revisions[0].revid||null,variant_mentions:mentions,mentions_scope:'release-section-may-describe-multiple-languages',attribution:'Bulbapedia contributors'},search:mentions.join(' ')}
 }
-const SOURCE_HOSTS=new Set(['pokumon.com','limitlesstcg.com','bulbapedia.bulbagarden.net'])
+const SOURCE_HOSTS=new Set(['pokumon.com','limitlesstcg.com','bulbapedia.bulbagarden.net','www.pokemon-card.com'])
 export function researchFetcher({fetchImpl=fetch,wait=ms=>new Promise(r=>setTimeout(r,ms)),clock=Date.now}={}){
  const last=new Map()
  return async(url,json=false)=>{
@@ -94,9 +95,17 @@ export async function runResearch({db,budgetMs=8*60000,request=researchFetcher()
    await put(rows);await indexDone('research:index:limitless');await log(`Limitless: ${rows.length} percorsi set/lingua registrati; disponibilità effettiva da controllare.`,true)
   }
  }catch(error){stats.errors++;await log('Indice Limitless: '+String(error),true)}
+ try{
+  if(await due('research:index:pokemon-card-jp')){
+   const r=(await request(resultUrl(1),true)).body,pages=Number(r?.maxPage)
+   if(!Number.isInteger(pages)||pages<1)throw Error('Indice del sito ufficiale giapponese senza pagine')
+   await put(Array.from({length:pages},(_,i)=>({source_uid:`research:pokemon-card-jp:${String(i+1).padStart(5,'0')}`,provider:'research-pokemon-card-jp',source_language:'ja',set_id:String(i+1),name:`Sito ufficiale giapponese · pagina ${i+1}`})))
+   await indexDone('research:index:pokemon-card-jp');await log(`Sito ufficiale giapponese: ${pages} pagine registrate.`,true)
+  }
+ }catch(error){stats.errors++;await log('Indice del sito ufficiale giapponese: '+String(error),true)}
  await put(['Pokémon cards','Trainer cards','Energy cards'].map(category=>({source_uid:`research:bulbapedia:${category}`,provider:'research-bulbapedia',source_language:'en',set_id:JSON.stringify({category}),name:`Bulbapedia · ${category}`})))
  const groups=[]
- for(const provider of ['research-pokumon','research-bulbapedia','research-limitless']){
+ for(const provider of ['research-pokumon','research-bulbapedia','research-pokemon-card-jp','research-limitless']){
   if(provider!=='research-limitless'){
    groups.push(await check(db.from('catalog_sync_sets').select('*').eq('provider',provider).lte('next_sync_at',now()).order('next_sync_at').order('source_uid').limit(40)))
    continue
@@ -115,6 +124,23 @@ export async function runResearch({db,budgetMs=8*60000,request=researchFetcher()
     const r=await request(`https://pokumon.com/wp-json/wp/v2/card?per_page=50&page=${job.set_id}&_embed=1`,true)
     if(!Array.isArray(r.body)||!r.body.length)throw Error('Pagina Pokumon vuota o non valida')
     records=r.body.map(pokumonRecord)
+   }else if(job.provider==='research-pokemon-card-jp'){
+    const body=(await request(resultUrl(job.set_id),true)).body
+    if(!Array.isArray(body?.cardList))throw Error('Pagina del sito ufficiale giapponese non valida')
+    const promos=body.cardList.filter(c=>isPromoFolder(c.cardThumbFile)&&/^\d+$/.test(String(c.cardID)))
+    const seen=new Set((await check(db.from('catalog_search_entries').select('entry_key').in('entry_key',promos.map(c=>'pokemon-card-jp:'+c.cardID)))).map(r=>r.entry_key))
+    const records=[]
+    for(const card of promos){
+     if(seen.has('pokemon-card-jp:'+card.cardID))continue
+     if(Date.now()>end-30000){complete=false;break}
+     const record=officialRecord(card,(await request(detailUrl(card.cardID))).body);if(record)records.push(record)
+    }
+    const saved=await persistOfficialPromos(db,records)
+    stats.changed+=saved.changed;stats.photos=(stats.photos||0)+saved.photos
+    if(saved.unmatched)partialError=`${saved.unmatched} promo ufficiali senza una carta corrispondente per numero e nome.`
+    await check(db.from('catalog_sync_sets').update({next_sync_at:complete?later(7):now(),last_sync_at:complete?now():job.last_sync_at,last_error:partialError,card_count:records.length}).eq('source_uid',job.source_uid))
+    stats.jobs++;await log(`${job.name}: ${promos.length} promo, ${records.length} nuove schede, ${saved.photos} foto aggiunte, ${saved.unmatched} senza corrispondenza.`,true)
+    continue
    }else if(job.provider==='research-bulbapedia'){
     const state=JSON.parse(job.set_id),url=new URL('https://bulbapedia.bulbagarden.net/w/api.php')
     const params={action:'query',format:'json',generator:'categorymembers',gcmtitle:'Category:'+state.category,gcmtype:'page',gcmlimit:'20',prop:'revisions',rvprop:'ids|content',rvslots:'main',maxlag:'5',...(state.continuation||{})}
