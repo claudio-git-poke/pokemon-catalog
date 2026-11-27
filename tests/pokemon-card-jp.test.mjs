@@ -10,6 +10,8 @@ test('promo number, folder and species are read from the official site',()=>{
  assert.equal(isPromoFolder('/assets/images/card_images/large/SMP/033217_P_KUWAGANON.jpg'),true)
  assert.equal(isPromoFolder('/assets/images/card_images/large/SM1p/033250_P_KUWAGANONGX.jpg'),false)
  assert.equal(isPromoFolder('/assets/images/card_images/large/SV7/045974_P_KUWAGANON.jpg'),false)
+ for(const folder of ['SMP2','M-P','SV-P','MMB-P','DPtP','SVP1','S-P','BWP'])assert.equal(isPromoFolder(`/assets/images/card_images/large/${folder}/1_P_X.jpg`),true,folder)
+ for(const folder of ['M6a','MC','S8a-G','SM12a','SV8a','20th','CP6'])assert.equal(isPromoFolder(`/assets/images/card_images/large/${folder}/1_P_X.jpg`),false,folder)
  assert.equal(sameSpecies('クワガノン','Vikavolt'),true)
  assert.equal(sameSpecies('アローラニャース','Alolan Meowth'),true)
  assert.equal(sameSpecies('ピカチュウ','Pikachu (event)'),true)
