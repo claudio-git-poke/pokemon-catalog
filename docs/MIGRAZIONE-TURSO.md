@@ -299,3 +299,15 @@ La prova sul file del 26 novembre:
 - 6.887 gemelle scartate perché il Pokémon non coincideva.
 
 Tra le scartate ci sono le promo `SM-P@JP` del catalogo originale. Sono senza fonte e numerate come l'elenco inglese (Tsareena al n. 7, dove la 007/SM-P ufficiale è Vikavolt): vanno ripulite a parte.
+
+## Blocco delle letture del 27 novembre
+
+**Cosa è successo.** Tra le 01:05 e le 03:05 UTC del 27 novembre una pubblicazione del worker (circa 19.000 righe) ha consumato 1,39 miliardi di letture. Le letture del mese sono così arrivate a 1,56 miliardi, oltre il limite gratuito di 500 milioni, e Turso ha bloccato l'account fino al rinnovo del 1° dicembre (sito in errore 503).
+
+**La causa.** Il trigger delle protezioni manuali calcolava il numero della prossima voce di cronologia con `max(json_extract(_row,'$.id'))` sull'intera `_copy_catalog_manual_history`, senza indice, per ogni riga scritta, anche in modalità automatica. Con 146 voci il costo era trascurabile. L'unione dei doppioni del 26 novembre aveva portato la cronologia a 72.987 voci: circa 73.000 letture per riga pubblicata. Il consumo orario (workflow **Diagnosi letture Turso**) e una riproduzione locale (piano `SCAN _copy_catalog_manual_history`) lo confermano.
+
+**Correzioni.**
+- **Protezioni versione 4.** Indice `_catalog_history_id` sull'id della cronologia; i due massimi sono letti in sottoquery valutate solo per le scritture manuali, tramite indice. Un test fallisce se il piano torna a contenere una scansione della cronologia, e verifica la numerazione anche con posizioni e id fuori ordine.
+- **Aggiornamento automatico.** Il worker installa la versione corrente delle protezioni come primo passo, prima di ripristinare o pubblicare; se l'aggiornamento non riesce, l'esecuzione si ferma.
+- **Tetto di letture.** La pubblicazione conta le righe lette dalle risposte di Turso (`rows_read`). Si ferma al tetto di letture calcolato dal budget (`READ_BUDGET`, prima usato solo dal ripristino) e si interrompe con un errore se una riga pubblicata costa più di 500 letture (`MAX_READS_PER_ROW`).
+- **Orari.** Due avvii al giorno (04:41 e 16:41 ora di Roma), con lavoro nuovo al massimo ogni 23 ore. L'avvio delle 04:41 del 27 novembre era stato saltato da GitHub.
