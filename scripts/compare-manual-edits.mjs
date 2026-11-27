@@ -20,3 +20,7 @@ console.log(JSON.stringify({vecchio:o,nuovo:n}))
 const after=await oldDb(`SELECT json_extract(_row,'$.id') id,json_extract(_row,'$.at') at,json_extract(_row,'$.table_name') t,json_extract(_row,'$.record_key') k FROM _copy_catalog_manual_history WHERE CAST(json_extract(_row,'$.id') AS INTEGER)>${Number(n.max_id)||0} ORDER BY 1`)
 console.log(JSON.stringify({modifiche_mancanti:after.length,per_tabella:after.reduce((a,r)=>(a[r.t]=(a[r.t]||0)+1,a),{}),prima:after[0]?.at||null,ultima:after.at(-1)?.at||null}))
 for(const r of after.slice(0,50))console.log(JSON.stringify(r))
+// Who wrote the history of the new database, by role, table and day.
+const groupBy=expr=>`SELECT ${expr} k,count(*) n FROM _copy_catalog_manual_history GROUP BY 1 ORDER BY 2 DESC LIMIT 15`
+for(const [label,expr] of [['ruolo',"json_extract(_row,'$.actor_role')"],['tabella',"json_extract(_row,'$.table_name')"],['giorno',"substr(json_extract(_row,'$.at'),1,10)"],['motivo',"substr(json_extract(_row,'$.reason'),1,60)"],['campi',"substr(json_extract(_row,'$.changed_fields'),1,60)"]])console.log(JSON.stringify({[label]:await newDb(groupBy(expr))}))
+console.log(JSON.stringify({dimensione_media:await newDb("SELECT avg(length(_row)) byte,sum(length(_row)) totale FROM _copy_catalog_manual_history")}))
