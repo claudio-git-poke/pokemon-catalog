@@ -1,0 +1,848 @@
+{
+ "schema": "metadata-vocabulary-v1",
+ "families": {
+  "stage": [
+   {
+    "code": "stage:basic",
+    "label": "Base",
+    "aliases": [
+     "stage:base",
+     "stage:basic",
+     "stage:basico",
+     "stage:basis"
+    ]
+   },
+   {
+    "code": "stage:stage-1",
+    "label": "Fase 1",
+    "aliases": [
+     "stage:estagio-1",
+     "stage:fase-1",
+     "stage:livello-1",
+     "stage:niveau-1",
+     "stage:rang-1",
+     "stage:stage-1",
+     "stage:stage1"
+    ]
+   },
+   {
+    "code": "stage:stage-2",
+    "label": "Fase 2",
+    "aliases": [
+     "stage:estagio-2",
+     "stage:fase-2",
+     "stage:livello-2",
+     "stage:niveau-2",
+     "stage:rang-2",
+     "stage:stage-2",
+     "stage:stage2"
+    ]
+   },
+   {
+    "code": "stage:vmax",
+    "label": "VMAX",
+    "aliases": [
+     "stage:vmax"
+    ]
+   },
+   {
+    "code": "stage:vstar",
+    "label": "V ASTRO",
+    "aliases": [
+     "stage:v-astro",
+     "stage:vstar"
+    ]
+   },
+   {
+    "code": "stage:v-union",
+    "label": "V UNIONE",
+    "aliases": [
+     "stage:v-union",
+     "stage:v-unione"
+    ]
+   },
+   {
+    "code": "stage:mega",
+    "label": "Mega",
+    "aliases": [
+     "stage:mega"
+    ]
+   },
+   {
+    "code": "stage:level-up",
+    "label": "LIV.X / livello superiore",
+    "aliases": [
+     "stage:level-up",
+     "stage:niveau-sup"
+    ]
+   },
+   {
+    "code": "stage:break",
+    "label": "TURBO / BREAK",
+    "aliases": [
+     "stage:break",
+     "stage:turbo"
+    ]
+   },
+   {
+    "code": "stage:restored",
+    "label": "Ricreato",
+    "aliases": [
+     "stage:erweckt",
+     "stage:recreado",
+     "stage:restaurado",
+     "stage:restaure",
+     "stage:restored",
+     "stage:ricreato"
+    ]
+   },
+   {
+    "code": "stage:baby",
+    "label": "Baby",
+    "aliases": [
+     "stage:baby",
+     "stage:bebe"
+    ]
+   }
+  ],
+  "type": [
+   {
+    "code": "type:grass",
+    "label": "Erba",
+    "aliases": [
+     "type:erba",
+     "type:grass",
+     "type:pflanze",
+     "type:planta",
+     "type:plante"
+    ]
+   },
+   {
+    "code": "type:fire",
+    "label": "Fuoco",
+    "aliases": [
+     "type:feu",
+     "type:feuer",
+     "type:fire",
+     "type:fogo",
+     "type:fuego",
+     "type:fuoco"
+    ]
+   },
+   {
+    "code": "type:water",
+    "label": "Acqua",
+    "aliases": [
+     "type:acqua",
+     "type:agua",
+     "type:eau",
+     "type:wasser",
+     "type:water"
+    ]
+   },
+   {
+    "code": "type:lightning",
+    "label": "Lampo",
+    "aliases": [
+     "type:electrique",
+     "type:elektro",
+     "type:eletrico",
+     "type:lampo",
+     "type:lightning",
+     "type:rayo"
+    ]
+   },
+   {
+    "code": "type:psychic",
+    "label": "Psico",
+    "aliases": [
+     "type:psico",
+     "type:psiquico",
+     "type:psy",
+     "type:psychic",
+     "type:psycho"
+    ]
+   },
+   {
+    "code": "type:fighting",
+    "label": "Lotta",
+    "aliases": [
+     "type:combat",
+     "type:fighting",
+     "type:kampf",
+     "type:lotta",
+     "type:lucha",
+     "type:lutador"
+    ]
+   },
+   {
+    "code": "type:darkness",
+    "label": "Oscurità",
+    "aliases": [
+     "type:darkness",
+     "type:obscurite",
+     "type:oscura",
+     "type:oscurita",
+     "type:sombrio",
+     "type:unlicht"
+    ]
+   },
+   {
+    "code": "type:metal",
+    "label": "Metallo",
+    "aliases": [
+     "type:metal",
+     "type:metalica",
+     "type:metall",
+     "type:metallo"
+    ]
+   },
+   {
+    "code": "type:fairy",
+    "label": "Folletto",
+    "aliases": [
+     "type:fada",
+     "type:fairy",
+     "type:fee",
+     "type:folletto",
+     "type:hada"
+    ]
+   },
+   {
+    "code": "type:dragon",
+    "label": "Drago",
+    "aliases": [
+     "type:drache",
+     "type:dragao",
+     "type:drago",
+     "type:dragon"
+    ]
+   },
+   {
+    "code": "type:colorless",
+    "label": "Incolore",
+    "aliases": [
+     "type:colorless",
+     "type:farblos",
+     "type:incolor",
+     "type:incolora",
+     "type:incolore"
+    ]
+   }
+  ],
+  "card-type": [
+   {
+    "code": "card-type:pokemon",
+    "label": "Pokémon",
+    "aliases": [
+     "card-type:pokemon"
+    ]
+   },
+   {
+    "code": "card-type:trainer",
+    "label": "Allenatore",
+    "aliases": [
+     "card-type:trainer",
+     "card-type:トレーナー"
+    ]
+   },
+   {
+    "code": "card-type:supporter",
+    "label": "Aiuto",
+    "aliases": [
+     "card-type:supporter",
+     "card-type:サポート",
+     "card-type:支援者卡",
+     "card-type:서포터",
+     "card-type:서포트"
+    ]
+   },
+   {
+    "code": "card-type:item",
+    "label": "Strumento",
+    "aliases": [
+     "card-type:item",
+     "card-type:グッズ",
+     "card-type:物品卡",
+     "card-type:아이템"
+    ]
+   },
+   {
+    "code": "card-type:tool",
+    "label": "Oggetto Pokémon",
+    "aliases": [
+     "card-type:tool",
+     "card-type:ポケモンのどうぐ",
+     "card-type:寶可夢道具",
+     "card-type:포켓몬의-도구"
+    ]
+   },
+   {
+    "code": "card-type:stadium",
+    "label": "Stadio",
+    "aliases": [
+     "card-type:stadium",
+     "card-type:スタジアム",
+     "card-type:競技場卡",
+     "card-type:스타디움"
+    ]
+   },
+   {
+    "code": "card-type:basic-energy",
+    "label": "Energia base",
+    "aliases": [
+     "card-type:basic-energy",
+     "card-type:基本エネルギー",
+     "card-type:基本能量卡",
+     "card-type:기본-에너지"
+    ]
+   },
+   {
+    "code": "card-type:special-energy",
+    "label": "Energia speciale",
+    "aliases": [
+     "card-type:special-energy",
+     "card-type:特殊エネルギー",
+     "card-type:特殊能量卡",
+     "card-type:특수-에너지"
+    ]
+   },
+   {
+    "code": "card-type:technical-machine",
+    "label": "Macchina tecnica",
+    "aliases": [
+     "card-type:technical-machine",
+     "card-type:ワザマシン"
+    ]
+   }
+  ],
+  "rarity": [
+   {
+    "code": "rarity:common",
+    "label": "Comune",
+    "aliases": [
+     "rarity:c",
+     "rarity:common",
+     "rarity:commune",
+     "rarity:comum",
+     "rarity:comun",
+     "rarity:comune",
+     "rarity:haufig",
+     "rarity:rare-c",
+     "rarity:rare-c-c",
+     "rarity:rare-c2"
+    ]
+   },
+   {
+    "code": "rarity:uncommon",
+    "label": "Non comune",
+    "aliases": [
+     "rarity:incomum",
+     "rarity:non-comune",
+     "rarity:peu-commune",
+     "rarity:rare-u",
+     "rarity:rare-u-c",
+     "rarity:rare-u2",
+     "rarity:u",
+     "rarity:uncommon",
+     "rarity:ungewohnlich"
+    ]
+   },
+   {
+    "code": "rarity:rare",
+    "label": "Rara",
+    "aliases": [
+     "rarity:r",
+     "rarity:rara",
+     "rarity:rare",
+     "rarity:rare-r",
+     "rarity:rare-r-c",
+     "rarity:selten"
+    ]
+   },
+   {
+    "code": "rarity:holo-rare",
+    "label": "Rara olografica",
+    "aliases": [
+     "rarity:holo-rara",
+     "rarity:holo-rare",
+     "rarity:holografisch-selten",
+     "rarity:olografica-rara",
+     "rarity:rara-holo",
+     "rarity:rare-holo",
+     "rarity:selten-holografisch"
+    ]
+   },
+   {
+    "code": "rarity:holo-rare-v",
+    "label": "Rara olografica V",
+    "aliases": [
+     "rarity:holo-rara-v",
+     "rarity:holo-rare-v",
+     "rarity:holografisch-selten-v",
+     "rarity:olografica-rara-v",
+     "rarity:rara-holo-v"
+    ]
+   },
+   {
+    "code": "rarity:holo-rare-vmax",
+    "label": "Rara olografica VMAX",
+    "aliases": [
+     "rarity:holo-rara-vmax",
+     "rarity:holo-rare-vmax",
+     "rarity:holografisch-selten-vmax",
+     "rarity:olografica-rara-vmax",
+     "rarity:rara-holo-vmax"
+    ]
+   },
+   {
+    "code": "rarity:holo-rare-vstar",
+    "label": "Rara olografica V ASTRO",
+    "aliases": [
+     "rarity:holo-rara-vstar",
+     "rarity:holo-rare-vstar",
+     "rarity:holografisch-selten-vstar",
+     "rarity:olografica-rara-vstar",
+     "rarity:rara-holo-vstar"
+    ]
+   },
+   {
+    "code": "rarity:holo-rare-lv-x",
+    "label": "Rara olografica LIV.X",
+    "aliases": [
+     "rarity:rare-holo-lv-x",
+     "rarity:selten-holografisch-lv-x"
+    ]
+   },
+   {
+    "code": "rarity:double-rare",
+    "label": "Doppia rara",
+    "aliases": [
+     "rarity:doppelselten",
+     "rarity:double-rare",
+     "rarity:rara-doble",
+     "rarity:rara-doppia",
+     "rarity:rara-dupla",
+     "rarity:rare-rr",
+     "rarity:rr"
+    ]
+   },
+   {
+    "code": "rarity:triple-rare",
+    "label": "Tripla rara",
+    "aliases": [
+     "rarity:rrr",
+     "rarity:triple-rare"
+    ]
+   },
+   {
+    "code": "rarity:ultra-rare",
+    "label": "Ultra rara",
+    "aliases": [
+     "rarity:ultra-rara",
+     "rarity:ultra-rare",
+     "rarity:ultra-selten",
+     "rarity:ultrarara"
+    ]
+   },
+   {
+    "code": "rarity:illustration-rare",
+    "label": "Rara illustrazione",
+    "aliases": [
+     "rarity:ar",
+     "rarity:illustration-rare",
+     "rarity:ilustracao-rara",
+     "rarity:rara-illustrazione",
+     "rarity:rara-ilustracion",
+     "rarity:rare-ar",
+     "rarity:selten-illustration"
+    ]
+   },
+   {
+    "code": "rarity:special-illustration-rare",
+    "label": "Rara illustrazione speciale",
+    "aliases": [
+     "rarity:illustration-speciale-rare",
+     "rarity:ilustracao-rara-especial",
+     "rarity:rara-illustrazione-speciale",
+     "rarity:rara-ilustracion-especial",
+     "rarity:rare-sar",
+     "rarity:sar",
+     "rarity:selten-besondere-illustration",
+     "rarity:special-illustration-rare"
+    ]
+   },
+   {
+    "code": "rarity:super-rare",
+    "label": "Super rara (SR)",
+    "aliases": [
+     "rarity:rare-sr-c",
+     "rarity:sr"
+    ]
+   },
+   {
+    "code": "rarity:secret-rare",
+    "label": "Rara segreta",
+    "aliases": [
+     "rarity:rara-secreta",
+     "rarity:rare-secreta",
+     "rarity:secret-rare",
+     "rarity:segreto-rara",
+     "rarity:versteckt-selten"
+    ]
+   },
+   {
+    "code": "rarity:hyper-rare",
+    "label": "Iper rara",
+    "aliases": [
+     "rarity:hiper-rara",
+     "rarity:hr",
+     "rarity:hyper-rare",
+     "rarity:hyperselten",
+     "rarity:rara-hiper",
+     "rarity:rara-iper",
+     "rarity:rare-hr"
+    ]
+   },
+   {
+    "code": "rarity:gold-ultra-rare",
+    "label": "Ultra rara oro (UR)",
+    "aliases": [
+     "rarity:rare-ur-c",
+     "rarity:ur"
+    ]
+   },
+   {
+    "code": "rarity:shiny-rare",
+    "label": "Rara cromatica",
+    "aliases": [
+     "rarity:rare-s",
+     "rarity:s",
+     "rarity:shiny-rara",
+     "rarity:shiny-rare"
+    ]
+   },
+   {
+    "code": "rarity:shiny-super-rare",
+    "label": "Super rara cromatica (SSR)",
+    "aliases": [
+     "rarity:rare-ssr",
+     "rarity:ssr"
+    ]
+   },
+   {
+    "code": "rarity:shiny-ultra-rare",
+    "label": "Ultra rara cromatica",
+    "aliases": [
+     "rarity:brilhante-ultra-rara",
+     "rarity:chromatique-ultra-rare",
+     "rarity:shiny-ultra-rare",
+     "rarity:ultrarara-cromatica",
+     "rarity:ultraselten-schillernd"
+    ]
+   },
+   {
+    "code": "rarity:shiny-rare-v",
+    "label": "Rara cromatica V",
+    "aliases": [
+     "rarity:shiny-rara-v",
+     "rarity:shiny-rare-v"
+    ]
+   },
+   {
+    "code": "rarity:shiny-rare-vmax",
+    "label": "Rara cromatica VMAX",
+    "aliases": [
+     "rarity:shiny-rara-vmax",
+     "rarity:shiny-rare-vmax"
+    ]
+   },
+   {
+    "code": "rarity:character-rare",
+    "label": "Rara personaggio (CHR)",
+    "aliases": [
+     "rarity:chr",
+     "rarity:rare-chr"
+    ]
+   },
+   {
+    "code": "rarity:character-super-rare",
+    "label": "Super rara personaggio (CSR)",
+    "aliases": [
+     "rarity:character-super-rare",
+     "rarity:csr",
+     "rarity:rare-csr"
+    ]
+   },
+   {
+    "code": "rarity:trainer-rare",
+    "label": "Rara allenatore (TR)",
+    "aliases": [
+     "rarity:rare-tr",
+     "rarity:tr"
+    ]
+   },
+   {
+    "code": "rarity:ace-spec",
+    "label": "ASSO TATTICO",
+    "aliases": [
+     "rarity:ace",
+     "rarity:ace-spec-rare",
+     "rarity:ace-spec-raro",
+     "rarity:ass-klasse",
+     "rarity:rara-as-tactico",
+     "rarity:rara-as-táctico",
+     "rarity:rara-asso-tattico"
+    ]
+   },
+   {
+    "code": "rarity:radiant-rare",
+    "label": "Rara lucente",
+    "aliases": [
+     "rarity:k",
+     "rarity:radiant-rare",
+     "rarity:radieux-rare",
+     "rarity:rara-lucente",
+     "rarity:rara-radiante",
+     "rarity:selten-strahlend"
+    ]
+   },
+   {
+    "code": "rarity:amazing-rare",
+    "label": "Rara favolosa",
+    "aliases": [
+     "rarity:amazing-rare",
+     "rarity:atemberaubend",
+     "rarity:increibles",
+     "rarity:magnifique",
+     "rarity:raras-incriveis"
+    ]
+   },
+   {
+    "code": "rarity:legend",
+    "label": "LEGGENDA",
+    "aliases": [
+     "rarity:legend",
+     "rarity:legende",
+     "rarity:légende"
+    ]
+   },
+   {
+    "code": "rarity:prime",
+    "label": "Prime",
+    "aliases": [
+     "rarity:rara-primigenia",
+     "rarity:rare-prime",
+     "rarity:selten-primus"
+    ]
+   },
+   {
+    "code": "rarity:prism-star",
+    "label": "Prisma",
+    "aliases": [
+     "rarity:prismstar"
+    ]
+   },
+   {
+    "code": "rarity:full-art-trainer",
+    "label": "Allenatore full art",
+    "aliases": [
+     "rarity:allenatore-d-arte-completa",
+     "rarity:arte-completa-de-treinador",
+     "rarity:dresseur-full-art",
+     "rarity:entrenador-de-arte-completo",
+     "rarity:full-art-trainer",
+     "rarity:vollkunsttrainer"
+    ]
+   },
+   {
+    "code": "rarity:mega-hyper-rare",
+    "label": "Mega iper rara",
+    "aliases": [
+     "rarity:mega-hiper-rara",
+     "rarity:mega-hiper-raro",
+     "rarity:mega-hyper-rare",
+     "rarity:mega-hyper-selten",
+     "rarity:mega-iper-raro"
+    ]
+   },
+   {
+    "code": "rarity:mega-attack-rare",
+    "label": "Mega attacco rara",
+    "aliases": [
+     "rarity:ma",
+     "rarity:mega-attack-rare",
+     "rarity:rare-ma"
+    ]
+   },
+   {
+    "code": "rarity:mega-ultra-rare",
+    "label": "Mega ultra rara",
+    "aliases": [
+     "rarity:mur",
+     "rarity:rare-mur"
+    ]
+   },
+   {
+    "code": "rarity:black-white-rare",
+    "label": "Rara Bianco e Nero",
+    "aliases": [
+     "rarity:black-white-rare",
+     "rarity:bwr",
+     "rarity:rara-bianco-e-nero",
+     "rarity:rara-blanca-y-negra",
+     "rarity:rara-preto-e-branco",
+     "rarity:rare-noir-blanc",
+     "rarity:schwarz-weiß-selten"
+    ]
+   },
+   {
+    "code": "rarity:classic-collection",
+    "label": "Classic Collection",
+    "aliases": [
+     "rarity:classic-collection",
+     "rarity:collection-classique"
+    ]
+   },
+   {
+    "code": "rarity:promo",
+    "label": "Promo",
+    "aliases": [
+     "rarity:pr",
+     "rarity:promo"
+    ]
+   },
+   {
+    "code": "rarity:none",
+    "label": "Senza rarità",
+    "aliases": [
+     "rarity:keine",
+     "rarity:nessuna",
+     "rarity:ninguno",
+     "rarity:none",
+     "rarity:sans-rarete"
+    ]
+   }
+  ],
+  "category": [
+   {
+    "code": "category:ex",
+    "label": "ex / EX",
+    "aliases": [
+     "category:ex"
+    ]
+   },
+   {
+    "code": "category:v",
+    "label": "V",
+    "aliases": [
+     "category:v"
+    ]
+   },
+   {
+    "code": "category:gx",
+    "label": "GX",
+    "aliases": [
+     "category:gx"
+    ]
+   },
+   {
+    "code": "category:vmax",
+    "label": "VMAX",
+    "aliases": [
+     "category:vmax"
+    ]
+   },
+   {
+    "code": "category:vstar",
+    "label": "V ASTRO",
+    "aliases": [
+     "category:vstar"
+    ]
+   },
+   {
+    "code": "category:tag-team",
+    "label": "TAG TEAM",
+    "aliases": [
+     "category:tag team-gx",
+     "category:tag-team"
+    ]
+   },
+   {
+    "code": "category:ace-spec",
+    "label": "ASSO TATTICO",
+    "aliases": [
+     "category:ace-spec"
+    ]
+   },
+   {
+    "code": "category:break",
+    "label": "TURBO",
+    "aliases": [
+     "category:break"
+    ]
+   },
+   {
+    "code": "category:v-union",
+    "label": "V UNIONE",
+    "aliases": [
+     "category:v-union"
+    ]
+   },
+   {
+    "code": "category:prism-star",
+    "label": "Prisma",
+    "aliases": [
+     "category:prism-star"
+    ]
+   },
+   {
+    "code": "category:prime",
+    "label": "Prime",
+    "aliases": [
+     "category:prime",
+     "category:primigenio",
+     "category:primo"
+    ]
+   },
+   {
+    "code": "category:radiant",
+    "label": "Lucente",
+    "aliases": [
+     "category:radiant"
+    ]
+   },
+   {
+    "code": "category:gold-star",
+    "label": "Stella d'oro",
+    "aliases": [
+     "category:gold-star"
+    ]
+   },
+   {
+    "code": "category:legend",
+    "label": "LEGGENDA",
+    "aliases": [
+     "category:legend",
+     "category:legende",
+     "category:leggenda",
+     "category:légende"
+    ]
+   },
+   {
+    "code": "category:lv-x",
+    "label": "LIV.X",
+    "aliases": [
+     "category:lv-x"
+    ]
+   },
+   {
+    "code": "category:sp",
+    "label": "SP",
+    "aliases": [
+     "category:sp"
+    ]
+   }
+  ]
+ }
+}
